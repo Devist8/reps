@@ -1,29 +1,45 @@
-import React, { Component } from "react";
-import link from "react-router-dom/Link";
+import React, { Component } from 'react';
+import link from 'react-router-dom/Link';
 //MUI
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Button from "@material-ui/core/Button";
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
+import withStyles from '@material-ui/styles/withStyles';
 
+const styles = {
+  navToolbar: {
+    margin: 'auto',
+  },
+};
 export class Navbar extends Component {
   render() {
+    const classes = this.props;
     return (
       <AppBar>
-        <Toolbar>
-          <Button color="inherit" component={link} to="/">
+        <Toolbar className='nav-container'>
+          <Button
+            color='inherit'
+            className={classes.navBtn}
+            component={link}
+            to='/'
+          >
             Home
           </Button>
-          <Button color="inherit" component={link} to="/login">
+          <Button
+            color='inherit'
+            className={classes.navBtn}
+            component={link}
+            to='/login'
+          >
             Login
           </Button>
-          <Button color="inherit" component={link} to="/signup">
+          <Button
+            color='inherit'
+            className={classes.navBtn}
+            component={link}
+            to='/signup'
+          >
             Sign up
-          </Button>
-          <Button color="inherit" component={link} to="/exercises">
-            Exercises
-          </Button>
-          <Button color="inherit" component={link} to="/meals">
-            Meals
           </Button>
         </Toolbar>
       </AppBar>
@@ -31,4 +47,4 @@ export class Navbar extends Component {
   }
 }
 
-export default Navbar;
+export default withStyles(styles)(Navbar);

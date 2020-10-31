@@ -21,10 +21,6 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
 const rows = [
   createData("Cupcake", 305, 3.7, 67, 4.3),
   createData("Donut", 452, 25.0, 51, 4.9),
@@ -40,6 +36,23 @@ const rows = [
   createData("Nougat", 360, 19.0, 9, 37.0),
   createData("Oreo", 437, 18.0, 63, 4.0),
 ];
+
+const headCells = [
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: true,
+    label: "Dessert (100g serving)",
+  },
+  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
+  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
+  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
+  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" },
+];
+
+function createData(name, calories, fat, carbs, protein) {
+  return { name, calories, fat, carbs, protein };
+}
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -67,19 +80,6 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-const headCells = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: true,
-    label: "Dessert (100g serving)",
-  },
-  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" },
-];
-
 function EnhancedTableHead(props) {
   const {
     classes,
@@ -94,6 +94,7 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
+  //Render TableHead
   return (
     <TableHead>
       <TableRow>
@@ -141,6 +142,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
+//Toolbar Styles
 const useToolbarStyles = makeStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(2),
@@ -212,6 +214,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
+//Styles
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
