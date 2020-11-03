@@ -11,6 +11,7 @@ import {
   UPDATE_TASKS,
 } from '../types';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 export const loginUser = (userData, history) => (dispatch) => {
   dispatch({ type: LOADING_UI });
@@ -57,7 +58,6 @@ export const createTask = (data, history) => (dispatch) => {
     .then((res) => {
       dispatch({ type: ADD_TASK, payload: taskData });
       dispatch({ type: CLEAR_ERRORS });
-      history.push('/');
     })
     .catch((err) => {
       dispatch({

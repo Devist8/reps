@@ -1,4 +1,22 @@
+# Reps - The Fitness Tracker Web App
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Description
+
+Reps is a web application to be used by individuals or trainers to keep track of their own workouts or workouts assigned to clients. Reps include a task table with a table row form for adding new tasks to the table. There is also a form for sending challenges to other users. The task table and forms along with a profile section are included in every user's home page.
+
+<img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/Devist8/reps">
+
+## Additional Features
+
+- User task table with new task form
+- Rep Challenges (Send challenges to other users)
+- Trainer dashboard (Coming Soon)
+  - Keep track of clients' task
+  - Send tasks, workouts, or regimens to clients
+- Trainer Subscription packages with Stripe (Coming soon)
+- Trainer Task Shops (Coming Soon)
 
 ## Available Scripts
 

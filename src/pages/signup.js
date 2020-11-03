@@ -5,6 +5,7 @@ import withStyles from '@material-ui/styles/withStyles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { Redirect } from 'react-router-dom';
 
 //Redux
 import { connect } from 'react-redux';
@@ -23,6 +24,7 @@ export class signup extends Component {
       confirmPassword: '',
       username: '',
       errors: {},
+      signedup: false,
     };
   }
 
@@ -42,6 +44,10 @@ export class signup extends Component {
       name: this.state.name,
     };
     this.props.signupUser(newUserData, this.props.history);
+
+    this.setState(() => ({
+      signedup: false,
+    }));
   };
 
   handleChange = (event) => {
@@ -55,6 +61,10 @@ export class signup extends Component {
       UI: { loading },
     } = this.props;
     const { errors } = this.state;
+
+    if (this.state.signedup) {
+      return <Redirect to='/infoForm' />;
+    }
     return (
       <Grid container className={classes.formContainer}>
         <Grid item sm />
@@ -135,7 +145,7 @@ export class signup extends Component {
               className={classes.button}
               onSubmit={this.handleSubmit}
             >
-              Login
+              Sign Up
             </Button>
           </form>
         </Grid>

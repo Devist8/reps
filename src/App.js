@@ -8,12 +8,12 @@ import AuthRoute from './util/AuthRoute';
 //Mui Stuff
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
-import yellow from '@material-ui/core/colors/yellow';
-import blueGrey from '@material-ui/core/colors/blueGrey';
 import Navbar from './components/Navbar';
 import home from './pages/home';
 import login from './pages/login';
 import signup from './pages/signup';
+import infoForm from './pages/infoForm';
+import goals from './pages/goals';
 
 //Redux
 import { Provider } from 'react-redux';
@@ -50,6 +50,8 @@ class App extends React.Component {
                 <Route exact path='/' component={home} />
                 <AuthRoute exact path='/login' component={login} />
                 <AuthRoute exact path='/signup' component={signup} />
+                <Route exact path='/infoForm' component={infoForm} />
+                <Route exact path='/goals' component={goals} />
               </Switch>
             </div>
           </Router>
