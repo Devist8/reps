@@ -2,15 +2,17 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-<img alt="AppVeyor" src="https://img.shields.io/appveyor/build/Devist8/reps?style=plastic">
-
 ## Description
 
 Reps is a web application to be used by individuals or trainers to keep track of their own workouts or workouts assigned to clients. Reps include a task table with a table row form for adding new tasks to the table. There is also a form for sending challenges to other users. The task table and forms along with a profile section are included in every user's home page.
 
+## Motivation
+
+Connect fitness trainers with their clients while also encouraging others in their goals.
+
 <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/Devist8/reps">
 
-## Additional Features
+## Features
 
 - User task table with new task form
 - Rep Challenges (Send challenges to other users)
@@ -19,6 +21,22 @@ Reps is a web application to be used by individuals or trainers to keep track of
   - Send tasks, workouts, or regimens to clients
 - Trainer Subscription packages with Stripe (Coming soon)
 - Trainer Task Shops (Coming Soon)
+
+## Tech/framework used
+
+**Frontend**
+
+- React
+  - Redux
+- Material-UI
+
+**Backend**
+
+- Google Firebase
+  - Firestore with Cloud Functions
+  - Firebase Auth
+  - Firebase Storage
+- Express
 
 ## Available Scripts
 

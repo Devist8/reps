@@ -195,16 +195,6 @@ class TableRows extends React.Component {
                           <TableCell></TableCell>
                           <TableCell align='right'>{task.sender}</TableCell>
                         </TableRow>
-                        <TableCell>
-                          <IconButton
-                            aria-label='submit task'
-                            size='large'
-                            className={classes.button}
-                            onClick={this.handleSubmit}
-                          >
-                            <AddIcon />
-                          </IconButton>
-                        </TableCell>
                       </Grid>
                     </Grid>
                   </TableBody>

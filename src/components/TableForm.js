@@ -100,8 +100,10 @@ export class TableForm extends React.Component {
       user: {
         info: { username },
       },
+      UI: { loading },
     } = this.props;
-    return (
+
+    let formMarkup = !loading ? (
       <TableRow component='form' noValidate autoComplete='off'>
         <TableCell scope='row' colSpan={12} justify='flex-start'>
           <Grid container className={classes.form} spacing={0}>
@@ -254,7 +256,10 @@ export class TableForm extends React.Component {
           </Grid>
         </TableCell>
       </TableRow>
+    ) : (
+      <p>...loading</p>
     );
+    return formMarkup;
   }
 }
 

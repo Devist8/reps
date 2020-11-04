@@ -97,6 +97,7 @@ export class CollapseTable extends React.Component {
     const {
       classes,
       user: { tasks },
+      UI: { loading },
     } = this.props;
 
     const sortedTasks = tasks.sort(function (x, y) {
