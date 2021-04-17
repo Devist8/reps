@@ -32,16 +32,7 @@ export class home extends Component {
     const { errors } = this.state;
     return (
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Profile />
-        </Grid>
-        <Grid item sm={12} md={9}>
-          <CollapseTable />
-        </Grid>
-        <Grid item sm={12} md={3}>
-          <RepRequestForm />
-        </Grid>
-        <Grid item sm={12}></Grid>
+        
       </Grid>
     );
   }

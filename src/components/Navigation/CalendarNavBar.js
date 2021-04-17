@@ -1,5 +1,5 @@
 import React from 'react';
-import Calendar from 'react-calendar';
+import Calendar from 'react-calendar'
 import './Calendar.css';
 import dayjs from 'dayjs';
 
@@ -33,7 +33,11 @@ const useStyles = makeStyles((theme) => ({
     tile: {
         background: 'none',
         border: 'none'
+    },
+    rightDrawer: {
+        borderLeft: 'none'
     }
+    
 }))
 
 export const DateHeader = () => {
@@ -55,8 +59,8 @@ export const CalendarNavBar = () => {
      
     }
     return (
-        <AppBar style={{zIndex: '1000', }} >
-        <Drawer variant='permanent' anchor='right' classes={{paper: classes.drawerPaper}} >
+        <AppBar style={{zIndex: '1000', border: 'none' }} >
+        <Drawer variant='permanent' anchor='right'  classes={{paper: classes.drawerPaper, paperAnchorDockedRight: classes.rightDrawer}} >
             
             <Grid item xs={12} className={classes.calendarContainer}>
                 <Calendar 

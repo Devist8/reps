@@ -8,12 +8,12 @@ import AuthRoute from './util/AuthRoute';
 //Mui Stuff
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
-import Navbar from './components/Navbar';
-import home from './pages/home';
-import login from './pages/login';
-import signup from './pages/signup';
-import infoForm from './pages/infoForm';
-import goals from './pages/goals';
+import Navbar from './components/Navigation/Navbar';
+import {AuthNavbar} from './components/Navigation/AuthNavbar';
+import {CalendarNavBar} from './components/Navigation/CalendarNavBar'
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 //Redux
 import { Provider } from 'react-redux';
@@ -45,13 +45,14 @@ class App extends React.Component {
         <Provider store={store}>
           <Router>
             <Navbar />
+            <AuthNavbar/>
+            <CalendarNavBar/>
             <div className='container'>
               <Switch>
-                <Route exact path='/' component={home} />
-                <AuthRoute exact path='/login' component={login} />
-                <AuthRoute exact path='/signup' component={signup} />
-                <Route exact path='/infoForm' component={infoForm} />
-                <Route exact path='/goals' component={goals} />
+                <Route exact path='/' component={Home} />
+                <AuthRoute exact path='/login' component={Login} />
+                <AuthRoute exact path='/signup' component={Signup} />
+
               </Switch>
             </div>
           </Router>

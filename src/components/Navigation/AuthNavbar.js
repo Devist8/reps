@@ -24,7 +24,11 @@ const useStyles=makeStyles((theme) => ({
     },
     drawerPaper: {
         backgroundImage: `url(/left_nav.svg)`
+    },
+    leftDrawer: {
+        borderRight: 'none',
     }
+    
 }))
 
 
@@ -32,7 +36,7 @@ export const AuthNavbar = () => {
     const classes = useStyles();
     return (
         <AppBar style={{zIndex: '1000'}}>
-        <Drawer open={true} variant='permanent' style={{width: '10%'}} classes={{paper: classes.drawerPaper}}>
+        <Drawer open={true} variant='permanent' style={{width: '10%'}} classes={{paper: classes.drawerPaper, paperAnchorDockedLeft: classes.leftDrawer}}>
             <Grid container style={{marginTop: '5rem'}}>
             <ToolBar>
                 <List>
