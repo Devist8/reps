@@ -1,0 +1,40 @@
+abbr { 
+    margin: 0 0.2rem;
+    text-decoration: none; 
+}
+
+.react-calendar__month-view__weekdays__weekday {
+    font-size: 90%;
+    font-weight: 500;
+}
+
+.react-calendar__navigation {
+    position: 'absolute';
+    margin-bottom: 0.3rem;
+}
+
+.react-calendar__navigation__arrow {
+background: none;
+border: none;
+}
+
+.react-calendar__navigation__prev-button {
+    position: relative;
+    left: 9.5rem;
+}
+.react-calendar__navigation__next-button {
+    position: relative;
+    right: 0.5rem;
+    
+}
+
+.react-calendar__navigation__label {
+ background: none;
+ border: none;   
+}
+
+.react-calendar__navigation__label__labelText {
+    position: relative;
+    right: 3.8rem;
+    font-weight: 700;
+} 
