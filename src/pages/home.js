@@ -9,38 +9,16 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 
 //Redux
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-export class home extends Component {
-    constructor() {
-        super();
-        this.state = {
-            defaultUser: {
-                username: "user",
-                repXP: 0,
-                profileImage:
-                    "https://firebasestorage.googleapis.com/v0/b/reps-699b0.appspot.com/o/98062229209.jpg/?alt=media",
-            },
-            defaultExercises: defaultExercises,
-        };
-    }
+export const Home = () => {
+    const dispatch = useDispatch();
 
-    render() {
-        const { classes } = this.props;
-        const { errors } = this.state;
-        return (
-            <Grid container>
-                <Grid item xs={2}>
-                    <Difficulty difficulty={4.5} edit />
-                </Grid>
+    return (
+        <Grid container>
+            <Grid item xs={2}>
+                <Difficulty difficulty={4.5} small edit />
             </Grid>
-        );
-    }
-}
-
-const mapStateToProps = (state) => ({
-    user: state.user,
-    UI: state.UI,
-});
-
-export default connect(mapStateToProps)(home);
+        </Grid>
+    );
+};

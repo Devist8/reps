@@ -1,177 +1,199 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Grid from '@material-ui/core/Grid';
-import withStyles from '@material-ui/styles/withStyles';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { Redirect } from 'react-router-dom';
+import React, { Component } from "react";
+import config from "../util/config";
+import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
+import firebase from "firebase";
+
+//MUI
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import withStyles from "@material-ui/styles/withStyles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import { Redirect } from "react-router-dom";
 
 //Redux
-import { connect } from 'react-redux';
-import { signupUser } from '../redux/actions/userActions';
-const styles = (theme) => ({
-  ...theme.spreadStyles,
-});
+import { connect, useDispatch } from "react-redux";
+import { signupUser } from "../redux/actions/userActions";
+console.log(config.apiKey);
+firebase.initializeApp(config);
 
-export class signup extends Component {
-  constructor() {
-    super();
-    this.state = {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      username: '',
-      errors: {},
-      signedup: false,
-    };
-  }
+const useStyles = makeStyles((theme) => ({
+    root: {
+        marginRight: "10rem",
+    },
+    formContainer: {
+        margin: "auto",
+        marginRight: "10rem",
+        textAlign: "center",
+    },
+    title: {
+        margin: "auto",
+        marginRight: "10rem",
+        textAlign: "center",
+    },
+    textField: {
+        margin: "auto",
+        textAlign: "center",
+        justifyContent: "center",
+        alignContent: "center",
+        alignItems: "center",
+        width: "65%",
+    },
+    buttonContainer: {
+        margin: "auto",
+        textAlign: "center",
+        marginTop: "3rem",
+    },
+    customError: {
+        color: "red",
+        fontSize: "0.8rem",
+    },
+    firebaseContainer: {
+        marginRight: "10rem",
+        marginTop: "2rem",
+    },
+}));
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.UI.errors) {
-      this.setState({ errors: nextProps.UI.errors });
-    }
-  }
+const uiConfig = {
+    signInFlow: "popup",
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const newUserData = {
-      email: this.state.email,
-      password: this.state.password,
-      confirmPassword: this.state.confirmPassword,
-      username: this.state.username,
-      name: this.state.name,
-    };
-    this.props.signupUser(newUserData, this.props.history);
+    //signInSuccessUrl: "/signedIn",
 
-    this.setState(() => ({
-      signedup: false,
-    }));
-  };
+    signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+    ],
+};
 
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
+export const Signup = (props) => {
+    const classes = useStyles();
+    const dispatch = useDispatch();
+    const [userData, setUserData] = React.useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
     });
-  };
-  render() {
-    const {
-      classes,
-      UI: { loading },
-    } = this.props;
-    const { errors } = this.state;
+    const [errors, setErrors] = React.useState({});
 
-    if (this.state.signedup) {
-      return <Redirect to='/infoForm' />;
-    }
+    const handleChange = (e) => {
+        setUserData((prevData) => ({
+            ...prevData,
+            [e.target.name]: e.target.value,
+        }));
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        dispatch(signupUser(userData, props.history));
+    };
     return (
-      <Grid container className={classes.formContainer}>
-        <Grid item sm />
-        <Grid item sm>
-          <Typography variant='h2' className={classes.title}>
-            Sign Up
-          </Typography>
-          <form noValidate onSubmit={this.handleSubmit}>
-            <TextField
-              id='name'
-              name='name'
-              type='name'
-              label='Full Name'
-              className={classes.textField}
-              helperText={errors.name}
-              error={errors.name ? true : false}
-              value={this.state.name}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            <TextField
-              id='email'
-              name='email'
-              type='email'
-              label='Email'
-              className={classes.textField}
-              helperText={errors.email}
-              error={errors.email ? true : false}
-              value={this.state.email}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            <TextField
-              id='password'
-              name='password'
-              type='password'
-              label='Password'
-              className={classes.textField}
-              helperText={errors.password}
-              error={errors.password ? true : false}
-              value={this.state.password}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            <TextField
-              id='confirmPassword'
-              name='confirmPassword'
-              type='password'
-              label='Confirm Password'
-              className={classes.textField}
-              helperText={errors.password}
-              error={errors.password ? true : false}
-              value={this.state.confirmPassword}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            <TextField
-              id='username'
-              name='username'
-              type='username'
-              label='Username'
-              className={classes.textField}
-              helperText={errors.username}
-              error={errors.username ? true : false}
-              value={this.state.username}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            {errors.general && (
-              <Typography variant='body2' className={classes.customError}>
-                {errors.general}
-              </Typography>
-            )}
-            <Button
-              type='submit'
-              variant='contained'
-              color='primary'
-              className={classes.button}
-              onSubmit={this.handleSubmit}
-            >
-              Sign Up
-            </Button>
-          </form>
+        <Grid container className={classes.root}>
+            <Grid item xs={12}>
+                <Typography variant="h2" className={classes.title}>
+                    Sign Up
+                </Typography>
+            </Grid>
+            <Grid item xs={12} className={classes.formContainer}>
+                <form noValidate onSubmit={handleSubmit}>
+                    <Grid item xs={12} className={classes.textField}>
+                        <TextField
+                            id="name"
+                            name="firstName"
+                            type="name"
+                            label="First Name"
+                            className={classes.textField}
+                            helperText={errors.name}
+                            error={errors.name ? true : false}
+                            value={userData.firstName}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} className={classes.textField}>
+                        <TextField
+                            id="name"
+                            name="lastName"
+                            type="name"
+                            label="Last Name"
+                            className={classes.textField}
+                            helperText={errors.name}
+                            error={errors.name ? true : false}
+                            value={userData.lastName}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} className={classes.textField}>
+                        <TextField
+                            id="email"
+                            name="email"
+                            type="email"
+                            label="Email"
+                            className={classes.textField}
+                            helperText={errors.email}
+                            error={errors.email ? true : false}
+                            value={userData.email}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} className={classes.textField}>
+                        <TextField
+                            id="password"
+                            name="password"
+                            type="password"
+                            label="Password"
+                            className={classes.textField}
+                            helperText={errors.password}
+                            error={errors.password ? true : false}
+                            value={userData.password}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} className={classes.textField}>
+                        <TextField
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            type="password"
+                            label="Confirm Password"
+                            className={classes.textField}
+                            helperText={errors.password}
+                            error={errors.password ? true : false}
+                            value={userData.confirmPassword}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} className={classes.buttonContainer}>
+                        {errors.general && (
+                            <Typography
+                                variant="body2"
+                                className={classes.customError}
+                            >
+                                {errors.general}
+                            </Typography>
+                        )}
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            onSubmit={handleSubmit}
+                        >
+                            Sign Up
+                        </Button>
+                    </Grid>
+                </form>
+            </Grid>
+            <Grid item xs={12} className={classes.firebaseContainer}>
+                <StyledFirebaseAuth
+                    uiConfig={uiConfig}
+                    firebaseAuth={firebase.auth()}
+                />
+            </Grid>
         </Grid>
-        <Grid item sm />
-      </Grid>
     );
-  }
-}
-
-signup.propTypes = {
-  classes: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
-  UI: PropTypes.object.isRequired,
-  signupUser: PropTypes.func.isRequired,
 };
-
-const mapStateToProps = (state) => ({
-  user: state.user,
-  UI: state.UI,
-});
-
-const mapActionsToProps = {
-  signupUser,
-};
-
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(withStyles(styles)(signup));
