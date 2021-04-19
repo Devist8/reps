@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import config from "../util/config";
+
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
 
@@ -15,8 +15,6 @@ import { Redirect } from "react-router-dom";
 //Redux
 import { connect, useDispatch } from "react-redux";
 import { signupUser } from "../redux/actions/userActions";
-console.log(config.apiKey);
-firebase.initializeApp(config);
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 const uiConfig = {
     signInFlow: "popup",
 
-    //signInSuccessUrl: "/signedIn",
+    signInSuccessUrl: "/",
 
     signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -79,6 +77,8 @@ export const Signup = (props) => {
     const [errors, setErrors] = React.useState({});
 
     const handleChange = (e) => {
+        e.persist();
+        console.log(e.target);
         setUserData((prevData) => ({
             ...prevData,
             [e.target.name]: e.target.value,
@@ -99,15 +99,15 @@ export const Signup = (props) => {
                 <form noValidate onSubmit={handleSubmit}>
                     <Grid item xs={12} className={classes.textField}>
                         <TextField
-                            id="name"
+                            id="firstName"
                             name="firstName"
-                            type="name"
+                            type="firstName"
                             label="First Name"
                             className={classes.textField}
                             helperText={errors.name}
                             error={errors.name ? true : false}
                             value={userData.firstName}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange(e)}
                             fullWidth
                         />
                     </Grid>
@@ -121,7 +121,7 @@ export const Signup = (props) => {
                             helperText={errors.name}
                             error={errors.name ? true : false}
                             value={userData.lastName}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange(e)}
                             fullWidth
                         />
                     </Grid>
@@ -135,7 +135,7 @@ export const Signup = (props) => {
                             helperText={errors.email}
                             error={errors.email ? true : false}
                             value={userData.email}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange(e)}
                             fullWidth
                         />
                     </Grid>
@@ -149,7 +149,7 @@ export const Signup = (props) => {
                             helperText={errors.password}
                             error={errors.password ? true : false}
                             value={userData.password}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange(e)}
                             fullWidth
                         />
                     </Grid>
@@ -163,7 +163,7 @@ export const Signup = (props) => {
                             helperText={errors.password}
                             error={errors.password ? true : false}
                             value={userData.confirmPassword}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange(e)}
                             fullWidth
                         />
                     </Grid>

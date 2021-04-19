@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 const uiConfig = {
     signInFlow: "popup",
 
-    //signInSuccessUrl: "/signedIn",
+    signInSuccessUrl: "/",
 
     signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,

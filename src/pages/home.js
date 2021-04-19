@@ -16,7 +16,7 @@ export const Home = () => {
 
     return (
         <Grid container>
-            <Grid item xs={2}>
+            <Grid item xs={12}>
                 <Difficulty difficulty={4.5} small edit />
             </Grid>
         </Grid>
