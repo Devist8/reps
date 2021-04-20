@@ -34,6 +34,23 @@ axios.defaults.baseURL = "http://localhost:5000/reps-699b0/us-east1/api";
 class App extends React.Component {
     componentDidMount = () => {
         firebase.auth().onAuthStateChanged((user) => {
+            console.log(
+                firebase
+                    .auth()
+                    .currentUser.getIdToken()
+                    .then((idToken) => {
+                        const FBIdToken = `Bearer ${idToken}`;
+                        localStorage.setItem("FBIdToken", FBIdToken);
+                        console.log(FBIdToken);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    })
+            );
+            console.log(localStorage.getItem("FBIdToken"));
+            axios.defaults.headers.common[
+                "Authorization"
+            ] = localStorage.getItem("FBIdToken");
             store.dispatch({ type: SET_AUTHENTICATED });
             store.dispatch(getUserData());
         });
@@ -49,12 +66,8 @@ class App extends React.Component {
                         <div className="container">
                             <Switch>
                                 <Route exact path="/" component={Home} />
-                                <AuthRoute
-                                    exact
-                                    path="/login"
-                                    component={Login}
-                                />
-                                <AuthRoute
+                                <Route exact path="/login" component={Login} />
+                                <Route
                                     exact
                                     path="/signup"
                                     component={Signup}

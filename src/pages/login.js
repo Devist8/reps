@@ -73,6 +73,8 @@ export const Login = (props) => {
     });
     const [errors, setErrors] = React.useState({});
     const handleChange = (e) => {
+        e.persist();
+        console.log(e.target);
         setUserData((prevData) => ({
             ...prevData,
             [e.target.name]: e.target.value,
@@ -105,7 +107,7 @@ export const Login = (props) => {
                             helperText={errors.email}
                             error={errors.email ? true : false}
                             value={userData.email}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange(e)}
                             fullWidth
                         />
                     </Grid>
@@ -119,7 +121,7 @@ export const Login = (props) => {
                             helperText={errors.password}
                             error={errors.password ? true : false}
                             value={userData.password}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange(e)}
                             fullWidth
                         />
                     </Grid>
