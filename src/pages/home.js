@@ -12,6 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import { Difficulty } from "../components/Difficulty";
 import { Exercise } from "../components/Exercises/Exercise";
 import { Workout } from "../components/Workouts/Workout";
+import { UserButton } from "../components/Navigation/UserButton";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -28,15 +29,6 @@ export const Home = () => {
     const classes = useStyles();
     return (
         <Grid container style={{ marginLeft: "6rem" }}>
-            <Grid container style={{ margin: "auto" }}>
-                {exercises.map((exercise) => {
-                    return (
-                        <Grid item xs={5}>
-                            <Exercise exercise={exercise} style={{}} />
-                        </Grid>
-                    );
-                })}
-            </Grid>
             <Grid container style={{ margin: "auto" }}>
                 {workouts.map((workout) => {
                     return (

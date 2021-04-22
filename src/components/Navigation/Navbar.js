@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import link from "react-router-dom/Link";
+
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
+
+//Componrnts
+import { UserButton } from "./UserButton";
 
 //Redux
 import { useSelector } from "react-redux";
@@ -26,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
 export const Navbar = () => {
     const classes = useStyles();
     const auth = useSelector((state) => state.user.authenticated);
-    console.log(auth);
+    const info = useSelector((state) => state.user.info);
+    console.log(info);
     return (
         <AppBar
             elevation={2}
@@ -68,7 +73,9 @@ export const Navbar = () => {
                 <Toolbar
                     className="nav-container"
                     style={{ backgroundImage: `url(/top_nav.svg)` }}
-                ></Toolbar>
+                >
+                    {info.displayName && <UserButton />}
+                </Toolbar>
             )}
         </AppBar>
     );

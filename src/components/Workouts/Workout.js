@@ -38,11 +38,11 @@ export const Workout = (props) => {
     const classes = useStyles();
     const { workout } = props;
     const [open, setOpen] = React.useState(false);
-
     const handleOpen = (e) => {
         setOpen((prevState) => !prevState);
     };
 
+    console.log(workout.difficulty);
     return (
         <Grid
             container
