@@ -42,8 +42,6 @@ export const Difficulty = (props) => {
     let half = difficulty.split(".")[1]
         ? parseInt(difficulty.split(".")[1])
         : 0;
-    console.log(difficulty.split("."));
-    console.log(half);
     return (
         <Grid container direction="row" className={classes.root}>
             {wholes.map((x) => {

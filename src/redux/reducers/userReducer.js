@@ -3,8 +3,6 @@ import {
     SET_AUTHENTICATED,
     SET_UNAUTHENTICATED,
     LOADING_USER,
-    ADD_TASK,
-    UPDATE_TASKS,
 } from "../types";
 
 const initialState = {
@@ -22,20 +20,12 @@ export default function (state = initialState, action) {
             };
         case SET_UNAUTHENTICATED:
             return initialState;
-        case ADD_TASK:
-            return {
-                ...state,
-                tasks: state.tasks.concat(action.payload),
-            };
-        case UPDATE_TASKS:
-            return {
-                ...state,
-                tasks: action.payload,
-            };
         case SET_USER:
+            console.log(action.payload);
             return {
+                ...state,
                 authenticated: true,
-                ...action.payload,
+                info: action.payload,
                 loading: false,
             };
         case LOADING_USER:

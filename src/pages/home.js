@@ -1,23 +1,50 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { makeStyles } from "@material-ui/core/styles";
+
 import met from "../util/met";
-import defaultExercises from "../util/DefaultTasks";
-import { Difficulty } from "../components/Difficulty";
+
 //Mui
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
+
+//Components
+import { Difficulty } from "../components/Difficulty";
+import { Exercise } from "../components/Exercises/Exercise";
+import { Workout } from "../components/Workouts/Workout";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
 
+const useStyles = makeStyles((theme) => ({
+    backgroundColor: theme.palette.primary.main,
+}));
+
 export const Home = () => {
     const dispatch = useDispatch();
-
+    const info = useSelector((state) => state.user.info);
+    const exercises = useSelector((state) => state.data.exercises);
+    const workouts = useSelector((state) => state.data.workouts);
+    const classes = useStyles();
     return (
-        <Grid container>
-            <Grid item xs={12}>
-                <Difficulty difficulty={4.5} small edit />
+        <Grid container style={{ marginLeft: "6rem" }}>
+            <Grid container style={{ margin: "auto" }}>
+                {exercises.map((exercise) => {
+                    return (
+                        <Grid item xs={5}>
+                            <Exercise exercise={exercise} style={{}} />
+                        </Grid>
+                    );
+                })}
+            </Grid>
+            <Grid container style={{ margin: "auto" }}>
+                {workouts.map((workout) => {
+                    return (
+                        <Grid item xs={5}>
+                            <Workout workout={workout} style={{}} />
+                        </Grid>
+                    );
+                })}
             </Grid>
         </Grid>
     );

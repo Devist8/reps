@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import link from "react-router-dom/Link";
 //MUI
+import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
-import withStyles from "@material-ui/styles/withStyles";
 
-const styles = {
+//Redux
+import { useSelector } from "react-redux";
+
+const useStyles = makeStyles((theme) => ({
     root: {
         backgroundImage: `url(/top_nav.svg)`,
         display: "flex",
@@ -18,17 +21,20 @@ const styles = {
         backgroundImage: `url(/top_nav.svg)`,
         display: "flex",
     },
-};
-export class Navbar extends Component {
-    render() {
-        const classes = this.props;
-        return (
-            <AppBar
-                elevation={2}
-                className={classes.root}
-                color="default"
-                classes={{ paper: classes.appBarPaper }}
-            >
+}));
+
+export const Navbar = () => {
+    const classes = useStyles();
+    const auth = useSelector((state) => state.user.authenticated);
+    console.log(auth);
+    return (
+        <AppBar
+            elevation={2}
+            className={classes.root}
+            color="default"
+            classes={{ paper: classes.appBarPaper }}
+        >
+            {!auth ? (
                 <Toolbar
                     className="nav-container"
                     style={{ backgroundImage: `url(/top_nav.svg)` }}
@@ -58,9 +64,12 @@ export class Navbar extends Component {
                         Sign up
                     </Button>
                 </Toolbar>
-            </AppBar>
-        );
-    }
-}
-
-export default withStyles(styles)(Navbar);
+            ) : (
+                <Toolbar
+                    className="nav-container"
+                    style={{ backgroundImage: `url(/top_nav.svg)` }}
+                ></Toolbar>
+            )}
+        </AppBar>
+    );
+};

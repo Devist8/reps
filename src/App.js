@@ -7,12 +7,13 @@ import themeObject from "./util/theme";
 import axios from "axios";
 import AuthRoute from "./util/AuthRoute";
 import firebase from "firebase";
+import dayjs from "dayjs";
 //Mui Stuff
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 //Components
-import Navbar from "./components/Navigation/Navbar";
+import { Navbar } from "./components/Navigation/Navbar";
 import { AuthNavbar } from "./components/Navigation/AuthNavbar";
 import { CalendarNavBar } from "./components/Navigation/CalendarNavBar";
 import { Home } from "./pages/Home";
@@ -34,25 +35,29 @@ axios.defaults.baseURL = "http://localhost:5000/reps-699b0/us-east1/api";
 class App extends React.Component {
     componentDidMount = () => {
         firebase.auth().onAuthStateChanged((user) => {
-            console.log(
-                firebase
-                    .auth()
-                    .currentUser.getIdToken()
-                    .then((idToken) => {
+            firebase
+                .auth()
+                .currentUser.getIdToken()
+                .then((idToken) => {
+                    const decodedToken = jwtDecode(idToken);
+                    if (decodedToken.exp * 1000 < Date.now()) {
+                        store.dispatch(logoutUser());
+                        window.location.href = "/login";
+                        firebase.auth().signOut();
+                    } else {
                         const FBIdToken = `Bearer ${idToken}`;
                         localStorage.setItem("FBIdToken", FBIdToken);
-                        console.log(FBIdToken);
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                    })
-            );
-            console.log(localStorage.getItem("FBIdToken"));
-            axios.defaults.headers.common[
-                "Authorization"
-            ] = localStorage.getItem("FBIdToken");
-            store.dispatch({ type: SET_AUTHENTICATED });
-            store.dispatch(getUserData());
+                    }
+
+                    axios.defaults.headers.common[
+                        "Authorization"
+                    ] = localStorage.getItem("FBIdToken");
+                    store.dispatch({ type: SET_AUTHENTICATED });
+                    store.dispatch(getUserData());
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
         });
     };
     render() {
