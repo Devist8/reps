@@ -31,7 +31,7 @@ export const Navbar = () => {
     const classes = useStyles();
     const auth = useSelector((state) => state.user.authenticated);
     const info = useSelector((state) => state.user.info);
-    console.log(info);
+
     return (
         <AppBar
             elevation={2}

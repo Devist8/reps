@@ -15,6 +15,7 @@ import { ActionButton } from "../ActionButton";
 const useStyles = makeStyles((theme) => ({
     cardRoot: {
         width: "23rem",
+        height: "5rem",
     },
     cardContent: {
         paddingBottom: "30px",
@@ -77,7 +78,7 @@ export const Exercise = (props) => {
                         )}
                     </CardContent>
                 </Grid>
-                <Grid item xs={2} style={{ marginLeft: "1.8rem" }}>
+                <Grid item xs={2} style={{ marginLeft: "0.9rem" }}>
                     <CardActions>
                         <ActionButton />
                     </CardActions>

@@ -43,7 +43,6 @@ export const DateHeader = (props) => {
     const { date } = props;
     const dayDate = dayjs(date).format("DD");
     const day = dayjs(date).format("ddd");
-    console.log(date);
 
     return (
         <Grid container>
@@ -108,7 +107,6 @@ export const CalendarNavBar = () => {
                     />
                     <Grid item xs={12} className={classes.dateDisplayContainer}>
                         {selected.map((date) => {
-                            console.log(date);
                             return (
                                 <Grid
                                     item

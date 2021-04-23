@@ -16,6 +16,7 @@ import { UserButton } from "../components/Navigation/UserButton";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
+import { ProgramModal } from "../components/Programs/ProgramModal";
 
 const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
@@ -26,10 +27,11 @@ export const Home = () => {
     const info = useSelector((state) => state.user.info);
     const exercises = useSelector((state) => state.data.exercises);
     const workouts = useSelector((state) => state.data.workouts);
+    const programs = useSelector((state) => state.data.programs);
     const classes = useStyles();
     return (
-        <Grid container style={{ marginLeft: "6rem" }}>
-            <Grid container style={{ margin: "auto" }}>
+        <Grid container style={{ width: "100%", marginLeft: "6rem" }}>
+            <Grid container style={{ width: "100%", margin: "auto" }}>
                 {workouts.map((workout) => {
                     return (
                         <Grid item xs={5}>
@@ -37,6 +39,9 @@ export const Home = () => {
                         </Grid>
                     );
                 })}
+            </Grid>
+            <Grid item xs={12}>
+                {programs[0] && <ProgramModal program={programs[0]} />}
             </Grid>
         </Grid>
     );

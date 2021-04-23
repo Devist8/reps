@@ -67,7 +67,6 @@ export const getUserData = () => (dispatch) => {
             const data = {
                 ...res.data.userData,
             };
-            console.log(data);
             dispatch(setUserCollection(data));
             dispatch({
                 type: SET_USER,

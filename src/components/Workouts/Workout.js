@@ -24,12 +24,13 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.secondary.main,
         overflow: "hidden",
         zIndex: 800,
+        height: "5rem",
     },
     imageContainer: {
         width: "5rem",
     },
     cardContent: {
-        marginRight: "1rem",
+        padding: 0,
     },
 }));
 
@@ -41,8 +42,6 @@ export const Workout = (props) => {
     const handleOpen = (e) => {
         setOpen((prevState) => !prevState);
     };
-
-    console.log(workout.difficulty);
     return (
         <Grid
             container
@@ -62,14 +61,25 @@ export const Workout = (props) => {
                     />
 
                     <Grid item xs={7} className={classes.cardContent}>
-                        <CardActionArea onClick={(e) => handleOpen(e)}>
-                            <CardContent>
-                                <Typography>{workout.title}</Typography>
+                        <CardActionArea
+                            onClick={(e) => handleOpen(e)}
+                            style={{ height: "100%" }}
+                        >
+                            <CardContent
+                                style={{
+                                    paddingTop: "10px",
+                                    height: "100%",
+                                    margin: "auto",
+                                }}
+                            >
+                                <Typography style={{ marginBottom: "0.6rem" }}>
+                                    {workout.title}
+                                </Typography>
                                 <Difficulty difficulty={workout.difficulty} />
                             </CardContent>
                         </CardActionArea>
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={2}>
                         <CardActions>
                             <ActionButton />
                         </CardActions>

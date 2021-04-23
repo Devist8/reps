@@ -13,13 +13,29 @@ export const ActionButton = (props) => {
     return (
         <Grid container>
             {duration && (
-                <Grid item>
-                    <Typography>{duration}</Typography>
+                <Grid item xs={12}>
+                    <Typography>30min</Typography>
                 </Grid>
             )}
-            <Grid item>
-                <IconButton onClick={(e) => clickHandler(e)}>
-                    <AddIcon style={{ color: "black" }} />
+            <Grid item xs={12} style={{ marginLeft: "0.5rem" }}>
+                <Typography>30min</Typography>
+            </Grid>
+            <Grid item style={!duration && { marginTop: "0.5rem" }}>
+                <IconButton
+                    onClick={(e) => clickHandler(e)}
+                    style={
+                        !duration && {
+                            marginLeft: "0.5rem",
+                            height: "70%",
+                            width: "70%",
+                        }
+                    }
+                >
+                    <AddIcon
+                        style={{
+                            color: "black",
+                        }}
+                    />
                 </IconButton>
             </Grid>
         </Grid>

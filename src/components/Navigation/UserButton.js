@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
         width: "13rem",
         height: "3rem",
         borderRadius: "25px",
-        backgroundColor: theme.palette.primary.dark,
+        backgroundColor: theme.palette.primary.main,
     },
     content: {
         padding: 13,
