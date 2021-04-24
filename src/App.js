@@ -16,9 +16,15 @@ import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { Navbar } from "./components/Navigation/Navbar";
 import { AuthNavbar } from "./components/Navigation/AuthNavbar";
 import { CalendarNavBar } from "./components/Navigation/CalendarNavBar";
+
+//Pages
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
+import { Home as DashboardHome } from "./pages/Dashboard/Home";
+import { Studio } from "./pages/Dashboard/Studio";
+import { Meals } from "./pages/Dashboard/Meals";
+import { Store } from "./pages/Dashboard/Store";
 
 //Redux
 import { Provider } from "react-redux";
@@ -84,6 +90,26 @@ class App extends React.Component {
                                     exact
                                     path="/signup"
                                     component={Signup}
+                                />
+                                <AuthRoute
+                                    exact
+                                    path="/dashboard"
+                                    component={DashboardHome}
+                                />
+                                <AuthRoute
+                                    exact
+                                    path="/workouts"
+                                    component={Studio}
+                                />
+                                <AuthRoute
+                                    exact
+                                    path="/meals"
+                                    component={Meals}
+                                />
+                                <AuthRoute
+                                    exact
+                                    path="/store"
+                                    component={Store}
                                 />
                             </Switch>
                         </div>
