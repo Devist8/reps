@@ -49,12 +49,12 @@ export const Workout = (props) => {
                 overflow: "hidden",
                 backgroundColor: theme.palette.secondary.light,
                 width: "25rem",
-                margin: "2rem 0",
+
                 borderRadius: "4px",
             }}
         >
             <Card className={classes.cardRoot}>
-                <Grid container style={{ display: "flex" }}>
+                <Grid container>
                     <CardMedia
                         image={workout.imageURL}
                         className={classes.imageContainer}
