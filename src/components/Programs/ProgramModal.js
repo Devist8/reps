@@ -7,6 +7,7 @@ import {
     CardMedia,
     CardContent,
     CardActions,
+    CardActionArea,
     Grid,
     Typography,
     TextField,
@@ -31,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
         marginTop: "2rem",
         marginRight: "2rem",
         color: "#000",
+        justifyContent: "bottom",
+        alignItems: "bottom",
     },
     stats: {
         marginLeft: "1.8rem",
@@ -59,27 +62,55 @@ const useStyles = makeStyles((theme) => ({
 export const WorkoutList = (props) => {
     const classes = useStyles();
     const { workouts } = props;
-    const [open, setOpen] = React.useState(false);
+    const [openIndex, setOpenIndex] = React.useState([]);
     const handleOpen = (e) => {
-        setOpen((prevState) => !prevState);
+        e.persist();
+        setOpenIndex((prevState) => {
+            if (prevState.includes(e.target.selectedIndex)) {
+                const selected = prevState.indexOf(e.target.selectedIndex);
+                const tempArray = prevState
+                    .slice(0, selected)
+                    .concat(prevState.slice(selected + 1));
+                console.log(tempArray);
+                console.log("remove");
+                return tempArray;
+            } else {
+                console.log("add");
+                return prevState.concat(e.target.selectedIndex);
+            }
+        });
     };
+    console.log(openIndex);
+    const orderedWorkouts = Object.keys(workouts)
+        .sort()
+        .reduce((obj, key) => {
+            obj[key] = workouts[key];
+            return obj;
+        }, {});
+    console.log(orderedWorkouts);
     return (
         <Grid container className={classes.workoutListContainer}>
-            {Object.entries(workouts).map((week, index) => {
+            {Object.entries(orderedWorkouts).map((week, weekIndex) => {
+                console.log(openIndex.includes(weekIndex));
                 return (
-                    <Grid container>
+                    <Grid container style={{ overflow: "hidden" }}>
                         <Grid item xs={12} className={classes.weekTitle}>
-                            <Button onClick={(e) => handleOpen(e)}>
+                            <CardActionArea
+                                onClick={(e) => {
+                                    e.target.selectedIndex = weekIndex;
+                                    handleOpen(e);
+                                }}
+                            >
                                 <Typography>{week[0]}</Typography>
-                            </Button>
+                            </CardActionArea>
                         </Grid>
                         <Slide
-                            in={open}
+                            in={openIndex.includes(weekIndex)}
                             mountOnEnter
                             unmountOnExit
                             timeout={{
-                                enter: week[1].length * 350 - index * 350,
-                                exit: 150 + index * 150,
+                                enter: week[1].length * 200 - weekIndex * 200,
+                                exit: 200 + weekIndex * 200,
                             }}
                         >
                             <Grid
@@ -89,9 +120,27 @@ export const WorkoutList = (props) => {
                             >
                                 {week[1].map((workout, index) => {
                                     return (
-                                        <Grid item xs={6}>
-                                            <Workout workout={workout} />
-                                        </Grid>
+                                        <Slide
+                                            in={openIndex.includes(weekIndex)}
+                                            mountOnEnter
+                                            unmountOnExit
+                                            timeout={{
+                                                enter:
+                                                    workout.exercises.length *
+                                                        350 -
+                                                    index * 350,
+                                                exit: 250 + index * 250,
+                                            }}
+                                            style={{ overflow: "hidden" }}
+                                        >
+                                            <Grid
+                                                item
+                                                xs={6}
+                                                style={{ overflow: "hidden" }}
+                                            >
+                                                <Workout workout={workout} />
+                                            </Grid>
+                                        </Slide>
                                     );
                                 })}
                             </Grid>
@@ -105,28 +154,40 @@ export const WorkoutList = (props) => {
 
 export const ProgramModal = (props) => {
     const classes = useStyles();
-    const { program } = props;
+    const { program, edit } = props;
     console.log(program.workouts);
     return (
         <Grid container className={classes.root}>
             <Card elevation={2} style={{}}>
-                <Grid item xs={12} style={{ height: "250px" }}>
+                <Grid item xs={12} style={{ height: "200px" }}>
                     <CardMedia
                         component="img"
                         src="/beachbody-original.jpg"
-                        style={{ objectFit: "fill", height: "250px" }}
+                        style={{ objectFit: "fill", height: "200px" }}
                     />
                 </Grid>
                 <CardContent className={classes.content}>
                     <Grid container>
                         <Grid item xs={9}>
-                            <Typography
-                                variant="h4"
-                                style={{ fontWeight: 600 }}
-                            >
-                                {program.title}
-                            </Typography>
+                            {!edit ? (
+                                <Typography
+                                    variant="h4"
+                                    style={{ fontWeight: 600 }}
+                                >
+                                    {program.title}
+                                </Typography>
+                            ) : (
+                                <TextField
+                                    name="title"
+                                    id="title"
+                                    aria-label={program.title}
+                                    aria-required="true"
+                                    value={program.title}
+                                />
+                            )}
+
                             <Difficulty difficulty={program.difficulty} />
+
                             <Typography
                                 style={{
                                     marginTop: "1rem",
@@ -136,7 +197,17 @@ export const ProgramModal = (props) => {
                             >
                                 Description
                             </Typography>
-                            <Typography>{program.description}</Typography>
+                            {!edit ? (
+                                <Typography>{program.description}</Typography>
+                            ) : (
+                                <TextField
+                                    name="description"
+                                    value={program.description}
+                                    fullWidth
+                                    multiline
+                                    aria-multiline="true"
+                                />
+                            )}
                         </Grid>
                         <Grid item xs={3}>
                             <Typography className={classes.stats}>

@@ -2,16 +2,19 @@ import React from "react";
 
 //MUI
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardMedia from "@material-ui/core/CardMedia";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Typography from "@material-ui/core/Typography";
-import Slide from "@material-ui/core/Slide";
+import {
+    Grid,
+    Card,
+    CardContent,
+    CardActionArea,
+    CardActions,
+    CardMedia,
+    List,
+    ListItem,
+    Typography,
+    Slide,
+    TextField,
+} from "@material-ui/core";
 
 //Components
 import { Difficulty } from "../Difficulty";
@@ -37,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 export const Workout = (props) => {
     const theme = useTheme();
     const classes = useStyles();
-    const { workout } = props;
+    const { workout, edit } = props;
     const [open, setOpen] = React.useState(false);
     const handleOpen = (e) => {
         setOpen((prevState) => !prevState);
@@ -58,6 +61,7 @@ export const Workout = (props) => {
                     <CardMedia
                         image={workout.imageURL}
                         className={classes.imageContainer}
+                        style={{ objectFit: "fill" }}
                     />
 
                     <Grid item xs={7} className={classes.cardContent}>
@@ -72,16 +76,29 @@ export const Workout = (props) => {
                                     margin: "auto",
                                 }}
                             >
-                                <Typography style={{ marginBottom: "0.6rem" }}>
-                                    {workout.title}
-                                </Typography>
+                                {!edit ? (
+                                    <Typography
+                                        style={{ marginBottom: "0.6rem" }}
+                                    >
+                                        {workout.title}
+                                    </Typography>
+                                ) : (
+                                    <TextField
+                                        name="title"
+                                        id="title"
+                                        aria-label={workout.title}
+                                        aria-required="true"
+                                        value={workout.title}
+                                    />
+                                )}
+
                                 <Difficulty difficulty={workout.difficulty} />
                             </CardContent>
                         </CardActionArea>
                     </Grid>
                     <Grid item xs={2}>
                         <CardActions>
-                            <ActionButton />
+                            <ActionButton edit={edit} />
                         </CardActions>
                     </Grid>
                 </Grid>

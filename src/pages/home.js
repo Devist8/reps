@@ -32,16 +32,25 @@ export const Home = () => {
     return (
         <Grid container style={{ width: "100%", marginLeft: "6rem" }}>
             <Grid container style={{ width: "100%", margin: "auto" }}>
+                {exercises.map((exercise) => {
+                    return (
+                        <Grid item xs={5}>
+                            <Exercise exercise={exercise} edit style={{}} />
+                        </Grid>
+                    );
+                })}
+            </Grid>
+            <Grid container style={{ width: "100%", margin: "auto" }}>
                 {workouts.map((workout) => {
                     return (
                         <Grid item xs={5}>
-                            <Workout workout={workout} style={{}} />
+                            <Workout workout={workout} edit style={{}} />
                         </Grid>
                     );
                 })}
             </Grid>
             <Grid item xs={12}>
-                {programs[0] && <ProgramModal program={programs[0]} />}
+                {programs[0] && <ProgramModal program={programs[0]} edit />}
             </Grid>
         </Grid>
     );

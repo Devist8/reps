@@ -2,11 +2,14 @@ import React from "react";
 
 //MUI
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import Typography from "@material-ui/core/Typography";
+import {
+    Grid,
+    Card,
+    CardContent,
+    CardActions,
+    Typography,
+    TextField,
+} from "@material-ui/core";
 
 //Components
 import { Difficulty } from "../Difficulty";
@@ -32,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export const Exercise = (props) => {
     const classes = useStyles();
     const theme = useTheme();
-    const { exercise, small } = props;
+    const { exercise, small, edit, index } = props;
     return (
         <Card
             className={classes.cardRoot}
@@ -55,12 +58,23 @@ export const Exercise = (props) => {
                         }
                     >
                         <Grid item xs={7}>
-                            <Typography className={classes.title}>
-                                {exercise.title}
-                            </Typography>
+                            {!edit ? (
+                                <Typography className={classes.title}>
+                                    {exercise.title}
+                                </Typography>
+                            ) : (
+                                <TextField
+                                    aria-label={exercise.title}
+                                    aria-required="true"
+                                    id="title"
+                                    name="title"
+                                    value={exercise.title}
+                                />
+                            )}
                             <Difficulty
                                 difficulty={exercise.difficulty}
                                 small
+                                edit={edit}
                             />
                         </Grid>
 
@@ -73,14 +87,37 @@ export const Exercise = (props) => {
                                     marginLeft: "1rem",
                                 }}
                             >
-                                <Typography>3x5</Typography>
+                                {!edit ? (
+                                    index && (
+                                        <Typography>
+                                            {exercise.schedule[index].reps}
+                                        </Typography>
+                                    )
+                                ) : (
+                                    <TextField
+                                        name="reps"
+                                        id={
+                                            index &&
+                                            `reps: ${exercise.schedule[index].reps}`
+                                        }
+                                        aria-label={
+                                            index &&
+                                            exercise.schedule[index].reps
+                                        }
+                                        value={
+                                            index &&
+                                            exercise.schedule[index].reps
+                                        }
+                                        label="Reps"
+                                    />
+                                )}
                             </Grid>
                         )}
                     </CardContent>
                 </Grid>
                 <Grid item xs={2} style={{ marginLeft: "0.9rem" }}>
                     <CardActions>
-                        <ActionButton />
+                        <ActionButton edit={edit} />
                     </CardActions>
                 </Grid>
             </Grid>
