@@ -13,6 +13,7 @@ import { Difficulty } from "../components/Difficulty";
 import { Exercise } from "../components/Exercises/Exercise";
 import { Workout } from "../components/Workouts/Workout";
 import { UserButton } from "../components/Navigation/UserButton";
+import { EditButton } from "../components/EditButton";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -35,7 +36,9 @@ export const Home = () => {
                 {exercises.map((exercise) => {
                     return (
                         <Grid item xs={5}>
-                            <Exercise exercise={exercise} edit style={{}} />
+                            <EditButton>
+                                <Exercise exercise={exercise} style={{}} />
+                            </EditButton>
                         </Grid>
                     );
                 })}
