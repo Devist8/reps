@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: "flex",
         flexWrap: "noWrap",
+        width: "auto",
     },
     iconContainer: {
         textAlign: "center",
@@ -72,11 +73,7 @@ export const Difficulty = (props) => {
                         value={difficulty}
                         size="small"
                         onChange={(e) => {
-                            const data = {
-                                name: e.target.name,
-                                value: e.target.value,
-                            };
-                            editDifficulty(data);
+                            editDifficulty(e);
                         }}
                         classes={{
                             root: classes.input,

@@ -1,13 +1,18 @@
 import React from "react";
 import "./App.css";
-import config from "./util/config";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import jwtDecode from "jwt-decode";
-import themeObject from "./util/theme";
+
+//APIs
 import axios from "axios";
-import AuthRoute from "./util/AuthRoute";
+import jwtDecode from "jwt-decode";
 import firebase from "firebase";
-import dayjs from "dayjs";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
+//Utilities
+import { exercise } from "./util/TestData";
+import config from "./util/config";
+import themeObject from "./util/theme";
+import AuthRoute from "./util/AuthRoute";
+
 //Mui Stuff
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
@@ -16,6 +21,7 @@ import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { Navbar } from "./components/Navigation/Navbar";
 import { AuthNavbar } from "./components/Navigation/AuthNavbar";
 import { CalendarNavBar } from "./components/Navigation/CalendarNavBar";
+import { Exercise } from "./components/Exercises/Exercise";
 
 //Pages
 import { Home } from "./pages/Home";
@@ -30,48 +36,55 @@ import { Store } from "./pages/Dashboard/Store";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { SET_AUTHENTICATED } from "./redux/types";
-import { logoutUser, getUserData } from "./redux/actions/userActions";
+import { logoutUser, getNewToken } from "./redux/actions/userActions";
+import { getUserData } from "./redux/actions/dataActions";
 
-firebase.initializeApp(config);
+const app = firebase.initializeApp(config);
 
 const theme = createMuiTheme(themeObject);
 
-axios.defaults.baseURL = "http://localhost:5000/reps-699b0/us-east1/api";
+axios.defaults.baseURL = "http://localhost:5001/reps-699b0/us-east1/api";
 
 const token = localStorage.FBIdToken;
 if (token) {
-    const decodedToken = jwtDecode(token);
-    if (decodedToken.exp * 1000 < Date.now()) {
-        store.dispatch(logoutUser());
-        window.location.href = "/login";
-    } else {
-        store.dispatch({ type: SET_AUTHENTICATED });
-        axios.defaults.headers.common["Authorization"] = token;
-        store.dispatch(getUserData());
-    }
+    store.dispatch({ type: SET_AUTHENTICATED });
+    axios.defaults.headers.common["Authorization"] = token;
+    store.dispatch(getUserData());
 }
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+    }
     componentDidMount = () => {
-        firebase.auth().onAuthStateChanged((user) => {
+        const checkToken = firebase.auth().onAuthStateChanged((user) => {
             firebase
                 .auth()
                 .currentUser.getIdToken()
                 .then((idToken) => {
                     const decodedToken = jwtDecode(idToken);
+
                     if (decodedToken.exp * 1000 < Date.now()) {
-                        store.dispatch(logoutUser());
-                        window.location.href = "/login";
-                        firebase.auth().signOut();
+                        store.dispatch(
+                            getNewToken(
+                                firebase.auth().currentUser.refreshToken,
+                                this.props.history
+                            )
+                        );
+                        store.dispatch(getUserData());
+                        setTimeout(checkToken(), 3600000);
                     } else {
                         const FBIdToken = `Bearer ${idToken}`;
                         localStorage.setItem("FBIdToken", FBIdToken);
+                        setTimeout(checkToken(), 3600000);
                     }
                 })
                 .catch((err) => {
                     console.error(err);
                 });
         });
+
+        return () => checkToken();
     };
 
     render() {

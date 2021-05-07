@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const Studio = () => {
     const classes = useStyles();
-    const [creator, setCreator] = React.useState("");
+    const [creator, setCreator] = React.useState("exercise");
 
     const displayCreator = (creator) => {
         console.log(creator);

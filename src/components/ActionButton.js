@@ -8,15 +8,7 @@ import { Grid, IconButton, Typography, TextField } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 export const ActionButton = (props) => {
-    const {
-        clickHandler,
-        changeHandler,
-        edit,
-        add,
-        duration,
-        newExercise,
-        editHandler,
-    } = props;
+    const { addHandler, edit, duration, exercise, handleChange } = props;
     return (
         <Grid container>
             {edit ? (
@@ -24,7 +16,7 @@ export const ActionButton = (props) => {
                     <TextField
                         name="duration"
                         value={duration}
-                        onChange={(e) => changeHandler(e)}
+                        onChange={(e) => handleChange(e)}
                     />
                 </Grid>
             ) : (
@@ -35,7 +27,9 @@ export const ActionButton = (props) => {
 
             <Grid item style={!duration && { marginTop: "0.5rem" }}>
                 <IconButton
-                    onClick={(e) => clickHandler(e)}
+                    onClick={(e) => {
+                        addHandler(exercise);
+                    }}
                     style={
                         !duration && {
                             marginLeft: "0.5rem",

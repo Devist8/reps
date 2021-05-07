@@ -1,5 +1,5 @@
 import React from "react";
-import link from "react-router-dom/Link";
+import { Link } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -53,7 +53,7 @@ export const AuthNavbar = () => {
                     <ToolBar>
                         <List>
                             <ListItem
-                                component={link}
+                                component={Link}
                                 to="/dashboard"
                                 button
                                 className={classes.button}
@@ -62,7 +62,7 @@ export const AuthNavbar = () => {
                             </ListItem>
                             <ListItem
                                 button
-                                component={link}
+                                component={Link}
                                 to="/workouts"
                                 className={classes.button}
                             >
@@ -70,7 +70,7 @@ export const AuthNavbar = () => {
                             </ListItem>
                             <ListItem
                                 button
-                                component={link}
+                                component={Link}
                                 to="/meals"
                                 className={classes.button}
                             >
@@ -78,7 +78,7 @@ export const AuthNavbar = () => {
                             </ListItem>
                             <ListItem
                                 button
-                                component={link}
+                                component={Link}
                                 to="/store"
                                 className={classes.button}
                             >

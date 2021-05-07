@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-
+import { exercise } from ".././util/TestData";
 import met from "../util/met";
 
 //Mui
@@ -33,12 +33,15 @@ export const Home = () => {
     return (
         <Grid container style={{ width: "100%", marginLeft: "6rem" }}>
             <Grid container style={{ width: "100%", margin: "auto" }}>
-                {exercises.map((exercise) => {
+                {exercises.map((exercise, index) => {
                     return (
                         <Grid item xs={5}>
-                            <EditButton>
-                                <Exercise exercise={exercise} style={{}} />
-                            </EditButton>
+                            <Exercise
+                                exercise={exercise}
+                                data-testid={`exercise-${index}`}
+                                style={{}}
+                                small
+                            />
                         </Grid>
                     );
                 })}
@@ -47,13 +50,13 @@ export const Home = () => {
                 {workouts.map((workout) => {
                     return (
                         <Grid item xs={5}>
-                            <Workout workout={workout} edit style={{}} />
+                            <Workout workout={workout} style={{}} />
                         </Grid>
                     );
                 })}
             </Grid>
             <Grid item xs={12}>
-                {programs[0] && <ProgramModal program={programs[0]} edit />}
+                {programs[0] && <ProgramModal program={programs[0]} />}
             </Grid>
         </Grid>
     );

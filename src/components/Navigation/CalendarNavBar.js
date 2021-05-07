@@ -106,10 +106,13 @@ export const CalendarNavBar = () => {
                         className={classes.calendar}
                     />
                     <Grid item xs={12} className={classes.dateDisplayContainer}>
-                        {selected.map((date) => {
+                        {selected.map((date, index) => {
                             return (
                                 <Grid
                                     item
+                                    key={Math.round(
+                                        index * Math.random() * index
+                                    )}
                                     xs={12}
                                     className={classes.dateDisplay}
                                 >

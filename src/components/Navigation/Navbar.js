@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import link from "react-router-dom/Link";
+import { Link } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,10 +21,6 @@ const useStyles = makeStyles((theme) => ({
     navToolbar: {
         margin: "auto",
     },
-    appBarPaper: {
-        backgroundImage: `url(/top_nav.svg)`,
-        display: "flex",
-    },
 }));
 
 export const Navbar = () => {
@@ -33,12 +29,7 @@ export const Navbar = () => {
     const info = useSelector((state) => state.user.info);
 
     return (
-        <AppBar
-            elevation={2}
-            className={classes.root}
-            color="default"
-            classes={{ paper: classes.appBarPaper }}
-        >
+        <AppBar elevation={2} className={classes.root} color="default">
             {!auth ? (
                 <Toolbar
                     className="nav-container"
@@ -47,7 +38,7 @@ export const Navbar = () => {
                     <Button
                         color="inherit"
                         className={classes.navBtn}
-                        component={link}
+                        component={Link}
                         to="/"
                     >
                         Home
@@ -55,7 +46,7 @@ export const Navbar = () => {
                     <Button
                         color="inherit"
                         className={classes.navBtn}
-                        component={link}
+                        component={Link}
                         to="/login"
                     >
                         Login
@@ -63,7 +54,7 @@ export const Navbar = () => {
                     <Button
                         color="inherit"
                         className={classes.navBtn}
-                        component={link}
+                        component={Link}
                         to="/signup"
                     >
                         Sign up

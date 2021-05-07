@@ -91,7 +91,6 @@ export const WorkoutList = (props) => {
     return (
         <Grid container className={classes.workoutListContainer}>
             {Object.entries(orderedWorkouts).map((week, weekIndex) => {
-                console.log(openIndex.includes(weekIndex));
                 return (
                     <Grid container style={{ overflow: "hidden" }}>
                         <Grid item xs={12} className={classes.weekTitle}>
@@ -155,9 +154,13 @@ export const WorkoutList = (props) => {
 export const ProgramModal = (props) => {
     const classes = useStyles();
     const { program, edit } = props;
-    console.log(program.workouts);
+
     return (
-        <Grid container className={classes.root}>
+        <Grid
+            container
+            className={classes.root}
+            data-testid="program-modal-test"
+        >
             <Card elevation={2} style={{}}>
                 <Grid item xs={12} style={{ height: "200px" }}>
                     <CardMedia
