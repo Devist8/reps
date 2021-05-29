@@ -11,6 +11,8 @@ import {
     CardMedia,
     List,
     ListItem,
+    GridList,
+    GridListTile,
     Typography,
     Slide,
     TextField,
@@ -33,12 +35,11 @@ import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     cardRoot: {
-        width: "25rem",
         backgroundColor: theme.palette.secondary.main,
         overflow: "hidden",
         zIndex: 800,
         height: "85px",
-        display: "flex",
+        width: "100%",
     },
     imageContainer: {
         width: "5rem",
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 export const WorkoutHeader = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { workout, handleOpen, edit, handleChange } = props;
+    const { workout, handleOpen, edit, handleChange, noButton } = props;
 
     const handleEditPicture = () => {
         const fileInput = document.getElementById("imageInput");
@@ -68,8 +69,25 @@ export const WorkoutHeader = (props) => {
         dispatch(uploadNewWorkoutImage(formData));
     };
     return (
-        <Card className={classes.cardRoot} style={{ overflow: "visible" }}>
-            <Grid container style={{ height: "100%" }}>
+        <Card
+            className={classes.cardRoot}
+            style={{
+                overflow: "visible",
+                display: "flex",
+                flexWrap: "nowrap",
+                maxWidth: "500px",
+            }}
+        >
+            <Grid
+                container
+                style={{
+                    height: "85px",
+                    display: "flex",
+                    flexWrap: "noWrap",
+                    width: "100%",
+                    maxWidth: "500px",
+                }}
+            >
                 {workout.imageURL ? (
                     !edit ? (
                         <CardMedia
@@ -144,10 +162,10 @@ export const WorkoutHeader = (props) => {
                     )
                 )}
 
-                <Grid item xs={7} className={classes.cardContent}>
+                <Grid item xs={8} className={classes.cardContent}>
                     <CardActionArea
                         onClick={(e) => handleOpen(e)}
-                        style={{ height: "100%" }}
+                        style={{ height: "85px" }}
                     >
                         <CardContent
                             style={{
@@ -179,11 +197,16 @@ export const WorkoutHeader = (props) => {
                         </CardContent>
                     </CardActionArea>
                 </Grid>
-                <Grid item xs={2}>
-                    <CardActions>
-                        <ActionButton edit={edit} handleChange={handleChange} />
-                    </CardActions>
-                </Grid>
+                {!noButton && (
+                    <Grid item xs={2}>
+                        <CardActions>
+                            <ActionButton
+                                edit={edit}
+                                handleChange={handleChange}
+                            />
+                        </CardActions>
+                    </Grid>
+                )}
             </Grid>
         </Card>
     );
@@ -191,13 +214,25 @@ export const WorkoutHeader = (props) => {
 
 export const ExerciseList = (props) => {
     const classes = useStyles();
-    const { workout, open } = props;
+    const { workout, open, small, noButton } = props;
     return (
-        <Grid container>
-            <List style={{ padding: 0, paddingLeft: "1rem" }}>
+        <Grid
+            container
+            style={{ display: "flex", flexWrap: "nowrap", maxWidth: "500px" }}
+        >
+            <GridList
+                cols={1}
+                style={{
+                    padding: 0,
+                    margin: "auto",
+                    display: "flex",
+                    justifyContent: "center",
+                }}
+            >
                 {workout.exercises.map((exercise, index) => {
                     return (
                         <Slide
+                            key={exercise.id}
                             in={open}
                             mountOnEnter
                             unmountOnExit
@@ -208,33 +243,42 @@ export const ExerciseList = (props) => {
                                 exit: 150 + index * 150,
                             }}
                         >
-                            <ListItem
+                            <GridListTile
+                                cols={1}
                                 style={
                                     workout.exercises.length === index + 1
                                         ? {
                                               marginBottom: "0.5rem",
                                               padding: 0,
-                                              backgroundColor: "#fff",
+                                              display: "flex",
+                                              justifyContent: "center",
                                               marginTop: "0.5rem",
-                                              borderRadius: "4px",
+                                              height: "5rem",
+
+                                              borderRadius: "18px",
                                           }
                                         : {
                                               padding: 0,
-                                              backgroundColor: "#fff",
+                                              display: "flex",
+                                              justifyContent: "center",
                                               marginTop: "0.5rem",
-                                              borderRadius: "4px",
+
+                                              height: "5rem",
+                                              borderRadius: "18px",
                                           }
                                 }
                             >
                                 <Exercise
                                     exercise={exercise}
                                     style={{ marginLeft: "1rem" }}
+                                    small={small}
+                                    noButton={noButton}
                                 />
-                            </ListItem>
+                            </GridListTile>
                         </Slide>
                     );
                 })}
-            </List>
+            </GridList>
         </Grid>
     );
 };
@@ -242,7 +286,7 @@ export const ExerciseList = (props) => {
 export const Workout = (props) => {
     const theme = useTheme();
     const classes = useStyles();
-    const { workout, edit, handleChange } = props;
+    const { workout, edit, handleChange, small, noButton } = props;
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = (e) => {
@@ -256,8 +300,8 @@ export const Workout = (props) => {
             style={{
                 overflow: "hidden",
                 backgroundColor: theme.palette.secondary.light,
-                width: "25rem",
-
+                maxWidth: "500px",
+                display: "flex",
                 borderRadius: "4px",
             }}
         >
@@ -266,9 +310,15 @@ export const Workout = (props) => {
                 handleOpen={handleOpen}
                 edit={edit}
                 handleChange={handleChange}
+                noButton={noButton}
             />
             {workout.exercises.length > 0 && (
-                <ExerciseList workout={workout} open={edit ? true : open} />
+                <ExerciseList
+                    workout={workout}
+                    open={edit ? true : open}
+                    small={small}
+                    noButton={noButton}
+                />
             )}
         </Grid>
     );

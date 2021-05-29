@@ -53,7 +53,7 @@ export const Difficulty = (props) => {
                         className={classes.iconContainer}
                         style={small ? { width: "1rem" } : { width: "1.35rem" }}
                     >
-                        <Dumbbell style={small && { height: "50%" }} />
+                        <Dumbbell style={small && { height: "75%" }} />
                     </Grid>
                 );
             })}
@@ -63,7 +63,7 @@ export const Difficulty = (props) => {
                     className={classes.halfContainer}
                     style={small ? { width: "1rem" } : { width: "1.35rem" }}
                 >
-                    <HalfDumbbell style={small && { height: "31%" }} />
+                    <HalfDumbbell style={small && { height: "40%" }} />
                 </Grid>
             )}
             {edit && (

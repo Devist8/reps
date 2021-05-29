@@ -86,7 +86,11 @@ export const Signup = (props) => {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(signupUser(userData, props.history));
+        const data = {
+            ...userData,
+            displayName: `${userData.firstName} ${userData.lastName}`,
+        };
+        dispatch(signupUser(data, props.history));
     };
     return (
         <Grid container className={classes.root}>

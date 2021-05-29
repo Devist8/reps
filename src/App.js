@@ -14,8 +14,12 @@ import themeObject from "./util/theme";
 import AuthRoute from "./util/AuthRoute";
 
 //Mui Stuff
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import {
+    ThemeProvider as MuiThemeProvider,
+    withStyles,
+} from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import { Hidden } from "@material-ui/core";
 
 //Components
 import { Navbar } from "./components/Navigation/Navbar";
@@ -46,18 +50,47 @@ const theme = createMuiTheme(themeObject);
 axios.defaults.baseURL = "http://localhost:5001/reps-699b0/us-east1/api";
 
 const token = localStorage.FBIdToken;
+
 if (token) {
-    store.dispatch({ type: SET_AUTHENTICATED });
+    const idToken = token.split("Bearer ")[1];
+    console.log(idToken);
+    const decodedToken = jwtDecode(idToken);
+    if (decodedToken.exp * 1000 < Date.now()) {
+        const refreshToken = localStorage.RefreshToken;
+        console.log(refreshToken);
+        store.dispatch(getNewToken());
+        store.dispatch({ type: SET_AUTHENTICATED });
+        axios.defaults.headers.common["Authorization"] = token;
+        store.dispatch(getUserData());
+    }
+    const FBIdToken = `Bearer ${idToken}`;
+    localStorage.setItem("FBIdToken", FBIdToken);
     axios.defaults.headers.common["Authorization"] = token;
     store.dispatch(getUserData());
 }
+
+const styles = (theme) => ({
+    container: {
+        marginTop: "80px",
+        marginLeft: "10vw",
+        maxWidth: "87%",
+
+        [theme.breakpoints.up("lg")]: {
+            marginRight: "23vw",
+            maxWidth: "80%",
+        },
+    },
+});
 
 class App extends React.Component {
     constructor(props) {
         super(props);
     }
     componentDidMount = () => {
+        const refreshToken = localStorage.RefreshToken;
         const checkToken = firebase.auth().onAuthStateChanged((user) => {
+            console.log("checking");
+
             firebase
                 .auth()
                 .currentUser.getIdToken()
@@ -65,22 +98,34 @@ class App extends React.Component {
                     const decodedToken = jwtDecode(idToken);
 
                     if (decodedToken.exp * 1000 < Date.now()) {
-                        store.dispatch(
-                            getNewToken(
-                                firebase.auth().currentUser.refreshToken,
-                                this.props.history
-                            )
-                        );
+                        store.dispatch({ type: SET_AUTHENTICATED });
+                        axios.defaults.headers.common["Authorization"] = token;
                         store.dispatch(getUserData());
-                        setTimeout(checkToken(), 3600000);
+                        const checkTokenExp = () => {
+                            setTimeout(() => checkToken(), 35000000);
+                        };
+                        return checkTokenExp();
                     } else {
                         const FBIdToken = `Bearer ${idToken}`;
                         localStorage.setItem("FBIdToken", FBIdToken);
-                        setTimeout(checkToken(), 3600000);
+                        localStorage.setItem("RefreshToken", refreshToken);
+                        const checkTokenExp = () => {
+                            setTimeout(() => checkToken(), 36000000);
+                        };
+                        return checkTokenExp();
                     }
                 })
                 .catch((err) => {
-                    console.error(err);
+                    if (err === 403) {
+                        store.dispatch(
+                            getNewToken(
+                                firebase.auth().currentUser.refreshToken
+                            )
+                        );
+                        store.dispatch(getUserData());
+                    } else {
+                        console.log(err.error);
+                    }
                 });
         });
 
@@ -88,14 +133,17 @@ class App extends React.Component {
     };
 
     render() {
+        const { classes } = this.props;
         return (
             <MuiThemeProvider theme={theme}>
                 <Provider store={store}>
                     <Router>
                         <Navbar />
                         <AuthNavbar />
-                        <CalendarNavBar />
-                        <div className="container">
+                        <Hidden mdDown>
+                            <CalendarNavBar />
+                        </Hidden>
+                        <div className={classes.container}>
                             <Switch>
                                 <Route exact path="/" component={Home} />
                                 <Route exact path="/login" component={Login} />
@@ -133,4 +181,4 @@ class App extends React.Component {
     }
 }
 
-export default App;
+export default withStyles(styles)(App);

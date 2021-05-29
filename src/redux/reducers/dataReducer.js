@@ -4,11 +4,15 @@ import {
     SET_EXERCISES,
     SET_PROGRAMS,
     SET_WORKOUTS,
-    SET_TEMP_URL,
-    CLEAR_TEMP_URL,
     UPDATE_NEW_EXERCISE,
     UPDATE_NEW_WORKOUT,
     UPDATE_NEW_PROGRAM,
+    ADD_EXERCISE,
+    ADD_WORKOUT,
+    ADD_PROGRAM,
+    CLEAR_NEW_EXERCISE,
+    CLEAR_NEW_WORKOUT,
+    CLEAR_NEW_PROGRAM,
 } from "../types";
 
 const initialState = {
@@ -36,8 +40,18 @@ const initialState = {
         exerciseCount: 0,
         type: "workout",
     },
-    newProgram: {},
-    tempURL: "",
+    newProgram: {
+        title: "",
+        difficulty: 1,
+        workoutCount: 0,
+        type: "program",
+        description: "",
+        workouts: { "Week 1": [] },
+        image: "imageURL",
+        muscles: [],
+        equipment: [],
+        exerciseCount: 0,
+    },
 };
 
 export default function (state = initialState, action) {
@@ -56,6 +70,21 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 programs: action.payload,
+            };
+        case ADD_EXERCISE:
+            return {
+                ...state,
+                exercises: [...state.exercises, action.payload],
+            };
+        case ADD_WORKOUT:
+            return {
+                ...state,
+                programs: [...state.programs, action.payload],
+            };
+        case ADD_PROGRAM:
+            return {
+                ...state,
+                exercises: [...state.exercises, action.payload],
             };
         case UPDATE_NEW_EXERCISE:
             console.log(action.payload);
@@ -82,15 +111,51 @@ export default function (state = initialState, action) {
                     [action.payload.name]: action.payload.value,
                 },
             };
-        case SET_TEMP_URL:
+        case CLEAR_NEW_EXERCISE:
             return {
                 ...state,
-                tempURL: action.payload,
+                newExercise: {
+                    title: "",
+                    difficulty: 1,
+                    activity: "",
+                    motion: "",
+                    muscles: [],
+                    equipment: [],
+                    videoURL: "",
+                    type: "exercise",
+                },
             };
-        case CLEAR_TEMP_URL:
+        case CLEAR_NEW_WORKOUT:
             return {
                 ...state,
-                tempURL: "",
+                newWorkout: {
+                    title: "",
+                    difficulty: 1,
+                    exercises: [],
+                    imageURL: "",
+                    description: [],
+                    equipment: [],
+                    muscles: [],
+                    exerciseCount: 0,
+                    type: "workout",
+                },
+            };
+        case CLEAR_NEW_PROGRAM:
+            return {
+                ...state,
+                newProgram: {
+                    title: "",
+                    difficulty: 1,
+                    workoutCount: 0,
+                    type: "program",
+                    description: "",
+                    workouts: { "Week 1": [] },
+                    image: "imageURL",
+                    muscles: [],
+                    equipment: [],
+                    exerciseCount: 0,
+                    workoutCount: 0,
+                },
             };
         default:
             return state;

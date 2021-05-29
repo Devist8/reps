@@ -25,7 +25,7 @@ export const ActionButton = (props) => {
                 </Grid>
             )}
 
-            <Grid item style={!duration && { marginTop: "0.5rem" }}>
+            <Grid item style={!duration && { marginTop: "2.5vh" }}>
                 <IconButton
                     onClick={(e) => {
                         addHandler(exercise);
@@ -33,8 +33,8 @@ export const ActionButton = (props) => {
                     style={
                         !duration && {
                             marginLeft: "0.5rem",
-                            height: "70%",
-                            width: "70%",
+                            height: "2vh",
+                            width: "2vw",
                         }
                     }
                 >

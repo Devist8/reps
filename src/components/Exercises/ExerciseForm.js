@@ -1,6 +1,8 @@
 import React from "react";
 import ReactPlayer from "react-player";
 import met from "../../util/met";
+import firebase from "firebase/app";
+import "firebase/storage";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -28,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     uploadVideo,
     updateNewExercise,
+    submitExercise,
 } from "../../redux/actions/dataActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
     },
     formContainer: {
         textAlign: "center",
+        boxShadow: "-3px 0px 5px 0px rgba(0,0,0,0.14)",
+    },
+    form: {
+        boxShadow: "0px 3px 5px 0px rgba(0,0,0,0.25)",
     },
     fieldContainer: {
         justifyContent: "center",
@@ -103,7 +110,21 @@ export const ExerciseForm = (props) => {
         const video = event.target.files[0];
         const formData = new FormData();
         formData.append("video", video, video.name);
-        dispatch(uploadVideo(formData));
+        const file = new File(formData, video.name);
+        const videoExtension = file.name.slice(file.name.lastIndexOf(".") + 1);
+
+        const videoFileName = `${Math.round(
+            Math.random() * 100000000000
+        )}.${videoExtension}`;
+
+        console.log(videoFileName);
+        const storageRef = firebase.storage().ref().child(videoFileName);
+        const exerciseVideosRef = storageRef.child(
+            `/ExerciseVideos/${file.name}`
+        );
+        storageRef.put(file).then((snapshot) => {
+            console.log(snapshot);
+        });
     };
 
     const handleEditPicture = () => {
@@ -116,14 +137,18 @@ export const ExerciseForm = (props) => {
             name: e.target.name,
             value: [...newExercise[e.target.name], e.target.value],
         };
+        console.log(data);
+        dispatch(updateNewExercise(data));
+    };
 
-        updateNewExercise(data);
+    const submit = () => {
+        dispatch(submitExercise(newExercise));
     };
 
     return (
         <Grid container className={classes.root}>
             <Grid container className={classes.form}>
-                <Grid item xs={4} clasName={classes.videoContainer}>
+                <Grid item xs={5} clasName={classes.videoContainer}>
                     <Badge
                         className={classes.video}
                         badgeContent={
@@ -169,17 +194,7 @@ export const ExerciseForm = (props) => {
                     </Badge>
                 </Grid>
 
-                <Divider
-                    orientation="vertical"
-                    flexItem
-                    style={{
-                        marginLeft: "2rem",
-                        width: "2px",
-                        backgroundColor: "black",
-                        opacity: "0.5",
-                    }}
-                />
-                <Grid item xs={7} className={classes.formContainer}>
+                <Grid item xs={6} className={classes.formContainer}>
                     <FormControl
                         style={{
                             width: "50%",
@@ -321,18 +336,14 @@ export const ExerciseForm = (props) => {
             </Grid>
             <Divider variant="fullWidth" />
             <Grid container className={classes.submit}>
-                <Grid item xs={12}>
-                    <Divider
-                        variant="fullWidth"
-                        style={{
-                            height: "2px",
-                            backgroundColor: "black",
-                            opacity: "0.5",
-                        }}
-                    />
-                </Grid>
-
-                <Button>Submit</Button>
+                <Button
+                    color="primary"
+                    variant="contained"
+                    style={{ margin: "1.5rem 0" }}
+                    onClick={submit}
+                >
+                    Submit
+                </Button>
             </Grid>
         </Grid>
     );

@@ -19,8 +19,12 @@ export const loginUser = (userData, history) => (dispatch) => {
     axios
         .post("/login", userData)
         .then((res) => {
-            console.log(res.data);
+            const token = res.data.userData.stsTokenManager.accessToken;
+            const refreshToken = res.data.userData.stsTokenManager.refreshToken;
             authHeader(res.data.token);
+            const FBIdToken = `Bearer ${token}`;
+            localStorage.setItem("FBIdToken", FBIdToken);
+            localStorage.setItem("RefreshToken", refreshToken);
             dispatch({ type: SET_AUTHENTICATED });
             dispatch(getUserData());
             dispatch({ type: CLEAR_ERRORS });
@@ -36,6 +40,7 @@ export const loginUser = (userData, history) => (dispatch) => {
 
 export const signupUser = (newUserData, history) => (dispatch) => {
     dispatch({ type: LOADING_UI });
+    console.log(newUserData);
     axios
         .post("/signup", newUserData)
         .then((res) => {
@@ -43,6 +48,7 @@ export const signupUser = (newUserData, history) => (dispatch) => {
             dispatch({ type: SET_AUTHENTICATED });
             dispatch(getUserData());
             dispatch({ type: CLEAR_ERRORS });
+            localStorage.setItem("RefreshToken", res.data.refreshToken);
             history.push("/");
         })
         .catch((err) => {
@@ -60,26 +66,6 @@ export const logoutUser = () => (dispatch) => {
     dispatch({ type: SET_UNAUTHENTICATED });
 };
 
-export const getNewToken = (refreshToken, history) => (dispatch) => {
-    axios
-        .post(
-            `https://securetoken.googleapis.com/v1/token?key=AIzaSyBLGnhWNspnEWGMZojO6eTKdUE8FpBtFg0`,
-            { grant_type: "refresh_token", refresh_token: refreshToken }
-        )
-        .then((res) => {
-            authHeader(res.data.token);
-            firebase
-                .auth()
-                .currentUser.getIdToken()
-                .then((idToken) => {
-                    const FBIdToken = `Bearer ${idToken}`;
-                    localStorage.setItem("FBIdToken", FBIdToken);
-                });
-        })
-        .catch((err) => {
-            dispatch({ type: SET_ERRORS, payload: err });
-        });
-};
 export const getUserData = () => (dispatch) => {
     dispatch({ type: LOADING_USER });
     axios
@@ -97,12 +83,34 @@ export const getUserData = () => (dispatch) => {
         .catch((err) => console.log(err));
 };
 
-export const setOpen = () => (dispatch) => {
-    dispatch({ type: SET_OPEN });
-};
+export const getNewToken = () => (dispatch) => {
+    const refreshToken = localStorage.RefreshToken;
+    const getRefreshToken = firebase.auth().onAuthStateChanged((user) => {
+        console.log(firebase.auth().currentUser.refreshToken);
+        refreshToken = firebase.auth().currentUser.refreshToken;
+    });
+    getRefreshToken();
+    console.log(refreshToken);
+    axios
+        .post(
+            `https://securetoken.googleapis.com/v1/token?key=AIzaSyBLGnhWNspnEWGMZojO6eTKdUE8FpBtFg0`,
+            { grant_type: "refresh_token", refresh_token: refreshToken }
+        )
+        .then((res) => {
+            console.log(res.data);
+            authHeader(res.data.id_token);
 
-export const setAddOpen = () => (dispatch) => {
-    dispatch({ type: SET_ADDOPEN });
+            const FBIdToken = `Bearer ${res.data.id_token}`;
+            localStorage.setItem("FBIdToken", FBIdToken);
+            localStorage.setItem(
+                "RefreshToken",
+                firebase.auth().currentUser.refreshToken
+            );
+            dispatch(getUserData());
+        })
+        .catch((err) => {
+            dispatch({ type: SET_ERRORS, payload: err });
+        });
 };
 
 const authHeader = (token) => {

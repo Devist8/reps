@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     bubble: {
         padding: 5,
         margin: "auto",
-        boxShadow: "0px 2px 5px -2px rgba(0,0,0,0.75)",
+        boxShadow: "2px 2px 3px -2px rgba(0,0,0,0.40)",
     },
 }));
 

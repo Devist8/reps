@@ -7,13 +7,10 @@ import met from "../util/met";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
+import GridList from "@material-ui/core/GridList";
 
 //Components
-import { Difficulty } from "../components/Difficulty";
-import { Exercise } from "../components/Exercises/Exercise";
-import { Workout } from "../components/Workouts/Workout";
-import { UserButton } from "../components/Navigation/UserButton";
-import { EditButton } from "../components/EditButton";
+import { ProgramCarousel } from "../components/Programs/ProgramCarousel";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -30,33 +27,11 @@ export const Home = () => {
     const workouts = useSelector((state) => state.data.workouts);
     const programs = useSelector((state) => state.data.programs);
     const classes = useStyles();
+
     return (
-        <Grid container style={{ width: "100%", marginLeft: "6rem" }}>
-            <Grid container style={{ width: "100%", margin: "auto" }}>
-                {exercises.map((exercise, index) => {
-                    return (
-                        <Grid item xs={5}>
-                            <Exercise
-                                exercise={exercise}
-                                data-testid={`exercise-${index}`}
-                                style={{}}
-                                small
-                            />
-                        </Grid>
-                    );
-                })}
-            </Grid>
-            <Grid container style={{ width: "100%", margin: "auto" }}>
-                {workouts.map((workout) => {
-                    return (
-                        <Grid item xs={5}>
-                            <Workout workout={workout} style={{}} />
-                        </Grid>
-                    );
-                })}
-            </Grid>
+        <Grid container style={{ display: "flex" }}>
             <Grid item xs={12}>
-                {programs[0] && <ProgramModal program={programs[0]} />}
+                <ProgramCarousel />
             </Grid>
         </Grid>
     );

@@ -2,11 +2,15 @@ import React from "react";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
+import RemoveIcon from "@material-ui/icons/Remove";
+import AddIcon from "@material-ui/icons/Add";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import {
     Card,
     CardMedia,
     CardContent,
     CardActions,
+    IconButton,
     CardActionArea,
     Grid,
     Typography,
@@ -21,11 +25,16 @@ import { Workout } from "../Workouts/Workout";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: "50rem",
-        overflow: "hidden",
+        display: "flex",
     },
     content: {
         backgroundColor: theme.palette.primary.main,
+    },
+    card: {},
+    mediaContainer: {
+        height: "30vh",
+        display: "flex",
+        justifyContent: "flex-end",
     },
     button: {
         margin: "auto 0 0 2rem",
@@ -42,6 +51,10 @@ const useStyles = makeStyles((theme) => ({
     workoutListContainer: {
         backgroundColor: theme.palette.secondary.main,
         overflow: "hidden",
+        display: "flex",
+        flexWrap: "nowrap",
+        flexDirection: "column",
+        maxWidth: "750px",
     },
     weekTitle: {
         backgroundColor: theme.palette.primary.light,
@@ -50,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     bottomBorder: {
         height: "25px",
         backgroundColor: theme.palette.primary.main,
-        borderRadius: "0 4px",
+        borderRadius: "0 0 4px 4px",
     },
     workoutContainer: {
         flexWrap: "wrap",
@@ -61,50 +74,70 @@ const useStyles = makeStyles((theme) => ({
 
 export const WorkoutList = (props) => {
     const classes = useStyles();
-    const { workouts } = props;
-    const [openIndex, setOpenIndex] = React.useState([]);
+    const { workouts, openModal, small, noButton, edit } = props;
+    const [open, setOpen] = React.useState("");
     const handleOpen = (e) => {
         e.persist();
-        setOpenIndex((prevState) => {
-            if (prevState.includes(e.target.selectedIndex)) {
-                const selected = prevState.indexOf(e.target.selectedIndex);
-                const tempArray = prevState
-                    .slice(0, selected)
-                    .concat(prevState.slice(selected + 1));
-                console.log(tempArray);
-                console.log("remove");
-                return tempArray;
-            } else {
-                console.log("add");
-                return prevState.concat(e.target.selectedIndex);
-            }
-        });
+        open !== e.target.selectedWeek
+            ? setOpen(e.target.selectedWeek)
+            : setOpen("");
     };
-    console.log(openIndex);
+
     const orderedWorkouts = Object.keys(workouts)
         .sort()
         .reduce((obj, key) => {
             obj[key] = workouts[key];
             return obj;
         }, {});
-    console.log(orderedWorkouts);
+
     return (
         <Grid container className={classes.workoutListContainer}>
             {Object.entries(orderedWorkouts).map((week, weekIndex) => {
                 return (
                     <Grid container style={{ overflow: "hidden" }}>
-                        <Grid item xs={12} className={classes.weekTitle}>
+                        <Grid
+                            item
+                            xs={12}
+                            className={classes.weekTitle}
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                zIndex: 1000,
+                            }}
+                        >
                             <CardActionArea
                                 onClick={(e) => {
-                                    e.target.selectedIndex = weekIndex;
+                                    e.target.selectedWeek = week[0];
                                     handleOpen(e);
                                 }}
                             >
                                 <Typography>{week[0]}</Typography>
                             </CardActionArea>
+                            {edit && (
+                                <IconButton
+                                    size="small"
+                                    style={{
+                                        marginRight: "0.3rem",
+                                        backgroundColor: "#BAEAFF",
+                                        height: "18px",
+                                        width: "18px",
+                                    }}
+                                    name={week[0]}
+                                    onClick={(e) => openModal(week[0])}
+                                >
+                                    <AddIcon
+                                        style={{
+                                            fill: "black",
+                                            height: "16px",
+                                            width: "16px",
+                                        }}
+                                    />
+                                </IconButton>
+                            )}
                         </Grid>
                         <Slide
-                            in={openIndex.includes(weekIndex)}
+                            in={week[0] === open}
                             mountOnEnter
                             unmountOnExit
                             timeout={{
@@ -120,7 +153,7 @@ export const WorkoutList = (props) => {
                                 {week[1].map((workout, index) => {
                                     return (
                                         <Slide
-                                            in={openIndex.includes(weekIndex)}
+                                            in={week[0] === open}
                                             mountOnEnter
                                             unmountOnExit
                                             timeout={{
@@ -130,14 +163,24 @@ export const WorkoutList = (props) => {
                                                     index * 350,
                                                 exit: 250 + index * 250,
                                             }}
-                                            style={{ overflow: "hidden" }}
+                                            style={{
+                                                overflow: "hidden",
+                                            }}
                                         >
                                             <Grid
                                                 item
-                                                xs={6}
-                                                style={{ overflow: "hidden" }}
+                                                lg={6}
+                                                md={12}
+                                                style={{
+                                                    overflow: "hidden",
+                                                    width: "100%",
+                                                }}
                                             >
-                                                <Workout workout={workout} />
+                                                <Workout
+                                                    workout={workout}
+                                                    small={small}
+                                                    noButton={noButton}
+                                                />
                                             </Grid>
                                         </Slide>
                                     );
@@ -159,14 +202,32 @@ export const ProgramModal = (props) => {
         <Grid
             container
             className={classes.root}
+            style={{
+                minWidth: "80vw",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                alignContent: "center",
+                overflowY: "scroll",
+            }}
             data-testid="program-modal-test"
         >
-            <Card elevation={2} style={{}}>
-                <Grid item xs={12} style={{ height: "200px" }}>
+            <Card elevation={2} className={classes.card}>
+                <Grid item xs={12} className={classes.mediaContainer}>
+                    <IconButton
+                        small
+                        onClick={() => props.closeModal()}
+                        style={{
+                            position: "absolute",
+                        }}
+                    >
+                        <HighlightOffIcon />
+                    </IconButton>
                     <CardMedia
                         component="img"
                         src="/beachbody-original.jpg"
-                        style={{ objectFit: "fill", height: "200px" }}
+                        style={{ objectFit: "fill", height: "30vh" }}
                     />
                 </Grid>
                 <CardContent className={classes.content}>
@@ -201,7 +262,15 @@ export const ProgramModal = (props) => {
                                 Description
                             </Typography>
                             {!edit ? (
-                                <Typography>{program.description}</Typography>
+                                <Typography
+                                    style={{
+                                        maxWidth: "500px",
+                                        maxHeight: "20vh",
+                                        overflowY: "scroll",
+                                    }}
+                                >
+                                    {program.description}
+                                </Typography>
                             ) : (
                                 <TextField
                                     name="description"
@@ -233,7 +302,7 @@ export const ProgramModal = (props) => {
                     </Grid>
                 </CardContent>
 
-                <WorkoutList workouts={program.workouts} />
+                <WorkoutList workouts={program.workouts} noButton />
                 <div className={classes.bottomBorder} />
             </Card>
         </Grid>

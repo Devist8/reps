@@ -17,15 +17,17 @@ import { ActionButton } from "../ActionButton";
 
 const useStyles = makeStyles((theme) => ({
     cardRoot: {
-        width: "23rem",
-        height: "5rem",
+        display: "flex",
+        maxWidth: "300px",
+        maxHeight: "20vh",
     },
     cardContent: {
         paddingBottom: "30px",
         height: "4.6rem",
+        display: "flex",
+        flexWrap: "wrap",
     },
     title: {
-        maxWidth: "80%",
         overflow: "hidden",
         textOverflow: "ellipsis",
         whiteSpace: "noWrap",
@@ -35,85 +37,103 @@ const useStyles = makeStyles((theme) => ({
 export const Exercise = (props) => {
     const classes = useStyles();
     const theme = useTheme();
-    const { exercise, small, edit, index, addExercise } = props;
+    const { exercise, small, edit, index, addExercise, noButton } = props;
     return (
-        <div data-testid="exercise-test">
-            <Card
-                className={classes.cardRoot}
-                style={
-                    small && {
-                        width: "15rem",
-                        height: "4.6rem",
-                        borderRadius: "18px",
-                        backgroundColor: theme.palette.secondary.light,
-                    }
+        <Card
+            className={classes.cardRoot}
+            style={
+                small && {
+                    minWidth: "200px",
+                    maxWidth: "15rem",
+                    maxHeight: "4.6rem",
+                    borderRadius: "18px",
                 }
-            >
-                <Grid container>
-                    <Grid item xs={9} className={classes.cardContent}>
-                        <CardContent
-                            style={
+            }
+        >
+            <Grid container style={{ display: "flex" }}>
+                <Grid item xs={9} className={classes.cardContent}>
+                    <CardContent
+                        style={{
+                            paddingTop: "10px",
+                            display: "flex",
+                            flexWrap: "wrap",
+                        }}
+                    >
+                        <Grid item xs={7}>
+                            {!edit ? (
+                                <Typography
+                                    className={classes.title}
+                                    style={{ minWidth: "100px" }}
+                                >
+                                    {exercise.title}
+                                </Typography>
+                            ) : (
+                                <TextField
+                                    aria-label={exercise.title}
+                                    aria-required="true"
+                                    id="title"
+                                    name="title"
+                                    value={exercise.title}
+                                />
+                            )}
+                            <Difficulty
+                                difficulty={exercise.difficulty}
                                 small
-                                    ? { paddingTop: "10px" }
-                                    : { paddingTop: "10px", display: "flex" }
-                            }
-                        >
-                            <Grid item xs={7}>
-                                {!edit ? (
-                                    <Typography className={classes.title}>
-                                        {exercise.title}
+                                edit={edit}
+                            />
+                        </Grid>
+                        <Grid item xs={3}>
+                            {!edit ? (
+                                exercise.reps ? (
+                                    <Typography
+                                        style={{
+                                            marginBottom: "1rem",
+                                            marginLeft: "0.5rem",
+                                            width: "125px",
+                                        }}
+                                    >
+                                        3 x 5
                                     </Typography>
                                 ) : (
                                     <TextField
-                                        aria-label={exercise.title}
-                                        aria-required="true"
-                                        id="title"
-                                        name="title"
-                                        value={exercise.title}
+                                        name="reps"
+                                        id={
+                                            index &&
+                                            `reps: ${exercise.schedule[index].reps}`
+                                        }
+                                        aria-label={
+                                            index &&
+                                            exercise.schedule[index].reps
+                                        }
+                                        value={
+                                            index &&
+                                            exercise.schedule[index].reps
+                                        }
+                                        label="Reps"
+                                        style={{ marginBottom: "5rem" }}
                                     />
-                                )}
-                                <Difficulty
-                                    difficulty={exercise.difficulty}
-                                    small
-                                    edit={edit}
+                                )
+                            ) : (
+                                <TextField
+                                    name="reps"
+                                    id={
+                                        index &&
+                                        `reps: ${exercise.schedule[index].reps}`
+                                    }
+                                    aria-label={
+                                        index && exercise.schedule[index].reps
+                                    }
+                                    value={
+                                        index && exercise.schedule[index].reps
+                                    }
+                                    label="Reps"
+                                    style={{ marginBottom: "5rem" }}
                                 />
-                            </Grid>
-
-                            {!small && (
-                                <Grid
-                                    item
-                                    xs={4}
-                                    style={{
-                                        marginTop: "1rem",
-                                        marginLeft: "1rem",
-                                    }}
-                                >
-                                    {edit ? (
-                                        <Typography>
-                                            {exercise.schedule[index].reps}
-                                        </Typography>
-                                    ) : (
-                                        <TextField
-                                            name="reps"
-                                            id={
-                                                index &&
-                                                `reps: ${exercise.schedule[index].reps}`
-                                            }
-                                            aria-label={
-                                                index &&
-                                                exercise.schedule[index].reps
-                                            }
-                                            value={
-                                                index &&
-                                                exercise.schedule[index].reps
-                                            }
-                                            label="Reps"
-                                        />
-                                    )}
-                                </Grid>
                             )}
-                        </CardContent>
-                    </Grid>
+                        </Grid>
+                    </CardContent>
+                </Grid>
+                {!noButton && (
                     <Grid
                         item
                         xs={2}
@@ -131,8 +151,8 @@ export const Exercise = (props) => {
                             />
                         </CardActions>
                     </Grid>
-                </Grid>
-            </Card>
-        </div>
+                )}
+            </Grid>
+        </Card>
     );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,40 +23,80 @@ import { logoutUser } from "../../redux/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
     button: {
-        margin: "0.5rem auto",
-        height: "85%",
-        width: "85%",
+        display: "flex",
+        textAlign: "center",
+        margin: "2.5vh auto",
+        textAlign: "center",
+        justifyContent: "center",
     },
     drawerPaper: {
         backgroundImage: `url(/left_nav.svg)`,
+        overflow: "hidden",
     },
     leftDrawer: {
         borderRight: "none",
+        width: "8vw",
+    },
+    selected: {
+        borderRadius: "10px",
+
+        "&$hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+        },
+    },
+    "@global": {
+        ".MuiListItem-root.Mui-selected:hover": {
+            backgroundColor: "rgba(0, 181, 255, 0.3)",
+        },
+        ".MuiListItem-root.Mui-selected": {
+            backgroundColor: "rgba(0, 181, 255, 0.3)",
+        },
+        ".MuiListItem-root:hover": {
+            backgroundColor: "rgba(0, 181, 255, 0.3)",
+        },
+    },
+    focus: {
+        borderRadius: "10px",
     },
 }));
 
 export const AuthNavbar = () => {
     const dispatch = useDispatch();
     const classes = useStyles();
+
     return (
-        <AppBar style={{ zIndex: "1000" }}>
+        <AppBar style={{ zIndex: "1000", overflow: "hidden" }}>
             <Drawer
                 open={true}
                 variant="permanent"
-                style={{ width: "10%" }}
                 classes={{
                     paper: classes.drawerPaper,
                     paperAnchorDockedLeft: classes.leftDrawer,
                 }}
             >
-                <Grid container style={{ marginTop: "5rem" }}>
-                    <ToolBar>
+                <Grid
+                    container
+                    style={{
+                        marginTop: "5rem",
+                        display: "flex",
+                        justifyContent: "center",
+                    }}
+                >
+                    <ToolBar
+                        disableGutters
+                        style={{ display: "flex", justifyContent: "center" }}
+                    >
                         <List>
                             <ListItem
                                 component={Link}
                                 to="/dashboard"
                                 button
                                 className={classes.button}
+                                selected={useRouteMatch("/dashboard")}
+                                classes={{
+                                    selected: classes.selected,
+                                    button: classes.focus,
+                                }}
                             >
                                 <HomeIcon />
                             </ListItem>
@@ -65,6 +105,11 @@ export const AuthNavbar = () => {
                                 component={Link}
                                 to="/workouts"
                                 className={classes.button}
+                                selected={useRouteMatch("/workouts")}
+                                classes={{
+                                    selected: classes.selected,
+                                    button: classes.focus,
+                                }}
                             >
                                 <WorkoutsIcon />
                             </ListItem>
@@ -73,6 +118,11 @@ export const AuthNavbar = () => {
                                 component={Link}
                                 to="/meals"
                                 className={classes.button}
+                                selected={useRouteMatch("/meals")}
+                                classes={{
+                                    selected: classes.selected,
+                                    button: classes.focus,
+                                }}
                             >
                                 <MealsIcon />
                             </ListItem>
@@ -81,6 +131,11 @@ export const AuthNavbar = () => {
                                 component={Link}
                                 to="/store"
                                 className={classes.button}
+                                selected={useRouteMatch("/store")}
+                                classes={{
+                                    selected: classes.selected,
+                                    button: classes.focus,
+                                }}
                             >
                                 <StoreIcon />
                             </ListItem>
