@@ -13,12 +13,15 @@ import {
     CLEAR_NEW_EXERCISE,
     CLEAR_NEW_WORKOUT,
     CLEAR_NEW_PROGRAM,
+    SET_FILE,
+    CLEAR_FILE,
 } from "../types";
 
 const initialState = {
     exercises: [],
     workouts: [],
     programs: [],
+    file: null,
     newExercise: {
         title: "",
         difficulty: 1,
@@ -56,6 +59,16 @@ const initialState = {
 
 export default function (state = initialState, action) {
     switch (action.type) {
+        case SET_FILE:
+            return {
+                ...state,
+                file: action.payload,
+            };
+        case CLEAR_FILE:
+            return {
+                ...state,
+                file: null,
+            };
         case SET_EXERCISES:
             return {
                 ...state,

@@ -9,7 +9,9 @@ import {
     CardActions,
     Typography,
     TextField,
+    IconButton,
 } from "@material-ui/core";
+import ScheduleIcon from "@material-ui/icons/Schedule";
 
 //Components
 import { Difficulty } from "../Difficulty";
@@ -37,7 +39,8 @@ const useStyles = makeStyles((theme) => ({
 export const Exercise = (props) => {
     const classes = useStyles();
     const theme = useTheme();
-    const { exercise, small, edit, index, addExercise, noButton } = props;
+    const { exercise, small, edit, index, addExercise, noButton, schedule } =
+        props;
     return (
         <Card
             className={classes.cardRoot}
@@ -138,17 +141,28 @@ export const Exercise = (props) => {
                         item
                         xs={2}
                         style={
+                            ({
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            },
                             small
                                 ? { marginLeft: "0" }
-                                : { marginLeft: "0.9rem" }
+                                : { marginLeft: "0.9rem" })
                         }
                     >
                         <CardActions>
-                            <ActionButton
-                                edit={edit}
-                                exercise={exercise}
-                                addHandler={addExercise && addExercise}
-                            />
+                            {schedule ? (
+                                <IconButton>
+                                    <ScheduleIcon />
+                                </IconButton>
+                            ) : (
+                                <ActionButton
+                                    edit={edit}
+                                    exercise={exercise}
+                                    addHandler={addExercise && addExercise}
+                                />
+                            )}
                         </CardActions>
                     </Grid>
                 )}

@@ -1,4 +1,10 @@
 import React from "react";
+import firebase from "firebase/app";
+import "firebase/storage";
+import { v4 as uuid_v4 } from "uuid";
+
+//React Router
+import { useLocation } from "react-router-dom";
 
 //MUI
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -20,6 +26,7 @@ import {
     Badge,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+import ScheduleIcon from "@material-ui/icons/Schedule";
 
 //Components
 import { Difficulty } from "../Difficulty";
@@ -27,11 +34,10 @@ import { ActionButton } from "../ActionButton";
 import { Exercise } from "../Exercises/Exercise";
 
 //Redux
-import {
-    uploadImage,
-    uploadNewWorkoutImage,
-} from "../../redux/actions/dataActions";
+
 import { useDispatch } from "react-redux";
+import { CLEAR_FILE, SET_FILE } from "../../redux/types";
+import { uploadToFirebase } from "../../redux/actions/dataActions";
 
 const useStyles = makeStyles((theme) => ({
     cardRoot: {
@@ -55,19 +61,33 @@ const useStyles = makeStyles((theme) => ({
 export const WorkoutHeader = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { workout, handleOpen, edit, handleChange, noButton } = props;
+    const [preview, setPreview] = React.useState(null);
+    const { workout, handleOpen, edit, handleChange, noButton, schedule } =
+        props;
 
     const handleEditPicture = () => {
         const fileInput = document.getElementById("imageInput");
         fileInput.click();
     };
 
-    const handleImageChange = (event) => {
-        const image = event.target.files[0];
-        const formData = new FormData();
-        formData.append("image", image, image.name);
-        dispatch(uploadNewWorkoutImage(formData));
+    const handleFileChange = (e) => {
+        const reader = new FileReader();
+        let file = e.target.files[0];
+
+        if (file) {
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    console.log(file);
+                    dispatch({ type: SET_FILE, payload: file });
+                    setPreview(URL.createObjectURL(file));
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        } else {
+            dispatch({ type: CLEAR_FILE, payload: file });
+        }
     };
+
     return (
         <Card
             className={classes.cardRoot}
@@ -88,7 +108,7 @@ export const WorkoutHeader = (props) => {
                     maxWidth: "500px",
                 }}
             >
-                {workout.imageURL ? (
+                {workout.imageURL || preview ? (
                     !edit ? (
                         <CardMedia
                             image={workout.imageURL}
@@ -97,7 +117,7 @@ export const WorkoutHeader = (props) => {
                         />
                     ) : (
                         <CardMedia
-                            image={workout.imageURL}
+                            image={preview}
                             className={classes.imageContainer}
                             style={{ objectFit: "fill" }}
                             style={{
@@ -127,7 +147,7 @@ export const WorkoutHeader = (props) => {
                                     type="file"
                                     id="imageInput"
                                     hidden="hidden"
-                                    onChange={handleImageChange}
+                                    onChange={handleFileChange}
                                 />
                             </IconButton>
                         </CardMedia>
@@ -155,7 +175,7 @@ export const WorkoutHeader = (props) => {
                                     type="file"
                                     id="imageInput"
                                     hidden="hidden"
-                                    onChange={handleImageChange}
+                                    onChange={handleFileChange}
                                 />
                             </IconButton>
                         </div>
@@ -198,12 +218,26 @@ export const WorkoutHeader = (props) => {
                     </CardActionArea>
                 </Grid>
                 {!noButton && (
-                    <Grid item xs={2}>
+                    <Grid
+                        item
+                        xs={2}
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
                         <CardActions>
-                            <ActionButton
-                                edit={edit}
-                                handleChange={handleChange}
-                            />
+                            {schedule ? (
+                                <IconButton>
+                                    <ScheduleIcon />
+                                </IconButton>
+                            ) : (
+                                <ActionButton
+                                    edit={edit}
+                                    handleChange={handleChange}
+                                />
+                            )}
                         </CardActions>
                     </Grid>
                 )}
@@ -286,7 +320,7 @@ export const ExerciseList = (props) => {
 export const Workout = (props) => {
     const theme = useTheme();
     const classes = useStyles();
-    const { workout, edit, handleChange, small, noButton } = props;
+    const { workout, edit, handleChange, small, noButton, schedule } = props;
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = (e) => {
@@ -311,6 +345,7 @@ export const Workout = (props) => {
                 edit={edit}
                 handleChange={handleChange}
                 noButton={noButton}
+                schedule={schedule}
             />
             {workout.exercises.length > 0 && (
                 <ExerciseList

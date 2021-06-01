@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
 export const BubbleArray = (props) => {
     const { array, itemType, selectedArray, addHandler, color } = props;
     const classes = useStyles();
-    console.log(array);
 
     return (
         <Grid container spacing={1} className={classes.bubbleArray}>

@@ -16,17 +16,16 @@ import firebase from "firebase";
 
 export const loginUser = (userData, history) => (dispatch) => {
     dispatch({ type: LOADING_UI });
+    console.log("loggin in");
     axios
         .post("/login", userData)
         .then((res) => {
-            const token = res.data.userData.stsTokenManager.accessToken;
-            const refreshToken = res.data.userData.stsTokenManager.refreshToken;
-            authHeader(res.data.token);
-            const FBIdToken = `Bearer ${token}`;
-            localStorage.setItem("FBIdToken", FBIdToken);
-            localStorage.setItem("RefreshToken", refreshToken);
+            console.log(res);
+            firebase.auth().currentUser.getIdToken();
+        })
+        .then((idToken) => {
+            console.log(idToken);
             dispatch({ type: SET_AUTHENTICATED });
-            dispatch(getUserData());
             dispatch({ type: CLEAR_ERRORS });
             history.push("/");
         })
@@ -46,9 +45,9 @@ export const signupUser = (newUserData, history) => (dispatch) => {
         .then((res) => {
             authHeader(res.data.token);
             dispatch({ type: SET_AUTHENTICATED });
-            dispatch(getUserData());
+
             dispatch({ type: CLEAR_ERRORS });
-            localStorage.setItem("RefreshToken", res.data.refreshToken);
+
             history.push("/");
         })
         .catch((err) => {
@@ -66,19 +65,43 @@ export const logoutUser = () => (dispatch) => {
     dispatch({ type: SET_UNAUTHENTICATED });
 };
 
+export const getFBToken = async () => (dispatch) => {
+    console.log("start");
+    try {
+        firebase.auth().onAuthStateChanged((user) => {
+            console.log(user);
+            firebase
+                .auth()
+                .currentUser.getIdToken()
+                .then((idToken) => {
+                    console.log(idToken);
+                    const FBIdToken = `Bearer ${idToken}`;
+                    dispatch({ type: SET_AUTHENTICATED });
+                    axios.defaults.headers.common["Authorization"] = FBIdToken;
+                })
+                .catch((err) => {
+                    console.log(err.error);
+                });
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 export const getUserData = () => (dispatch) => {
     dispatch({ type: LOADING_USER });
+    dispatch(getFBToken());
     axios
         .get("/user")
         .then((res) => {
             const data = {
                 ...res.data.userData,
             };
-            dispatch(setUserCollection(data));
             dispatch({
                 type: SET_USER,
                 payload: data.user,
             });
+            dispatch(setUserCollection(data));
         })
         .catch((err) => console.log(err));
 };
@@ -106,6 +129,8 @@ export const getNewToken = () => (dispatch) => {
                 "RefreshToken",
                 firebase.auth().currentUser.refreshToken
             );
+            axios.defaults.headers.common["Authorization"] = FBIdToken;
+            dispatch({ type: SET_AUTHENTICATED });
             dispatch(getUserData());
         })
         .catch((err) => {

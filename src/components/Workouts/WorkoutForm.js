@@ -15,6 +15,7 @@ import {
     uploadImage,
     updateNewWorkout,
     submitWorkout,
+    uploadToFirebase,
 } from "../../redux/actions/dataActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +45,7 @@ export const WorkoutForm = (props) => {
     const {} = props;
     const dispatch = useDispatch();
     const classes = useStyles();
+    const file = useSelector((state) => state.data.file);
     const exercises = useSelector((state) => state.data.exercises);
     const newWorkout = useSelector((state) => state.data.newWorkout);
 
@@ -79,6 +81,12 @@ export const WorkoutForm = (props) => {
         dispatch(updateNewWorkout(data));
     };
 
+    const uploadFile = () => {
+        if (file) {
+            dispatch(uploadToFirebase(file));
+        }
+    };
+
     const submit = () => {
         dispatch(submitWorkout(newWorkout));
     };
@@ -89,12 +97,30 @@ export const WorkoutForm = (props) => {
                 container
                 style={{ boxShadow: "0px 3px 5px 0px rgba(0,0,0,0.25)" }}
             >
-                <Grid item xs={6} className={classes.displayContainer}>
-                    <Workout
-                        workout={newWorkout}
-                        edit
-                        handleChange={handleChange}
-                    />
+                <Grid
+                    item
+                    xs={6}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                    }}
+                >
+                    <Grid item xs={10}>
+                        <Workout
+                            workout={newWorkout}
+                            edit
+                            handleChange={handleChange}
+                        />
+                    </Grid>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={uploadFile}
+                    >
+                        Upload to Firebase
+                    </Button>
                 </Grid>
 
                 <Grid item xs={6} className={classes.formFields}>

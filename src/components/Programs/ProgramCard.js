@@ -1,5 +1,8 @@
 import React from "react";
 
+//React Router
+import { useLocation } from "react-router-dom";
+
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -12,6 +15,7 @@ import {
     Button,
     Modal,
 } from "@material-ui/core";
+import ScheduleIcon from "@material-ui/icons/Schedule";
 
 //Components
 import { Difficulty } from "../Difficulty";
@@ -19,7 +23,9 @@ import { ProgramModal } from "./ProgramModal";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: "20vw",
+        width: "17vw",
+        minWidth: "200px",
+        maxWidth: "300px",
         overflow: "hidden",
         backgroundColor: theme.palette.primary.main,
         whiteSpace: "nowrap",
@@ -42,6 +48,7 @@ export const ProgramCard = (props) => {
     const { program } = props;
     const [modalOpen, setModalOpen] = React.useState(false);
     const classes = useStyles();
+    const location = useLocation();
 
     const closeModal = () => {
         setModalOpen(false);
@@ -73,13 +80,13 @@ export const ProgramCard = (props) => {
                                 } weeks`}
                             </Typography>
                         </Grid>
-                        <Grid item lg={6} md={12}>
+                        <Grid item md={6} xs={12}>
                             <Typography
                                 variant="body1"
                                 style={{ fontSize: "0.9rem" }}
                             >{`${program.exerciseCount} exercises`}</Typography>
                         </Grid>
-                        <Grid item lg={6} sm={12}>
+                        <Grid item md={6} xs={12}>
                             <Typography
                                 variant="body1"
                                 style={{ fontSize: "0.9rem" }}

@@ -17,6 +17,7 @@ import AuthRoute from "./util/AuthRoute";
 import {
     ThemeProvider as MuiThemeProvider,
     withStyles,
+    responsiveFontSizes,
 } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { Hidden } from "@material-ui/core";
@@ -45,7 +46,7 @@ import { getUserData } from "./redux/actions/dataActions";
 
 const app = firebase.initializeApp(config);
 
-const theme = createMuiTheme(themeObject);
+const theme = responsiveFontSizes(createMuiTheme(themeObject));
 
 axios.defaults.baseURL = "http://localhost:5001/reps-699b0/us-east1/api";
 
@@ -82,55 +83,48 @@ const styles = (theme) => ({
     },
 });
 
+//Persistent Login
+//Set up for Facebook Auth
+//It is preventing Login with email & password,
+//because auth().currentUser.getIdToken returns null
+
 class App extends React.Component {
     constructor(props) {
         super(props);
     }
+
     componentDidMount = () => {
+        console.log(firebase.auth().currentUser);
+        firebase.auth().onAuthStateChanged((user) => {
+            console.log(user);
+            console.log("checking");
+            store.dispatch(getUserData());
+        });
+    };
+    /*componentDidMount = () => {
         const refreshToken = localStorage.RefreshToken;
-        const checkToken = firebase.auth().onAuthStateChanged((user) => {
+
+        const checkToken = () => {};
+        firebase.auth().onAuthStateChanged((user) => {
             console.log("checking");
 
             firebase
                 .auth()
                 .currentUser.getIdToken()
                 .then((idToken) => {
-                    const decodedToken = jwtDecode(idToken);
-
-                    if (decodedToken.exp * 1000 < Date.now()) {
-                        store.dispatch({ type: SET_AUTHENTICATED });
-                        axios.defaults.headers.common["Authorization"] = token;
-                        store.dispatch(getUserData());
-                        const checkTokenExp = () => {
-                            setTimeout(() => checkToken(), 35000000);
-                        };
-                        return checkTokenExp();
-                    } else {
-                        const FBIdToken = `Bearer ${idToken}`;
-                        localStorage.setItem("FBIdToken", FBIdToken);
-                        localStorage.setItem("RefreshToken", refreshToken);
-                        const checkTokenExp = () => {
-                            setTimeout(() => checkToken(), 36000000);
-                        };
-                        return checkTokenExp();
-                    }
+                    const FBIdToken = `Bearer ${idToken}`;
+                    localStorage.setItem("FBIdToken", FBIdToken);
+                    store.dispatch({ type: SET_AUTHENTICATED });
+                    axios.defaults.headers.common["Authorization"] = token;
+                    store.dispatch(getUserData());
                 })
                 .catch((err) => {
-                    if (err === 403) {
-                        store.dispatch(
-                            getNewToken(
-                                firebase.auth().currentUser.refreshToken
-                            )
-                        );
-                        store.dispatch(getUserData());
-                    } else {
-                        console.log(err.error);
-                    }
+                    console.log(err.error);
                 });
         });
 
         return () => checkToken();
-    };
+    };*/
 
     render() {
         const { classes } = this.props;

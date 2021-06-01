@@ -31,15 +31,15 @@ import {
     uploadVideo,
     updateNewExercise,
     submitExercise,
+    uploadToFirebase,
 } from "../../redux/actions/dataActions";
+import { CLEAR_FILE, SET_FILE } from "../../redux/types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.secondary.light,
     },
-    video: {
-        margin: "10rem 2rem",
-    },
+    video: {},
     videoIcon: {
         backgroundColor: "white",
     },
@@ -94,9 +94,11 @@ const equipment = [
 export const ExerciseForm = (props) => {
     const {} = props;
     const dispatch = useDispatch();
-    const tempURL = useSelector((state) => state.data.tempURL);
+
+    const file = useSelector((state) => state.data.file);
     const classes = useStyles();
     const newExercise = useSelector((state) => state.data.newExercise);
+    const [preview, setPreview] = React.useState(null);
 
     const handleChange = (e) => {
         const data = {
@@ -106,25 +108,22 @@ export const ExerciseForm = (props) => {
         dispatch(updateNewExercise(data));
     };
 
-    const handleVideoChange = (event) => {
-        const video = event.target.files[0];
-        const formData = new FormData();
-        formData.append("video", video, video.name);
-        const file = new File(formData, video.name);
-        const videoExtension = file.name.slice(file.name.lastIndexOf(".") + 1);
+    const handleFileChange = (e) => {
+        const reader = new FileReader();
+        let file = e.target.files[0];
 
-        const videoFileName = `${Math.round(
-            Math.random() * 100000000000
-        )}.${videoExtension}`;
-
-        console.log(videoFileName);
-        const storageRef = firebase.storage().ref().child(videoFileName);
-        const exerciseVideosRef = storageRef.child(
-            `/ExerciseVideos/${file.name}`
-        );
-        storageRef.put(file).then((snapshot) => {
-            console.log(snapshot);
-        });
+        if (file) {
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    console.log(file);
+                    dispatch({ type: SET_FILE, payload: file });
+                    setPreview(URL.createObjectURL(file));
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        } else {
+            dispatch({ type: CLEAR_FILE, payload: file });
+        }
     };
 
     const handleEditPicture = () => {
@@ -141,6 +140,12 @@ export const ExerciseForm = (props) => {
         dispatch(updateNewExercise(data));
     };
 
+    const uploadFile = () => {
+        if (file) {
+            dispatch(uploadToFirebase(file));
+        }
+    };
+
     const submit = () => {
         dispatch(submitExercise(newExercise));
     };
@@ -148,7 +153,16 @@ export const ExerciseForm = (props) => {
     return (
         <Grid container className={classes.root}>
             <Grid container className={classes.form}>
-                <Grid item xs={5} clasName={classes.videoContainer}>
+                <Grid
+                    item
+                    xs={5}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                    }}
+                >
                     <Badge
                         className={classes.video}
                         badgeContent={
@@ -162,14 +176,18 @@ export const ExerciseForm = (props) => {
                                     type="file"
                                     id="imageInput"
                                     hidden="hidden"
-                                    onChange={handleVideoChange}
+                                    onChange={handleFileChange}
                                 />
                             </IconButton>
                         }
                     >
-                        {newExercise.videoURL ? (
+                        {newExercise.videoURL || preview ? (
                             <ReactPlayer
-                                url={newExercise.videoURL}
+                                url={
+                                    newExercise.videoURL
+                                        ? newExercise.videoURL
+                                        : preview
+                                }
                                 width="320px"
                                 height="180px"
                                 controls
@@ -192,6 +210,13 @@ export const ExerciseForm = (props) => {
                             </div>
                         )}
                     </Badge>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={uploadFile}
+                    >
+                        Upload to Firebase
+                    </Button>
                 </Grid>
 
                 <Grid item xs={6} className={classes.formContainer}>

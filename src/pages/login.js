@@ -68,13 +68,12 @@ export const Login = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [userData, setUserData] = React.useState({
-        email: null,
-        password: null,
+        email: "",
+        password: "",
     });
     const [errors, setErrors] = React.useState({});
     const handleChange = (e) => {
         e.persist();
-        console.log(e.target);
         setUserData((prevData) => ({
             ...prevData,
             [e.target.name]: e.target.value,
@@ -84,9 +83,6 @@ export const Login = (props) => {
         e.preventDefault();
         dispatch(loginUser(userData, props.history));
     };
-    useEffect((nextProps) => {
-        //nextProps.UI.errors && setErrors({ errors: nextProps.UI.errors });
-    });
 
     return (
         <Grid container className={classes.formContainer}>

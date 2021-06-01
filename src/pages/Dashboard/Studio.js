@@ -11,6 +11,7 @@ import {
     IconButton,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import ScheduleIcon from "@material-ui/icons/Schedule";
 
 //Components
 import { ExerciseForm } from "../../components/Exercises/ExerciseForm";
@@ -57,7 +58,6 @@ export const Studio = () => {
     const programs = useSelector((state) => state.data.programs);
 
     const displayCreator = (creator) => {
-        console.log(creator);
         switch (creator) {
             case "exercise":
                 return <ExerciseForm />;
@@ -167,7 +167,7 @@ export const Studio = () => {
                                     }}
                                     key={workout.id}
                                 >
-                                    <Workout workout={workout} style={{}} />
+                                    <Workout workout={workout} schedule />
                                 </Grid>
                             );
                         })}
@@ -201,7 +201,11 @@ export const Studio = () => {
                                     }}
                                     key={exercise.id}
                                 >
-                                    <Exercise exercise={exercise} key={i} />
+                                    <Exercise
+                                        exercise={exercise}
+                                        key={exercise.id}
+                                        schedule
+                                    />
                                 </Grid>
                             );
                         })}

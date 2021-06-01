@@ -22,14 +22,16 @@ import { WorkoutList } from "../Programs/ProgramModal";
 import { Difficulty } from "../Difficulty";
 import { BubbleArray } from "../BubbleArray";
 import { WorkoutSelectionModal } from "./WorkoutSelectionModal";
+import { Workout } from "../Workouts/Workout";
 
 //Redux
 import { useSelector, useDispatch } from "react-redux";
 import {
     updateNewProgram,
     uploadNewProgramImage,
+    uploadToFirebase,
 } from "../../redux/actions/dataActions";
-import { Workout } from "../Workouts/Workout";
+import { CLEAR_FILE, SET_FILE } from "../../redux/types";
 
 const useStyles = makeStyles((theme) => ({
     boxShadow: {
@@ -48,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
     headerContainer: {
         boxShadow:
             "0px 3px 1px -2px rgb(0 0 0 / 14%), 0px 2px 2px 0px rgb(0 0 0 / 12%), 0px 1px 5px 0px rgb(0 0 0 / 10%)",
+        display: "flex",
+        justifyContent: "center",
+        width: "100%",
+        height: "30vh",
     },
     submit: {
         display: "flex",
@@ -64,6 +70,7 @@ export const ProgramForm = (props) => {
     const dispatch = useDispatch();
     const newProgram = useSelector((state) => state.data.newProgram);
     const [open, setOpen] = React.useState(false);
+    const [preview, setPreview] = React.useState(null);
     const [selectedWeek, setSelectedWeek] = React.useState("");
 
     const handleChange = (e) => {
@@ -128,11 +135,23 @@ export const ProgramForm = (props) => {
         dispatch(updateNewProgram(data));
     };
 
-    const handleImageChange = (event) => {
-        const image = event.target.files[0];
-        const formData = new FormData();
-        formData.append("image", image, image.name);
-        dispatch(uploadNewProgramImage(formData));
+    const handleFileChange = (e) => {
+        e.persist();
+        const reader = new FileReader();
+        let file = e.target.files[0];
+
+        if (file) {
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    console.log(file);
+                    dispatch({ type: SET_FILE, payload: file });
+                    setPreview(URL.createObjectURL(file));
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        } else {
+            dispatch({ type: CLEAR_FILE, payload: file });
+        }
     };
 
     const handleEditPicture = () => {
@@ -144,8 +163,18 @@ export const ProgramForm = (props) => {
         <Grid container className={classes.root}>
             <Grid item xs={12} className={classes.boxShadow}>
                 <Grid item xs={12} className={classes.headerContainer}>
-                    {newProgram.imageURL ? (
-                        <img src={newProgram.imageURL} />
+                    {newProgram.imageURL || preview ? (
+                        <img
+                            src={
+                                newProgram.imageURL
+                                    ? newProgram.imageURL
+                                    : preview
+                            }
+                            style={{
+                                objectFit: "fill",
+                                height: "30vh",
+                            }}
+                        />
                     ) : (
                         <div
                             style={{
@@ -165,7 +194,7 @@ export const ProgramForm = (props) => {
                                 type="file"
                                 id="imageInput"
                                 hidden="hidden"
-                                onChange={handleImageChange}
+                                onChange={handleFileChange}
                             />
                         </div>
                     )}

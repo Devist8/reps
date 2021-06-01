@@ -25,3 +25,5 @@ export const ADD_PROGRAM = "ADD_PROGRAM";
 export const CLEAR_NEW_EXERCISE = "CLEAR_NEW_EXERCISE";
 export const CLEAR_NEW_WORKOUT = "CLEAR_NEW_WORKOUT";
 export const CLEAR_NEW_PROGRAM = "CLEAR_NEW_PROGRAM";
+export const SET_FILE = "SET_FILE";
+export const CLEAR_FILE = "CLEAR_FILE";
