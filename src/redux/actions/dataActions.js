@@ -15,6 +15,7 @@ import {
     CLEAR_NEW_WORKOUT,
     CLEAR_NEW_PROGRAM,
     SET_AUTHENTICATED,
+    SET_MEALS,
 } from "../types";
 
 import { getFBToken } from "./userActions";
@@ -27,6 +28,7 @@ export const setUserCollection = (data) => (dispatch) => {
     dispatch({ type: SET_EXERCISES, payload: data.exercises });
     dispatch({ type: SET_WORKOUTS, payload: data.workouts });
     dispatch({ type: SET_PROGRAMS, payload: data.programs });
+    dispatch({ type: SET_MEALS, payload: data.meals });
 };
 
 export const updateNewExercise = (data) => (dispatch) => {

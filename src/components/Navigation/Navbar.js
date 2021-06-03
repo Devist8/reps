@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,7 +15,6 @@ import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundImage: `url(/top_nav.svg)`,
         display: "flex",
     },
     navToolbar: {
@@ -25,15 +24,33 @@ const useStyles = makeStyles((theme) => ({
 
 export const Navbar = () => {
     const classes = useStyles();
+    const location = useLocation();
+    let mealsMatch = useRouteMatch("/meals");
+    const mealPage = useRouteMatch("/meals/mealId");
     const auth = useSelector((state) => state.user.authenticated);
     const info = useSelector((state) => state.user.info);
 
+    console.log(!!mealsMatch);
+    console.log(mealPage);
     return (
-        <AppBar elevation={2} className={classes.root} color="default">
+        <AppBar
+            elevation={2}
+            className={classes.root}
+            color="default"
+            style={
+                !!mealsMatch
+                    ? { backgroundImage: `url(/top_nav-meals.svg)` }
+                    : { backgroundImage: `url(/top_nav.svg)` }
+            }
+        >
             {!auth ? (
                 <Toolbar
                     className="nav-container"
-                    style={{ backgroundImage: `url(/top_nav.svg)` }}
+                    style={
+                        mealsMatch
+                            ? { backgroundImage: "url(/top_nav-meals.svg)" }
+                            : { backgroundImage: `url(/top_nav.svg)` }
+                    }
                 >
                     <Button
                         color="inherit"

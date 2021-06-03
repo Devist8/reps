@@ -27,3 +27,9 @@ export const CLEAR_NEW_WORKOUT = "CLEAR_NEW_WORKOUT";
 export const CLEAR_NEW_PROGRAM = "CLEAR_NEW_PROGRAM";
 export const SET_FILE = "SET_FILE";
 export const CLEAR_FILE = "CLEAR_FILE";
+
+//Meals
+export const SET_MEALS = "SET_MEALS";
+export const UPDATE_NEW_MEAL = "UPDATE_NEW_MEAL";
+export const CLEAR_NEW_MEAL = "CLEAR_NEW_MEAL";
+export const ADD_NEW_MEAL = "ADD_NEW_MEAL";

@@ -17,23 +17,23 @@ import firebase from "firebase";
 export const loginUser = (userData, history) => (dispatch) => {
     dispatch({ type: LOADING_UI });
     console.log("loggin in");
-    axios
-        .post("/login", userData)
-        .then((res) => {
-            console.log(res);
-            firebase.auth().currentUser.getIdToken();
+
+    firebase
+        .auth()
+        .signInWithEmailAndPassword(userData.email, userData.password)
+        .then((data) => {
+            return data.user.getIdToken();
         })
-        .then((idToken) => {
-            console.log(idToken);
+        .then((token) => {
+            const FBIdToken = `Bearer ${token}`;
+            localStorage.setItem("FBIdToken", FBIdToken);
+            axios.defaults.headers.common["Authorization"] = FBIdToken;
             dispatch({ type: SET_AUTHENTICATED });
             dispatch({ type: CLEAR_ERRORS });
             history.push("/");
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response,
-            });
+            console.error(err);
         });
 };
 

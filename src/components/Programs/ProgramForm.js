@@ -227,6 +227,7 @@ export const ProgramForm = (props) => {
                                 <Difficulty
                                     difficulty={newProgram.difficulty}
                                     edit
+                                    editDifficulty={handleChange}
                                 />
                             </Grid>
                             <Grid item>

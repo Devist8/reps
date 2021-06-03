@@ -15,12 +15,14 @@ import {
     CLEAR_NEW_PROGRAM,
     SET_FILE,
     CLEAR_FILE,
+    SET_MEALS,
 } from "../types";
 
 const initialState = {
     exercises: [],
     workouts: [],
     programs: [],
+    meals: [],
     file: null,
     newExercise: {
         title: "",
@@ -83,6 +85,11 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 programs: action.payload,
+            };
+        case SET_MEALS:
+            return {
+                ...state,
+                meals: action.payload,
             };
         case ADD_EXERCISE:
             return {

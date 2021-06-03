@@ -11,6 +11,7 @@ import GridList from "@material-ui/core/GridList";
 
 //Components
 import { ProgramCarousel } from "../components/Programs/ProgramCarousel";
+import { MealCardList } from "../components/Meals/MealCardList";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -26,12 +27,14 @@ export const Home = () => {
     const exercises = useSelector((state) => state.data.exercises);
     const workouts = useSelector((state) => state.data.workouts);
     const programs = useSelector((state) => state.data.programs);
+    const meals = useSelector((state) => state.data.meals);
     const classes = useStyles();
 
     return (
         <Grid container style={{ display: "flex" }}>
             <Grid item xs={12}>
                 <ProgramCarousel />
+                <MealCardList />
             </Grid>
         </Grid>
     );

@@ -1,14 +1,23 @@
 import React from "react";
 
 //MUI
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { Box } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
+import Rating from "@material-ui/lab/Rating";
 
 //Icons
 import { ReactComponent as Dumbbell } from "../icons/Dumbbell.svg";
 import { ReactComponent as HalfDumbbell } from "../icons/half_dumbbell.svg";
+import FitnessCenterIcon from "@material-ui/icons/FitnessCenter";
 import AddIcon from "@material-ui/icons/Add";
+
+const StyledRating = withStyles({
+    iconFilled: {
+        color: "#000",
+    },
+})(Rating);
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,44 +53,19 @@ export const Difficulty = (props) => {
         ? parseInt(difficulty.split(".")[1])
         : 0;
     return (
-        <Grid container direction="row" className={classes.root}>
-            {wholes.map((x) => {
-                return (
-                    <Grid
-                        item
-                        key={x}
-                        className={classes.iconContainer}
-                        style={small ? { width: "1rem" } : { width: "1.35rem" }}
-                    >
-                        <Dumbbell style={small && { height: "75%" }} />
-                    </Grid>
-                );
-            })}
-            {half === 5 && (
-                <Grid
-                    item
-                    className={classes.halfContainer}
-                    style={small ? { width: "1rem" } : { width: "1.35rem" }}
-                >
-                    <HalfDumbbell style={small && { height: "40%" }} />
-                </Grid>
-            )}
-            {edit && (
-                <Grid item className={classes.fieldContainer}>
-                    <TextField
-                        name="difficulty"
-                        value={difficulty}
-                        size="small"
-                        onChange={(e) => {
-                            editDifficulty(e);
-                        }}
-                        classes={{
-                            root: classes.input,
-                        }}
-                        className={classes.difficultyField}
-                    />
-                </Grid>
-            )}
-        </Grid>
+        <Box>
+            <StyledRating
+                readOnly={!editDifficulty}
+                name="customized-color"
+                defaultValue={difficulty}
+                onChange={(e, newValue) => {
+                    e.target.name = "difficulty";
+                    e.target.value = newValue;
+                    editDifficulty(e);
+                }}
+                precision={0.5}
+                icon={<FitnessCenterIcon fontSize="inherit" />}
+            />
+        </Box>
     );
 };

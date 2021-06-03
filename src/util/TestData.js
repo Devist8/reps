@@ -407,3 +407,74 @@ export const program = {
     workoutCount: 6,
     title: "First Program",
 };
+
+export const meals = [
+    {
+        title: "Immunity-Boosting Smoothe",
+        imageURL:
+            "https://firebasestorage.googleapis.com/v0/b/reps-699b0.appspot.com/o/smoothie.jpg?alt=media&token=68e83da3-5d8e-4195-ab1f-89989c36d0ee",
+        ingredients: [
+            "4 clementines, peeled",
+            "1 ripe banana, sliced",
+            "1 skinny carrot, peeled and shaved",
+            "1 piece fresh ginger, peeled and minced",
+            "1/4 cup plain yogurt",
+            "pinch of salt",
+            "1 tablespoon honey",
+            "1 1/2 cups ice",
+        ],
+        directions: [
+            "Add clementines, banana, carrot, ginger, yogurt, honey, salt, and ice to belender.",
+            "Blend until smooth.",
+            "Serve",
+            "Enjoy!",
+        ],
+        labels: ["Vegetarian", "Gluten Free", "Healthy choice"],
+        nutrition: {
+            Protein: 9,
+            Fat: 2,
+            Sugar: 84,
+            Fiber: 13,
+            Carbs: 120,
+            Calories: 491,
+        },
+        rating: 4.7,
+        type: "snack",
+    },
+    {
+        title: "Chicken & Veggie Stir-Fry",
+        imageURL:
+            "https://firebasestorage.googleapis.com/v0/b/reps-699b0.appspot.com/o/chicken%26veggie.jpg?alt=media&token=2f7db04a-c475-4a43-a586-23f3872bb71e",
+        ingredients: [
+            "1 lb chicken breast, cubed",
+            "1 lb broccoli florets",
+            "salt, to taste",
+            "pepper, to taste",
+            "3 tablespoons oil, for frying",
+            "3 cloves garlic, minced",
+            "1 tablespoon ginger, minced",
+            "1 cup chicken broth",
+            "2 teaspoons sesame oil",
+            "¼ cup flour",
+            "⅓ cup reduced sodium soy sauce",
+        ],
+        directions: [
+            "In a large pan on medium-high heat, add 1 tablespoon of oil. Once the oil is hot, add chicken, season with salt and pepper, and sauté until cooked through and browned. Remove cooked chicken from pan and set aside. In the same pan, heat 1 tablespoon of oil and add mushrooms. When the mushrooms start to soften, add broccoli florets and stir-fry until the broccoli is tender. Remove cooked mushrooms and broccoli from the pan and set aside.",
+            "Add 1 tablespoon of oil to the pan and sauté garlic and ginger until fragrant. Add the remaining sauce ingredients and stir until smooth.",
+            "Return the chicken and vegetables to the saucy pan, stir until heated through.",
+            "Serve with hot rice or noodles.",
+            "Enjoy!",
+        ],
+        labels: ["Healthy Choice", "Meal Prep"],
+        nutrition: {
+            Carbs: 23,
+            Fiber: 2,
+            Protein: 27,
+            Calories: 393,
+            Fat: 20,
+            Sugar: 4,
+        },
+        rating: 4.7,
+        type: "dinner",
+    },
+];
