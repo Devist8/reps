@@ -41,29 +41,23 @@ const useStyles = makeStyles((theme) => ({
 
 export const Difficulty = (props) => {
     const classes = useStyles();
-    const { edit, small, editDifficulty } = props;
+    const { small, editDifficulty } = props;
     const difficulty = props.difficulty.toString();
-    const range = (start, stop, step) =>
-        Array.from(
-            { length: (stop - start) / step + 1 },
-            (_, i) => start + i * step
-        );
-    let wholes = range(1, parseInt(difficulty.split(".")[0]), 1);
-    let half = difficulty.split(".")[1]
-        ? parseInt(difficulty.split(".")[1])
-        : 0;
+
     return (
         <Box>
             <StyledRating
                 readOnly={!editDifficulty}
                 name="customized-color"
                 defaultValue={difficulty}
+                size={small && "small"}
                 onChange={(e, newValue) => {
                     e.target.name = "difficulty";
                     e.target.value = newValue;
                     editDifficulty(e);
                 }}
                 precision={0.5}
+                style={small && { fontSize: "1rem" }}
                 icon={<FitnessCenterIcon fontSize="inherit" />}
             />
         </Box>

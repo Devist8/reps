@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -8,12 +8,13 @@ import {
     GridList,
     GridListTile,
     MobileStepper,
+    Slide,
 } from "@material-ui/core";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
 //Components
-import { ProgramCard } from "./ProgramCard";
+import { MealCard } from "../Meals/MealCard";
 
 //Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -29,22 +30,19 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const ProgramCarousel = (props) => {
-    const {} = props;
-    const programs = useSelector((state) => state.data.programs);
-    const classes = useStyles();
-    const [show, setShow] = useState([0, 1, 2]);
-    const [slide, setSlide] = useState(1);
-    const maxSlide = Math.floor(programs.length / 3) + 1;
+export const MealCarousel = (props) => {
+    const { meals } = props;
 
-    /*const changeProgramsShown = () => ({
-        //setShow([0 + slide * 3, 1 + slide * 3, 2 + slide * 3]);
-        console.log(slide);
-        console.log(show);
-    });*/
+    const classes = useStyles();
+    const [show, setShow] = React.useState([0, 1, 2]);
+    const [slide, setSlide] = React.useState(1);
+    const maxSlide = meals.length > 2 ? Math.floor(meals.length / 3) : 1;
+    console.log(maxSlide);
+
     const calculateNewShowArray = () => {
+        const original = [0, 1, 2];
         const newArray = [];
-        for (const item of show) {
+        for (const item of original) {
             newArray.push(item + slide * 3);
         }
 
@@ -53,13 +51,15 @@ export const ProgramCarousel = (props) => {
 
     const incrementSlide = () => {
         setSlide(slide + 1);
-
-        setShow(calculateNewShowArray());
+        console.log(slide);
+        setShow(show.map((x) => x + 3));
+        console.log(show);
     };
     const decrementSlide = () => {
         setSlide(slide - 1);
         console.log(slide);
-        setShow(calculateNewShowArray());
+        setShow(show.map((x) => x - 3));
+        console.log(show);
     };
 
     return (
@@ -69,14 +69,26 @@ export const ProgramCarousel = (props) => {
                     <ArrowBackIosIcon />
                 </IconButton>
             </Grid>
-            <Grid item xs={10}>
-                <GridList>
+            <Grid
+                item
+                xs={10}
+                style={{ width: "75vw", display: "flex", flexWrap: "noWrap" }}
+            >
+                <GridList
+                    spacing={4}
+                    style={{
+                        display: "flex",
+                        flexWrap: "noWrap",
+                        overflowX: "hidden",
+                        minHeight: "20vh",
+                    }}
+                >
                     {show.map((element) => {
-                        if (programs[element]) {
+                        if (meals[element]) {
                             return (
-                                <ProgramCard
-                                    program={programs[element]}
-                                    key={programs[element].id}
+                                <MealCard
+                                    meal={meals[element]}
+                                    key={meals[element].id}
                                 />
                             );
                         }
@@ -104,7 +116,7 @@ export const ProgramCarousel = (props) => {
                 <MobileStepper
                     variant="dots"
                     position="static"
-                    activeStep={slide}
+                    activeStep={slide - 1}
                     steps={maxSlide}
                     classes={{ root: classes.stepperRoot }}
                 />

@@ -134,7 +134,9 @@ export const Studio = () => {
                         Programs
                     </Typography>
                     <Grid item xs={12} style={{ width: "100%" }}>
-                        <ProgramCarousel />
+                        {programs && (
+                            <ProgramCarousel type="program" array={programs} />
+                        )}
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>

@@ -3,6 +3,7 @@ import ReactPlayer from "react-player";
 import met from "../../util/met";
 import firebase from "firebase/app";
 import "firebase/storage";
+import { muscles, equipment } from "../../util/static-data";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,6 +20,7 @@ import {
     IconButton,
     Badge,
     Button,
+    LinearProgress,
 } from "@material-ui/core";
 
 //Components
@@ -70,32 +72,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const muscles = [
-    "abs",
-    "chest",
-    "biceps",
-    "triceps",
-    "calfs",
-    "glutes",
-    "back",
-    "shoulders",
-    "legs",
-    "delts",
-];
-const equipment = [
-    "dumbbells",
-    "kettlebells",
-    "resistance bands",
-    "exercise ball",
-    "jump rope",
-    "stairs",
-];
-
 export const ExerciseForm = (props) => {
     const {} = props;
     const dispatch = useDispatch();
 
     const file = useSelector((state) => state.data.file);
+    const progress = useSelector((state) => state.ui.progress);
     const classes = useStyles();
     const newExercise = useSelector((state) => state.data.newExercise);
     const [preview, setPreview] = React.useState(null);
@@ -117,7 +99,8 @@ export const ExerciseForm = (props) => {
                 if (reader.readyState === 2) {
                     console.log(file);
                     dispatch({ type: SET_FILE, payload: file });
-                    setPreview(URL.createObjectURL(file));
+                    setPreview(window.URL.createObjectURL(file));
+                    console.log(preview);
                 }
             };
             reader.readAsDataURL(e.target.files[0]);
@@ -140,14 +123,14 @@ export const ExerciseForm = (props) => {
         dispatch(updateNewExercise(data));
     };
 
-    const uploadFile = () => {
+    const uploadFile = (file, handleImageChange) => {
         if (file) {
-            dispatch(uploadToFirebase(file));
+            dispatch(uploadToFirebase(file, handleImageChange));
         }
     };
 
     const submit = () => {
-        dispatch(submitExercise(newExercise));
+        dispatch(submitExercise(newExercise, file));
     };
 
     return (
@@ -210,13 +193,6 @@ export const ExerciseForm = (props) => {
                             </div>
                         )}
                     </Badge>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={uploadFile}
-                    >
-                        Upload to Firebase
-                    </Button>
                 </Grid>
 
                 <Grid item xs={6} className={classes.formContainer}>
@@ -361,6 +337,17 @@ export const ExerciseForm = (props) => {
             </Grid>
             <Divider variant="fullWidth" />
             <Grid container className={classes.submit}>
+                <Grid item xs={12}>
+                    <LinearProgress
+                        style={{
+                            backgroundColor: "black",
+                        }}
+                        variant="determinate"
+                        size={40}
+                        value={progress}
+                        color="primary"
+                    />
+                </Grid>
                 <Button
                     color="primary"
                     variant="contained"

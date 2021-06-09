@@ -31,8 +31,7 @@ const StyledRating = withStyles({
 })(Rating);
 
 export const MealCardList = (props) => {
-    const {} = props;
-    const meals = useSelector((state) => state.data.meals);
+    const { meals } = props;
     const classes = useStyles();
 
     return (

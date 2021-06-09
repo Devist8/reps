@@ -14,6 +14,7 @@ import {
     TextField,
     Select,
     Input,
+    LinearProgress,
     Modal,
 } from "@material-ui/core";
 
@@ -30,12 +31,13 @@ import {
     updateNewProgram,
     uploadNewProgramImage,
     uploadToFirebase,
+    submitProgram,
 } from "../../redux/actions/dataActions";
 import { CLEAR_FILE, SET_FILE } from "../../redux/types";
 
 const useStyles = makeStyles((theme) => ({
     boxShadow: {
-        width: "1200px",
+        width: "100%",
         minHeight: "563px",
         backgroundColor: "#FAFDFF",
     },
@@ -44,9 +46,7 @@ const useStyles = makeStyles((theme) => ({
         left: "25%",
         top: "17%",
     },
-    formContainer: {
-        boxShadow: "0px 3px 0px 0px rgba(0,0,0,0.5)",
-    },
+    formContainer: {},
     headerContainer: {
         boxShadow:
             "0px 3px 1px -2px rgb(0 0 0 / 14%), 0px 2px 2px 0px rgb(0 0 0 / 12%), 0px 1px 5px 0px rgb(0 0 0 / 10%)",
@@ -55,8 +55,13 @@ const useStyles = makeStyles((theme) => ({
         width: "100%",
         height: "30vh",
     },
+    anchor: {
+        top: "50%",
+        right: "50%",
+    },
     submit: {
         display: "flex",
+        flexWrap: "wrap",
         textAlign: "center",
         justifyContent: "center",
         alignContent: "center",
@@ -68,7 +73,9 @@ export const ProgramForm = (props) => {
     const {} = props;
     const classes = useStyles();
     const dispatch = useDispatch();
+    const file = useSelector((state) => state.data.file);
     const newProgram = useSelector((state) => state.data.newProgram);
+    const progress = useSelector((state) => state.ui.progress);
     const [open, setOpen] = React.useState(false);
     const [preview, setPreview] = React.useState(null);
     const [selectedWeek, setSelectedWeek] = React.useState("");
@@ -159,22 +166,51 @@ export const ProgramForm = (props) => {
         fileInput.click();
     };
 
+    const submit = () => {
+        dispatch(submitProgram(newProgram, file));
+    };
+
     return (
         <Grid container className={classes.root}>
             <Grid item xs={12} className={classes.boxShadow}>
                 <Grid item xs={12} className={classes.headerContainer}>
                     {newProgram.imageURL || preview ? (
-                        <img
-                            src={
-                                newProgram.imageURL
-                                    ? newProgram.imageURL
-                                    : preview
-                            }
-                            style={{
-                                objectFit: "fill",
-                                height: "30vh",
+                        <Badge
+                            classes={{
+                                anchorOriginTopRightRectangle: classes.anchor,
                             }}
-                        />
+                            badgeContent={
+                                <IconButton
+                                    size="small"
+                                    onClick={handleEditPicture}
+                                    className={classes.videoIcon}
+                                >
+                                    <EditIcon style={{ color: "white" }} />
+                                    <input
+                                        type="file"
+                                        id="imageInput"
+                                        hidden="hidden"
+                                        onChange={handleFileChange}
+                                        style={{
+                                            height: "30vh",
+                                            width: "30vw",
+                                        }}
+                                    />
+                                </IconButton>
+                            }
+                        >
+                            <img
+                                src={
+                                    newProgram.imageURL
+                                        ? newProgram.imageURL
+                                        : preview
+                                }
+                                style={{
+                                    objectFit: "fill",
+                                    height: "30vh",
+                                }}
+                            />
+                        </Badge>
                     ) : (
                         <div
                             style={{
@@ -373,10 +409,22 @@ export const ProgramForm = (props) => {
                 </Modal>
             </Grid>
             <Grid item xs={12} className={classes.submit}>
+                <Grid item xs={12}>
+                    <LinearProgress
+                        style={{
+                            backgroundColor: "black",
+                        }}
+                        variant="determinate"
+                        size={40}
+                        value={progress}
+                        color="secondary"
+                    />
+                </Grid>
                 <Button
                     color="primary"
                     variant="contained"
                     style={{ margin: "1.5rem 0" }}
+                    onClick={submit}
                 >
                     Submit
                 </Button>

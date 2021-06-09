@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "25px",
         backgroundColor: theme.palette.primary.main,
     },
+    mealsCardRoot: {
+        width: "13rem",
+        height: "3rem",
+        borderRadius: "25px",
+        backgroundColor: theme.palette.meals.main,
+    },
     content: {
         padding: 13,
     },
@@ -28,10 +35,17 @@ const useStyles = makeStyles((theme) => ({
 
 export const UserButton = () => {
     const info = useSelector((state) => state.user.info);
+    const location = useLocation();
     const loading = useSelector((state) => state.user.loading);
     const classes = useStyles();
     return (
-        <Card className={classes.cardRoot}>
+        <Card
+            className={
+                !location.pathname.includes("meals")
+                    ? classes.cardRoot
+                    : classes.mealsCardRoot
+            }
+        >
             <Grid container>
                 <Grid item xs={8}>
                     <CardContent className={classes.content}>

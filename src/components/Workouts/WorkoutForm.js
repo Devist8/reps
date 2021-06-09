@@ -2,7 +2,13 @@ import React from "react";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Typography, TextField, Button } from "@material-ui/core";
+import {
+    Grid,
+    Typography,
+    TextField,
+    Button,
+    LinearProgress,
+} from "@material-ui/core";
 
 //Components
 import { Exercise } from "../Exercises/Exercise";
@@ -34,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         display: "flex",
+        flexWrap: "wrap",
         textAlign: "center",
         justifyContent: "center",
         alignContent: "center",
@@ -45,10 +52,12 @@ export const WorkoutForm = (props) => {
     const {} = props;
     const dispatch = useDispatch();
     const classes = useStyles();
+    const [preview, setPreview] = React.useState(null);
+    const progress = useSelector((state) => state.ui.progress);
     const file = useSelector((state) => state.data.file);
     const exercises = useSelector((state) => state.data.exercises);
     const newWorkout = useSelector((state) => state.data.newWorkout);
-
+    console.log(progress);
     const handleChange = (e) => {
         const data = {
             name: e.target.name,
@@ -88,7 +97,8 @@ export const WorkoutForm = (props) => {
     };
 
     const submit = () => {
-        dispatch(submitWorkout(newWorkout));
+        dispatch(submitWorkout(newWorkout, file));
+        setPreview(null);
     };
 
     return (
@@ -112,15 +122,10 @@ export const WorkoutForm = (props) => {
                             workout={newWorkout}
                             edit
                             handleChange={handleChange}
+                            preview={preview}
+                            setPreview={setPreview}
                         />
                     </Grid>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={uploadFile}
-                    >
-                        Upload to Firebase
-                    </Button>
                 </Grid>
 
                 <Grid item xs={6} className={classes.formFields}>
@@ -211,7 +216,19 @@ export const WorkoutForm = (props) => {
                     </Grid>
                 </Grid>
             </Grid>
+
             <Grid item xs={12} className={classes.submit}>
+                <Grid item xs={12}>
+                    <LinearProgress
+                        style={{
+                            backgroundColor: "black",
+                        }}
+                        variant="determinate"
+                        size={40}
+                        value={progress}
+                        color="secondary"
+                    />
+                </Grid>
                 <Button
                     color="secondary"
                     variant="contained"

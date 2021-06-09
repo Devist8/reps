@@ -11,6 +11,8 @@ export const CLEAR_ERRORS = "CLEAR_ERRORS";
 export const SET_OPEN = "SET_OPEN";
 export const SET_ADDOPEN = "SET_ADDOPEN";
 export const SET_CLOSE = "SET_CLOSE";
+export const SET_PROGRESS = "SET_PROGRESS";
+export const CLEAR_PROGRESS = "CLEAR_PROGRESS";
 
 // Data reducer types
 export const SET_EXERCISES = "SET_EXERCISES";
@@ -22,6 +24,7 @@ export const UPDATE_NEW_PROGRAM = "UPDATE_NEW_PROGRAM";
 export const ADD_EXERCISE = "ADD_EXERCISE";
 export const ADD_WORKOUT = "ADD_WORKOUT";
 export const ADD_PROGRAM = "ADD_PROGRAM";
+export const ADD_MEAL = "ADD_MEAL";
 export const CLEAR_NEW_EXERCISE = "CLEAR_NEW_EXERCISE";
 export const CLEAR_NEW_WORKOUT = "CLEAR_NEW_WORKOUT";
 export const CLEAR_NEW_PROGRAM = "CLEAR_NEW_PROGRAM";

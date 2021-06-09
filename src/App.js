@@ -35,6 +35,7 @@ import { Signup } from "./pages/Signup";
 import { Home as DashboardHome } from "./pages/Dashboard/Home";
 import { Studio } from "./pages/Dashboard/Studio";
 import { Meals } from "./pages/Dashboard/Meals";
+import { Meal } from "./pages/Meal";
 import { Store } from "./pages/Dashboard/Store";
 
 //Redux
@@ -145,6 +146,11 @@ class App extends React.Component {
                                     exact
                                     path="/signup"
                                     component={Signup}
+                                />
+                                <Route
+                                    exact
+                                    path="/meals/:mealId"
+                                    component={Meal}
                                 />
                                 <AuthRoute
                                     exact

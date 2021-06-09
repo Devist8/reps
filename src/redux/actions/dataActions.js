@@ -16,6 +16,12 @@ import {
     CLEAR_NEW_PROGRAM,
     SET_AUTHENTICATED,
     SET_MEALS,
+    SET_PROGRESS,
+    CLEAR_PROGRESS,
+    ADD_MEAL,
+    ADD_NEW_MEAL,
+    UPDATE_NEW_MEAL,
+    CLEAR_NEW_MEAL,
 } from "../types";
 
 import { getFBToken } from "./userActions";
@@ -43,9 +49,8 @@ export const updateNewProgram = (data) => (dispatch) => {
     dispatch({ type: UPDATE_NEW_PROGRAM, payload: data });
 };
 
-export const uploadToFirebase = (file) => (dispatch) => {
+export const uploadToFirebase = (file, setImage) => (dispatch) => {
     if (file) {
-        console.log(file);
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
         fileRef.put(file).then(() => {
@@ -78,30 +83,37 @@ export const uploadToFirebase = (file) => (dispatch) => {
 export const getUserData = () => (dispatch) => {
     dispatch({ type: LOADING_USER });
     console.log(firebase.auth().currentUser);
-    firebase
-        .auth()
-        .currentUser.getIdToken()
-        .then((idToken) => {
-            const FBIdToken = `Bearer ${idToken}`;
-            dispatch({ type: SET_AUTHENTICATED });
-            axios.defaults.headers.common["Authorization"] = FBIdToken;
-            axios
-                .get("/user")
-                .then((res) => {
-                    const data = {
-                        ...res.data.userData,
-                    };
-                    dispatch(setUserCollection(data));
-                    dispatch({
-                        type: SET_USER,
-                        payload: data.user,
-                    });
-                })
-                .catch((err) => dispatch({ type: SET_ERRORS, payload: err }));
-        })
-        .catch((err) => {
-            dispatch({ type: SET_ERRORS, payload: err });
-        });
+    firebase.auth().onAuthStateChanged((user) => {
+        user
+            ? firebase
+                  .auth()
+                  .currentUser.getIdToken()
+                  .then((idToken) => {
+                      const FBIdToken = `Bearer ${idToken}`;
+                      dispatch({ type: SET_AUTHENTICATED });
+                      axios.defaults.headers.common["Authorization"] =
+                          FBIdToken;
+                      axios
+                          .get("/user")
+                          .then((res) => {
+                              const data = {
+                                  ...res.data.userData,
+                              };
+                              dispatch(setUserCollection(data));
+                              dispatch({
+                                  type: SET_USER,
+                                  payload: data.user,
+                              });
+                          })
+                          .catch((err) =>
+                              dispatch({ type: SET_ERRORS, payload: err })
+                          );
+                  })
+                  .catch((err) => {
+                      dispatch({ type: SET_ERRORS, payload: err });
+                  })
+            : console.log("Please log in again.");
+    });
 };
 
 export const uploadImage = (formData) => (dispatch) => {
@@ -158,33 +170,191 @@ export const uploadNewProgramImage = (formData) => (dispatch) => {
         .catch((err) => console.log(err));
 };
 
-export const submitExercise = (exercise) => (dispatch) => {
-    axios
-        .post("/workouts/exercise", exercise)
-        .then((res) => {
-            console.log(res.data);
-            dispatch({ type: ADD_EXERCISE, payload: exercise });
-            dispatch({ type: CLEAR_NEW_EXERCISE });
-        })
-        .catch((err) => console.log(err));
+export const submitExercise = (exercise, file) => (dispatch) => {
+    if (file) {
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child(file.name);
+        fileRef.put(file).then(() => {
+            alert("File uploaded.");
+        });
+
+        const fileUpload = fileRef.put(file);
+
+        fileUpload.on(
+            "state_changed",
+            (snapshot) => {
+                dispatch({
+                    type: SET_PROGRESS,
+                    payload:
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+                });
+            },
+            (error) => {
+                console.log(error);
+            },
+            () => {
+                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    console.log(downloadURL);
+                    const data = {
+                        name: "videoURL",
+                        value: downloadURL,
+                    };
+                    exercise.videoURL = downloadURL;
+                    dispatch({ type: UPDATE_NEW_EXERCISE, payload: data });
+                    axios
+                        .post("/workouts/exercise", exercise)
+                        .then((res) => {
+                            dispatch({ type: ADD_EXERCISE, payload: exercise });
+                            dispatch({ type: CLEAR_NEW_EXERCISE });
+                        })
+                        .catch((err) => console.log(err));
+                });
+            }
+        );
+    } else {
+        alert("Please select a file.");
+    }
 };
 
-export const submitWorkout = (workout) => (dispatch) => {
-    axios
-        .post("/workouts/workout", workout)
-        .then(() => {
-            dispatch({ type: ADD_WORKOUT, payload: workout });
-            dispatch({ type: CLEAR_NEW_WORKOUT });
-        })
-        .catch((err) => console.log(err));
+export const submitWorkout = (workout, file) => (dispatch) => {
+    if (file) {
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child(file.name);
+        fileRef.put(file).then(() => {
+            alert("File uploaded.");
+        });
+
+        const fileUpload = fileRef.put(file);
+
+        fileUpload.on(
+            "state_changed",
+            (snapshot) => {
+                dispatch({
+                    type: SET_PROGRESS,
+                    payload:
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+                });
+            },
+            (error) => {
+                console.log(error);
+            },
+            () => {
+                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    console.log(downloadURL);
+                    const data = {
+                        name: "videoURL",
+                        value: downloadURL,
+                    };
+                    workout.imageURL = downloadURL;
+                    dispatch({ type: UPDATE_NEW_WORKOUT, payload: data });
+
+                    axios
+                        .post("/workouts/workout", workout)
+                        .then(() => {
+                            dispatch({ type: ADD_WORKOUT, payload: workout });
+                            dispatch({ type: CLEAR_NEW_WORKOUT });
+                        })
+                        .catch((err) =>
+                            dispatch({ type: SET_ERRORS, payload: err })
+                        );
+                });
+            }
+        );
+    } else {
+        alert("Please select a file.");
+    }
 };
 
-export const submitProgram = (program) => (dispatch) => {
-    axios
-        .post("/workouts/program", program)
-        .then(() => {
-            dispatch({ type: ADD_PROGRAM, payload: program });
-            dispatch({ type: CLEAR_NEW_PROGRAM });
-        })
-        .catch((err) => console.log(err));
+export const submitProgram = (program, file) => (dispatch) => {
+    if (file) {
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child(file.name);
+        fileRef.put(file).then(() => {
+            alert("File uploaded.");
+        });
+
+        const fileUpload = fileRef.put(file);
+
+        fileUpload.on(
+            "state_changed",
+            (snapshot) => {
+                dispatch({
+                    type: SET_PROGRESS,
+                    payload:
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+                });
+            },
+            (error) => {
+                console.log(error);
+            },
+            () => {
+                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    console.log(downloadURL);
+                    const data = {
+                        name: "videoURL",
+                        value: downloadURL,
+                    };
+                    program.imageURL = downloadURL;
+                    dispatch({ type: UPDATE_NEW_PROGRAM, payload: data });
+                    console.log(program);
+                    axios
+                        .post("/workouts/program", program)
+                        .then(() => {
+                            dispatch({ type: ADD_PROGRAM, payload: program });
+                            dispatch({ type: CLEAR_NEW_PROGRAM });
+                        })
+                        .catch((err) => console.log(err));
+                });
+            }
+        );
+    } else {
+        alert("Please select a file.");
+    }
+};
+
+export const submitMeal = (meal, file) => (dispatch) => {
+    if (file) {
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child(file.name);
+        fileRef.put(file).then(() => {
+            alert("File uploaded.");
+        });
+
+        const fileUpload = fileRef.put(file);
+
+        fileUpload.on(
+            "state_changed",
+            (snapshot) => {
+                dispatch({
+                    type: SET_PROGRESS,
+                    payload:
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+                });
+            },
+            (error) => {
+                console.log(error);
+            },
+            () => {
+                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    console.log(downloadURL);
+                    const data = {
+                        name: "videoURL",
+                        value: downloadURL,
+                    };
+                    meal.imageURL = downloadURL;
+                    dispatch({ type: UPDATE_NEW_MEAL, payload: data });
+                    console.log(meal);
+                    axios
+                        .post("/meals", meal)
+                        .then(() => {
+                            dispatch({ type: ADD_MEAL, payload: meal });
+                            dispatch({ type: CLEAR_NEW_MEAL });
+                        })
+                        .catch((err) => console.log(err));
+                });
+            }
+        );
+    } else {
+        alert("Please select a file.");
+    }
 };

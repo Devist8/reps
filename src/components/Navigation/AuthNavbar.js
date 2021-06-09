@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 
 //MUI
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
@@ -21,6 +21,19 @@ import { ReactComponent as StoreIcon } from "../../icons/store_icon.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/actions/userActions";
 
+const GlobalCss = withStyles({
+    "@global": {
+        ".MuiListItem-root.Mui-selected:hover": {
+            backgroundColor: "rgba(0, 181, 255, 0.3)",
+        },
+        ".MuiListItem-root.Mui-selected": {
+            backgroundColor: "rgba(0, 181, 255, 0.3)",
+        },
+        ".MuiListItem-root:hover": {
+            backgroundColor: "rgba(0, 181, 255, 0.3)",
+        },
+    },
+})(() => null);
 const useStyles = makeStyles((theme) => ({
     button: {
         display: "flex",
@@ -30,7 +43,11 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
     },
     drawerPaper: {
-        backgroundImage: `url(/left_nav.svg)`,
+        background: "linear-gradient(-213deg, #7DD9FF 77%, #4CCAFF )",
+        overflow: "hidden",
+    },
+    mealsDrawerPaper: {
+        background: "linear-gradient(-213deg, #cfffd4 77%, #b1fcb9 )",
         overflow: "hidden",
     },
     leftDrawer: {
@@ -44,17 +61,7 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: "rgba(0, 0, 0, 0.5)",
         },
     },
-    "@global": {
-        ".MuiListItem-root.Mui-selected:hover": {
-            backgroundColor: "rgba(0, 181, 255, 0.3)",
-        },
-        ".MuiListItem-root.Mui-selected": {
-            backgroundColor: "rgba(0, 181, 255, 0.3)",
-        },
-        ".MuiListItem-root:hover": {
-            backgroundColor: "rgba(0, 181, 255, 0.3)",
-        },
-    },
+
     focus: {
         borderRadius: "10px",
     },
@@ -62,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const AuthNavbar = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
     const classes = useStyles();
 
     return (
@@ -70,7 +78,9 @@ export const AuthNavbar = () => {
                 open={true}
                 variant="permanent"
                 classes={{
-                    paper: classes.drawerPaper,
+                    paper: !location.pathname.includes("meals")
+                        ? classes.drawerPaper
+                        : classes.mealsDrawerPaper,
                     paperAnchorDockedLeft: classes.leftDrawer,
                 }}
             >

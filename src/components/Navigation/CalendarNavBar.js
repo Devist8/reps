@@ -2,6 +2,7 @@ import React from "react";
 import Calendar from "react-calendar";
 import "./Calendar.css";
 import dayjs from "dayjs";
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,10 +22,19 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerPaper: {
         width: "300px",
-        backgroundImage: `url(/right_nav.svg)`,
+        backgroundColor: "#e3f6ff",
+    },
+    mealsDrawerPaper: {
+        width: "300px",
+        backgroundColor: "#e6ffe9",
     },
     selectedTile: {
         backgroundColor: theme.palette.primary.main,
+        borderRadius: "30px",
+        padding: 0,
+    },
+    mealsSelectedTile: {
+        backgroundColor: theme.palette.meals.dark,
         borderRadius: "30px",
         padding: 0,
     },
@@ -43,6 +53,7 @@ export const DateHeader = (props) => {
     const { date } = props;
     const dayDate = dayjs(date).format("DD");
     const day = dayjs(date).format("ddd");
+    const location = useLocation();
 
     return (
         <Grid container>
@@ -58,7 +69,9 @@ export const DateHeader = (props) => {
 
 export const CalendarNavBar = () => {
     const classes = useStyles();
+    const location = useLocation();
     const [selected, setSelected] = React.useState([new Date()]);
+    console.log(location);
     const handleDateClick = (value) => {
         let data = [...selected];
         selected.find(
@@ -77,8 +90,12 @@ export const CalendarNavBar = () => {
             <Drawer
                 variant="permanent"
                 anchor="right"
+                className={classes.drawer}
+                style={{ width: "300px", backgroundColor: "#e3f6ff" }}
                 classes={{
-                    paper: classes.drawerPaper,
+                    paper: !location.pathname.includes("meals")
+                        ? classes.drawerPaper
+                        : classes.mealsDrawerPaper,
                     paperAnchorDockedRight: classes.rightDrawer,
                 }}
             >
@@ -92,7 +109,9 @@ export const CalendarNavBar = () => {
                                         dayjs(date).format("DD-MM-YYYY")
                                 )
                             ) {
-                                return classes.selectedTile;
+                                return !location.pathname.includes("meals")
+                                    ? classes.selectedTile
+                                    : classes.mealsSelectedTile;
                             } else {
                                 return classes.tile;
                             }

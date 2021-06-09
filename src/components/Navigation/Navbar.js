@@ -34,24 +34,23 @@ export const Navbar = () => {
     console.log(mealPage);
     return (
         <AppBar
-            elevation={2}
+            elevation={1}
             className={classes.root}
             color="default"
             style={
-                !!mealsMatch
-                    ? { backgroundImage: `url(/top_nav-meals.svg)` }
-                    : { backgroundImage: `url(/top_nav.svg)` }
+                !location.pathname.includes("meals")
+                    ? {
+                          background:
+                              "linear-gradient(105deg, #7DD9FF, #b5e9ff 28%, #e3f6ff)",
+                      }
+                    : {
+                          background:
+                              "linear-gradient(105deg, #cfffd4, #e0ffe4 28%, #e6ffe9)",
+                      }
             }
         >
             {!auth ? (
-                <Toolbar
-                    className="nav-container"
-                    style={
-                        mealsMatch
-                            ? { backgroundImage: "url(/top_nav-meals.svg)" }
-                            : { backgroundImage: `url(/top_nav.svg)` }
-                    }
-                >
+                <Toolbar className="nav-container">
                     <Button
                         color="inherit"
                         className={classes.navBtn}
@@ -80,7 +79,17 @@ export const Navbar = () => {
             ) : (
                 <Toolbar
                     className="nav-container"
-                    style={{ backgroundImage: `url(/top_nav.svg)` }}
+                    style={
+                        !location.pathname.includes("meals")
+                            ? {
+                                  background:
+                                      "linear-gradient(105deg, #7DD9FF, #b5e9ff 28%, #e3f6ff)",
+                              }
+                            : {
+                                  background:
+                                      "linear-gradient(105deg, #cfffd4, #e0ffe4 28%, #e6ffe9)",
+                              }
+                    }
                 >
                     {info.displayName && <UserButton />}
                 </Toolbar>

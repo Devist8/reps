@@ -7,6 +7,7 @@ import {
     UPDATE_NEW_EXERCISE,
     UPDATE_NEW_WORKOUT,
     UPDATE_NEW_PROGRAM,
+    UPDATE_NEW_MEAL,
     ADD_EXERCISE,
     ADD_WORKOUT,
     ADD_PROGRAM,
@@ -16,6 +17,7 @@ import {
     SET_FILE,
     CLEAR_FILE,
     SET_MEALS,
+    CLEAR_NEW_MEAL,
 } from "../types";
 
 const initialState = {
@@ -52,16 +54,27 @@ const initialState = {
         type: "program",
         description: "",
         workouts: { "Week 1": [] },
-        image: "imageURL",
+        imageURL: "",
         muscles: [],
         equipment: [],
         exerciseCount: 0,
+    },
+    newMeal: {
+        title: "",
+        imageURL: "",
+        rating: "",
+        labels: [],
+        ingredients: [],
+        directions: [],
+        nutrition: [],
+        type: "",
     },
 };
 
 export default function (state = initialState, action) {
     switch (action.type) {
         case SET_FILE:
+            console.log(action.payload);
             return {
                 ...state,
                 file: action.payload,
@@ -99,12 +112,12 @@ export default function (state = initialState, action) {
         case ADD_WORKOUT:
             return {
                 ...state,
-                programs: [...state.programs, action.payload],
+                workouts: [...state.workouts, action.payload],
             };
         case ADD_PROGRAM:
             return {
                 ...state,
-                exercises: [...state.exercises, action.payload],
+                programs: [...state.programs, action.payload],
             };
         case UPDATE_NEW_EXERCISE:
             console.log(action.payload);
@@ -128,6 +141,14 @@ export default function (state = initialState, action) {
                 ...state,
                 newProgram: {
                     ...state.newProgram,
+                    [action.payload.name]: action.payload.value,
+                },
+            };
+        case UPDATE_NEW_MEAL:
+            return {
+                ...state,
+                newMeal: {
+                    ...state.newMeal,
                     [action.payload.name]: action.payload.value,
                 },
             };
@@ -175,6 +196,20 @@ export default function (state = initialState, action) {
                     equipment: [],
                     exerciseCount: 0,
                     workoutCount: 0,
+                },
+            };
+        case CLEAR_NEW_MEAL:
+            return {
+                ...state,
+                newMeal: {
+                    title: "",
+                    imageURL: "",
+                    rating: "",
+                    labels: [],
+                    ingredients: [],
+                    directions: [],
+                    nutrition: [],
+                    type: "",
                 },
             };
         default:

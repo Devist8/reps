@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -33,8 +34,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const BubbleArray = (props) => {
-    const { array, itemType, selectedArray, addHandler, color } = props;
+    const { array, itemType, selectedArray, addHandler, color, rr } = props;
     const classes = useStyles();
+    const location = useLocation();
 
     return (
         <Grid container spacing={1} className={classes.bubbleArray}>
@@ -61,6 +63,10 @@ export const BubbleArray = (props) => {
                             style={
                                 color === "secondary"
                                     ? { color: "black" }
+                                    : location.pathname.includes("meal")
+                                    ? {
+                                          backgroundColor: "#b1fcb9",
+                                      }
                                     : { color: "white" }
                             }
                         />

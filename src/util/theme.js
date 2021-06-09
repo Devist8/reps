@@ -13,6 +13,12 @@ export default {
             dark: "#98d9f5",
             contrastText: "#000",
         },
+        meals: {
+            light: "#e6ffe9",
+            main: "#cfffd4",
+            dark: "#b1fcb9",
+            contrastText: "#000",
+        },
     },
     spreadStyles: {},
 };

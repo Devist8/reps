@@ -73,27 +73,29 @@ export const Meal = (props) => {
                 <Grid item md={4} xs={6}>
                     <img
                         src={meal[0].imageURL}
-                        style={{ width: "100%", height: "100%" }}
+                        style={{ width: "100%", height: "30vh" }}
                     />
                 </Grid>
                 <Grid item md={4} xs={6}>
                     <Typography variant="h6">Ingredients</Typography>
                     <List>
-                        {meal[0].ingredients.map((ingredient) => {
-                            return (
-                                <ul
-                                    style={{
-                                        listStyleType: "none",
-                                        paddingLeft: 0,
-                                    }}
-                                >
-                                    <li>{ingredient}</li>
-                                </ul>
-                            );
-                        })}
+                        <ul
+                            style={{
+                                listStyleType: "none",
+                                paddingLeft: 0,
+                            }}
+                        >
+                            {meal[0].ingredients.map((ingredient) => {
+                                return (
+                                    <li style={{ margin: "5px 0" }}>
+                                        {ingredient}
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </List>
                 </Grid>
-                <Grid item md={4} xs={12}>
+                <Grid item md={meal[0].directions.length > 5 ? 12 : 4} xs={12}>
                     <Typography variant="h6">Directions</Typography>
                     <ol
                         style={{
@@ -101,7 +103,7 @@ export const Meal = (props) => {
                         }}
                     >
                         {meal[0].directions.map((step) => {
-                            return <li>{step}</li>;
+                            return <li style={{ margin: "8px 0" }}>{step}</li>;
                         })}
                     </ol>
                 </Grid>

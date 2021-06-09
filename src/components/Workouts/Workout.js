@@ -61,9 +61,16 @@ const useStyles = makeStyles((theme) => ({
 export const WorkoutHeader = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const [preview, setPreview] = React.useState(null);
-    const { workout, handleOpen, edit, handleChange, noButton, schedule } =
-        props;
+    const {
+        workout,
+        handleOpen,
+        edit,
+        handleChange,
+        noButton,
+        schedule,
+        preview,
+        setPreview,
+    } = props;
 
     const handleEditPicture = () => {
         const fileInput = document.getElementById("imageInput");
@@ -80,6 +87,7 @@ export const WorkoutHeader = (props) => {
                     console.log(file);
                     dispatch({ type: SET_FILE, payload: file });
                     setPreview(URL.createObjectURL(file));
+                    console.log(preview);
                 }
             };
             reader.readAsDataURL(e.target.files[0]);
@@ -320,7 +328,16 @@ export const ExerciseList = (props) => {
 export const Workout = (props) => {
     const theme = useTheme();
     const classes = useStyles();
-    const { workout, edit, handleChange, small, noButton, schedule } = props;
+    const {
+        workout,
+        edit,
+        handleChange,
+        small,
+        noButton,
+        schedule,
+        preview,
+        setPreview,
+    } = props;
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = (e) => {
@@ -346,6 +363,8 @@ export const Workout = (props) => {
                 handleChange={handleChange}
                 noButton={noButton}
                 schedule={schedule}
+                preview={preview}
+                setPreview={setPreview}
             />
             {workout.exercises.length > 0 && (
                 <ExerciseList
