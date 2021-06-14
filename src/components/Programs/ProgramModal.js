@@ -94,7 +94,11 @@ export const WorkoutList = (props) => {
         <Grid container className={classes.workoutListContainer}>
             {Object.entries(orderedWorkouts).map((week, weekIndex) => {
                 return (
-                    <Grid container style={{ overflow: "hidden" }}>
+                    <Grid
+                        container
+                        style={{ overflow: "hidden" }}
+                        key={week[0]}
+                    >
                         <Grid
                             item
                             xs={12}
@@ -156,6 +160,7 @@ export const WorkoutList = (props) => {
                                             in={week[0] === open}
                                             mountOnEnter
                                             unmountOnExit
+                                            key={workout.docId}
                                             timeout={{
                                                 enter:
                                                     workout.exercises.length *

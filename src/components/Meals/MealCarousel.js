@@ -27,6 +27,12 @@ const useStyles = makeStyles((theme) => ({
     },
     stepperRoot: {
         background: "none",
+        "& .MuiMobileStepper-dotActive": {
+            backgroundColor: "#A9ECB0",
+        },
+    },
+    dotActive: {
+        backgroundColor: "#A9ECB0",
     },
 }));
 
@@ -105,12 +111,13 @@ export const MealCarousel = (props) => {
             </Grid>
             <Grid
                 item
-                xs={12}
+                xs={11}
                 style={{
                     display: "flex",
                     textAlign: "center",
                     alignItems: "center",
                     justifyContent: "center",
+                    width: "50vw",
                 }}
             >
                 <MobileStepper
@@ -118,7 +125,10 @@ export const MealCarousel = (props) => {
                     position="static"
                     activeStep={slide - 1}
                     steps={maxSlide}
-                    classes={{ root: classes.stepperRoot }}
+                    classes={{
+                        root: classes.stepperRoot,
+                        dotActive: { backgroundColor: "green" },
+                    }}
                 />
             </Grid>
         </Grid>

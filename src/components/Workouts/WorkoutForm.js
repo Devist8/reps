@@ -90,12 +90,6 @@ export const WorkoutForm = (props) => {
         dispatch(updateNewWorkout(data));
     };
 
-    const uploadFile = () => {
-        if (file) {
-            dispatch(uploadToFirebase(file));
-        }
-    };
-
     const submit = () => {
         dispatch(submitWorkout(newWorkout, file));
         setPreview(null);

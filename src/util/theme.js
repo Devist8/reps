@@ -15,7 +15,7 @@ export default {
         },
         meals: {
             light: "#e6ffe9",
-            main: "#cfffd4",
+            main: "#A9ECB0",
             dark: "#b1fcb9",
             contrastText: "#000",
         },

@@ -2,6 +2,7 @@ import React from "react";
 import firebase from "firebase/app";
 import "firebase/storage";
 import { v4 as uuid_v4 } from "uuid";
+import dayjs from "dayjs";
 
 //React Router
 import { useLocation } from "react-router-dom";
@@ -15,12 +16,12 @@ import {
     CardActionArea,
     CardActions,
     CardMedia,
-    List,
-    ListItem,
+    Box,
     GridList,
     GridListTile,
     Typography,
     Slide,
+    Popper,
     TextField,
     IconButton,
     Badge,
@@ -32,12 +33,14 @@ import ScheduleIcon from "@material-ui/icons/Schedule";
 import { Difficulty } from "../Difficulty";
 import { ActionButton } from "../ActionButton";
 import { Exercise } from "../Exercises/Exercise";
+import { Scheduler } from "../Scheduler";
 
 //Redux
 
 import { useDispatch } from "react-redux";
 import { CLEAR_FILE, SET_FILE } from "../../redux/types";
 import { uploadToFirebase } from "../../redux/actions/dataActions";
+import { GolfCourseSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
     cardRoot: {
@@ -61,6 +64,8 @@ const useStyles = makeStyles((theme) => ({
 export const WorkoutHeader = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const [anchor, setAnchor] = React.useState(null);
+    const [open, setOpen] = React.useState(false);
     const {
         workout,
         handleOpen,
@@ -94,6 +99,11 @@ export const WorkoutHeader = (props) => {
         } else {
             dispatch({ type: CLEAR_FILE, payload: file });
         }
+    };
+
+    const handleEditDate = () => {
+        const selectDate = document.getElementById("scheduleDate");
+        selectDate.select();
     };
 
     return (
@@ -238,13 +248,28 @@ export const WorkoutHeader = (props) => {
                         <CardActions>
                             {schedule ? (
                                 <IconButton>
-                                    <ScheduleIcon />
+                                    <ScheduleIcon
+                                        onClick={(e) => {
+                                            setAnchor(e.currentTarget);
+                                            setOpen(!open);
+                                        }}
+                                    />
+                                    <Popper
+                                        open={open}
+                                        anchorEl={anchor}
+                                        style={{ zIndex: "1000" }}
+                                    >
+                                        <Scheduler
+                                            id={workout.id}
+                                            item={workout}
+                                            popperToggle={() => setOpen(false)}
+                                        />
+                                    </Popper>
                                 </IconButton>
                             ) : (
-                                <ActionButton
-                                    edit={edit}
-                                    handleChange={handleChange}
-                                />
+                                <Box>
+                                    <ActionButton edit={edit} />
+                                </Box>
                             )}
                         </CardActions>
                     </Grid>
@@ -274,7 +299,7 @@ export const ExerciseList = (props) => {
                 {workout.exercises.map((exercise, index) => {
                     return (
                         <Slide
-                            key={exercise.id}
+                            key={exercise.docId}
                             in={open}
                             mountOnEnter
                             unmountOnExit
@@ -286,6 +311,7 @@ export const ExerciseList = (props) => {
                             }}
                         >
                             <GridListTile
+                                key={exercise.id}
                                 cols={1}
                                 style={
                                     workout.exercises.length === index + 1

@@ -114,16 +114,18 @@ export const ProgramForm = (props) => {
         const newMuscles = workout.muscles.filter(
             (muscle) => !newProgram.muscles.includes(muscle)
         );
+        console.log(workout);
+        console.log(newProgram.muscles.includes(workout.muscles));
         data.name = "muscles";
         data.value = [...newProgram.muscles, ...newMuscles];
-
+        console.log(data);
         dispatch(updateNewProgram(data));
         const newEquipment = workout.equipment.filter(
             (item) => !newProgram.equipment.includes(item)
         );
         data.name = "equipment";
         data.value = [...newProgram.equipment, ...newEquipment];
-
+        console.log(data);
         dispatch(updateNewProgram(data));
     };
 
@@ -168,6 +170,7 @@ export const ProgramForm = (props) => {
 
     const submit = () => {
         dispatch(submitProgram(newProgram, file));
+        setPreview(null);
     };
 
     return (

@@ -3,26 +3,43 @@ import firebase from "firebase/app";
 import "firebase/storage";
 import { SET_AUTHENTICATED } from "../redux/types";
 import axios from "axios";
+import dayjs from "dayjs";
+import LocalizedFormat from "dayjs/plugin/localizedFormat";
 
-export const handleImageChange = (event) => {
-    const image = event.target.files[0];
-    const formData = new FormData();
-    formData.append("image", image, image.name);
-    const file = new File(formData, image.name);
-    const extension = file.name.slice(file.name.lastIndexOf(".") + 1);
-
-    const imageFileName = `${Math.round(
-        Math.random() * 100000000000
-    )}.${extension}`;
-
-    const storageRef = firebase.storage().ref().child(imageFileName);
-
-    storageRef.put(file).then((snapshot) => {
-        console.log(snapshot);
+export const getWorkoutCount = (program) => {
+    let count = 0;
+    Object.values(program.workouts).forEach((week) => {
+        count += week.length;
     });
+    return count;
 };
 
-export const handleEditPicture = () => {
-    const fileInput = document.getElementById("imageInput");
-    fileInput.click();
+export const generateDateRange = (itemToSchedule) => {
+    const prefferedDays = ["0", "1", "3", "5"];
+    const newDateRange = [];
+    let dateRange = [...itemToSchedule.dateRange];
+    let workoutCount = itemToSchedule.workoutCount
+        ? itemToSchedule.workoutCount
+        : getWorkoutCount(itemToSchedule);
+    let currentDate = dateRange[0];
+
+    while (workoutCount > 0) {
+        if (prefferedDays.includes(dayjs(currentDate).format("d"))) {
+            newDateRange.push(currentDate);
+            workoutCount = workoutCount - 1;
+            currentDate = currentDate + 86400000;
+        } else {
+            currentDate = currentDate + 86400000;
+            console.log(currentDate);
+        }
+    }
+    return newDateRange;
+};
+
+export const scheduleExercises = (workout) => {
+    workout.exercises.map((exercise, index) => {
+        exercise.date = workout.date;
+    });
+    console.log(workout);
+    return workout;
 };

@@ -75,7 +75,7 @@ const styles = (theme) => ({
     container: {
         marginTop: "80px",
         marginLeft: "10vw",
-        maxWidth: "87%",
+        maxWidth: "90%",
 
         [theme.breakpoints.up("lg")]: {
             marginRight: "23vw",

@@ -6,7 +6,7 @@ import {
 } from "../../util/static-data";
 
 //MUI
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import {
     Grid,
     Typography,
@@ -35,9 +35,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { uploadToFirebase, submitMeal } from "../../redux/actions/dataActions";
 import { UPDATE_NEW_MEAL, SET_FILE, CLEAR_FILE } from "../../redux/types";
 
+const mealsTextField = withStyles({
+    root: {},
+});
+
 const useStyles = makeStyles((theme) => ({
     editImageIcon: {
-        backgroundColor: theme.palette.secondary.light,
+        backgroundColor: "#A9ECB0",
     },
     headerContainer: {
         display: "flex",
@@ -77,6 +81,17 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
     },
     root: {},
+    progressBar: {
+        backgroundColor: "#A9ECB0",
+    },
+    textFieldRoot: {
+        "& label.Mui-focused": {
+            color: "springgreen",
+        },
+        "& .MuiInput-underline:after": {
+            borderBottom: `2px solid springgreen`,
+        },
+    },
 }));
 
 export const MealForm = (props) => {
@@ -95,14 +110,12 @@ export const MealForm = (props) => {
     const classes = useStyles();
     const theme = useTheme();
 
-    console.log(progress);
-
     const handleChange = (e) => {
         const data = {
             name: e.target.name,
             value: e.target.value,
         };
-        console.log(data);
+
         dispatch({ type: UPDATE_NEW_MEAL, payload: data });
     };
 
@@ -133,12 +146,9 @@ export const MealForm = (props) => {
     const changeNewNutrition = (e) => {
         e.persist();
         let newArray = [];
-        console.log(e.target.name);
-        console.log(e.target.value);
         if (e.target.name === "nutrition") {
             const newObject = { ...newNutrition, name: e.target.value };
 
-            console.log(newObject);
             setNewNutrition(newObject);
         } else {
             setNewNutrition({ ...newNutrition, value: e.target.value });
@@ -170,7 +180,6 @@ export const MealForm = (props) => {
         });
         e.target.name = "nutrition";
         e.target.value = newObject;
-        console.log(e.target.value);
         handleChange(e);
         setNewNutrition({
             name: "",
@@ -252,6 +261,7 @@ export const MealForm = (props) => {
                         onChange={handleChange}
                         className={classes.textField}
                         style={{ width: "8vw" }}
+                        classes={{ root: classes.textFieldRoot }}
                     />
                     <FormControl>
                         <Typography
@@ -350,6 +360,7 @@ export const MealForm = (props) => {
                                     name="ingredients"
                                     autoWidth
                                     value={newIngredient}
+                                    classes={{ root: classes.textFieldRoot }}
                                     onChange={(e) =>
                                         setNewIngredient(e.target.value)
                                     }
@@ -413,6 +424,7 @@ export const MealForm = (props) => {
                                     name="directions"
                                     value={newStep}
                                     style={{ width: "30vw" }}
+                                    classes={{ root: classes.textFieldRoot }}
                                     onChange={(e) => setNewStep(e.target.value)}
                                 />
                                 <IconButton
@@ -515,10 +527,12 @@ export const MealForm = (props) => {
                         style={{
                             backgroundColor: "black",
                         }}
+                        classes={{
+                            barColorPrimary: classes.progressBar,
+                        }}
                         variant="determinate"
                         size={40}
                         value={progress}
-                        color="primary"
                     />
                 </Grid>
                 <Button

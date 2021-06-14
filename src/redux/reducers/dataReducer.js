@@ -18,6 +18,7 @@ import {
     CLEAR_FILE,
     SET_MEALS,
     CLEAR_NEW_MEAL,
+    SET_SCHEDULE,
 } from "../types";
 
 const initialState = {
@@ -25,6 +26,7 @@ const initialState = {
     workouts: [],
     programs: [],
     meals: [],
+    schedule: [],
     file: null,
     newExercise: {
         title: "",
@@ -103,6 +105,11 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 meals: action.payload,
+            };
+        case SET_SCHEDULE:
+            return {
+                ...state,
+                schedule: action.payload,
             };
         case ADD_EXERCISE:
             return {

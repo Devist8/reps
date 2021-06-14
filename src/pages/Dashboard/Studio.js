@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import ScheduleIcon from "@material-ui/icons/Schedule";
+import dayjs from "dayjs";
 
 //Components
 import { ExerciseForm } from "../../components/Exercises/ExerciseForm";
@@ -29,12 +30,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        marginLeft: "0.5vw",
         width: "100%",
         minHeight: "563px",
     },
     creatorContainer: {
         boxShadow: "1px 2px 4px 1px rgba(0,0,0,0.1)",
+        marginLeft: "5vw",
     },
     buttonContainer: {
         textAlign: "center",
@@ -76,6 +77,12 @@ export const Studio = () => {
     const changeCreator = (selected) => {
         setCreator(selected);
     };
+
+    const handleEditDate = () => {
+        const selectDate = document.getElementById("scheduleDate");
+        selectDate.click();
+    };
+    const handleDateChange = () => {};
 
     return (
         <Grid container className={classes.root}>
@@ -127,10 +134,7 @@ export const Studio = () => {
             </Grid>
             <Grid container className={classes.collectionContainer}>
                 <Grid item xs={12} style={{ width: "100%" }}>
-                    <Typography
-                        variant="h4"
-                        style={{ margin: "1rem 0 0.5rem 0 " }}
-                    >
+                    <Typography variant="h4" style={{ margin: "1rem 0 0 0 " }}>
                         Programs
                     </Typography>
                     <Grid item xs={12} style={{ width: "100%" }}>
@@ -140,18 +144,17 @@ export const Studio = () => {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography
-                        variant="h4"
-                        style={{ margin: "1rem 0 0.5rem 0 " }}
-                    >
+                    <Typography variant="h4" style={{ margin: "1rem 0 0 0 " }}>
                         Workouts
                     </Typography>
                     <Grid
                         item
                         xs={12}
                         style={{
+                            width: "75vw",
                             display: "flex",
                             flexWrap: "wrap",
+                            margin: "0 2vw",
                         }}
                     >
                         {workouts.map((workout) => {
@@ -161,15 +164,23 @@ export const Studio = () => {
                                     lg={5}
                                     md={9}
                                     style={{
-                                        marginBottom: "2%",
                                         margin: "0% 2% 2% 2%",
-                                        width: "100%",
+                                        width: "75vw",
                                         display: "flex",
                                         justifyContent: "center",
                                     }}
                                     key={workout.id}
                                 >
                                     <Workout workout={workout} schedule />
+                                    <TextField
+                                        id="scheduleDate"
+                                        type="date"
+                                        defaultValue={dayjs(new Date()).format(
+                                            "DD-MM-YYYY"
+                                        )}
+                                        onChange={handleDateChange}
+                                        style={{ visibility: "hidden" }}
+                                    />
                                 </Grid>
                             );
                         })}
@@ -185,7 +196,7 @@ export const Studio = () => {
                     <Grid
                         container
                         style={{
-                            width: "100%",
+                            width: "75vw",
                         }}
                     >
                         {exercises.map((exercise, i) => {

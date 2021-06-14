@@ -22,19 +22,30 @@ import {
     ADD_NEW_MEAL,
     UPDATE_NEW_MEAL,
     CLEAR_NEW_MEAL,
+    SET_SCHEDULE,
 } from "../types";
 
+import dayjs from "dayjs";
+import LocalizedFormat from "dayjs/plugin/localizedFormat";
+
 import { getFBToken } from "./userActions";
+import {
+    generateDateRange,
+    getWorkoutCount,
+    scheduleExercises,
+} from "../../util/functions";
 
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import firebase from "firebase";
+dayjs.extend(LocalizedFormat);
 
 export const setUserCollection = (data) => (dispatch) => {
     dispatch({ type: SET_EXERCISES, payload: data.exercises });
     dispatch({ type: SET_WORKOUTS, payload: data.workouts });
     dispatch({ type: SET_PROGRAMS, payload: data.programs });
     dispatch({ type: SET_MEALS, payload: data.meals });
+    dispatch({ type: SET_SCHEDULE, payload: data.schedule });
 };
 
 export const updateNewExercise = (data) => (dispatch) => {
@@ -99,6 +110,7 @@ export const getUserData = () => (dispatch) => {
                               const data = {
                                   ...res.data.userData,
                               };
+                              console.log(data);
                               dispatch(setUserCollection(data));
                               dispatch({
                                   type: SET_USER,
@@ -114,34 +126,6 @@ export const getUserData = () => (dispatch) => {
                   })
             : console.log("Please log in again.");
     });
-};
-
-export const uploadImage = (formData) => (dispatch) => {
-    dispatch({ type: LOADING_USER });
-    axios
-        .post("/user/image", formData)
-        .then((res) => {
-            return res.imageURL;
-        })
-        .catch((err) => console.log(err));
-};
-
-export const uploadVideo = (formData) => (dispatch) => {
-    dispatch({ type: LOADING_USER });
-    for (let value of formData.values()) {
-        console.log(value);
-    }
-    console.log(formData.values().name);
-    axios
-        .post("/video", formData)
-        .then((res) => {
-            const data = {
-                name: "videoURL",
-                value: res.data.videoURL,
-            };
-            dispatch(updateNewExercise(data));
-        })
-        .catch((err) => console.log(err));
 };
 
 export const uploadNewWorkoutImage = (formData) => (dispatch) => {
@@ -270,7 +254,7 @@ export const submitProgram = (program, file) => (dispatch) => {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
         fileRef.put(file).then(() => {
-            alert("File uploaded.");
+            console.log("file uploaded");
         });
 
         const fileUpload = fileRef.put(file);
@@ -296,7 +280,6 @@ export const submitProgram = (program, file) => (dispatch) => {
                     };
                     program.imageURL = downloadURL;
                     dispatch({ type: UPDATE_NEW_PROGRAM, payload: data });
-                    console.log(program);
                     axios
                         .post("/workouts/program", program)
                         .then(() => {
@@ -357,4 +340,44 @@ export const submitMeal = (meal, file) => (dispatch) => {
     } else {
         alert("Please select a file.");
     }
+};
+
+export const addToSchedule = (itemToSchedule) => (dispatch) => {
+    const type = itemToSchedule.type;
+
+    if (type === "workout") {
+        itemToSchedule.exercises.map((exercise, index) => {
+            exercise.date = itemToSchedule.date;
+        });
+    }
+    if (type === "program") {
+        let dateIndex = 0;
+        itemToSchedule.dateRange = generateDateRange(itemToSchedule);
+        console.log(generateDateRange(itemToSchedule));
+        Object.values(itemToSchedule.workouts).map((week) => {
+            week.sort();
+            week.map((workout) => {
+                workout.date = itemToSchedule.dateRange[dateIndex];
+                scheduleExercises(workout);
+                dateIndex = dateIndex + 1;
+            });
+        });
+    }
+
+    axios
+        .post("/schedule", itemToSchedule)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+};
+
+export const getScheduled = () => (dispatch) => {
+    axios.get("/schedule").then((res) => {
+        const thisMorning = dayjs(dayjs(Date.now()).format("L")).valueOf();
+        console.log(thisMorning);
+        console.log(res.data);
+    });
 };

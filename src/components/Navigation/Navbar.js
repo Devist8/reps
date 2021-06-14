@@ -30,8 +30,6 @@ export const Navbar = () => {
     const auth = useSelector((state) => state.user.authenticated);
     const info = useSelector((state) => state.user.info);
 
-    console.log(!!mealsMatch);
-    console.log(mealPage);
     return (
         <AppBar
             elevation={1}

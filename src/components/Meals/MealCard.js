@@ -39,7 +39,12 @@ export const MealCard = (props) => {
             cols={1}
             component={Link}
             to={`/meals/${meal.id}`}
-            style={{ width: "20vw", height: "20vh", margin: "0 0.4vw" }}
+            style={{
+                width: "20vw",
+                height: "20vh",
+                margin: "0 0.4vw",
+                borderRadius: "8px",
+            }}
         >
             <FormControl>
                 <ButtonBase
@@ -48,13 +53,18 @@ export const MealCard = (props) => {
                         <img
                             src={meal.imageURL}
                             alt={meal.title}
-                            style={{ width: "20vw", height: "20vh" }}
+                            style={{
+                                width: "20vw",
+                                height: "20vh",
+                                borderRadius: "8px",
+                            }}
                         />
                     }
                 />
             </FormControl>
             <GridListTileBar
                 title={meal.title}
+                style={{ borderRadius: "0 0 8px 8px" }}
                 subtitle={
                     <StyledRating
                         readOnly

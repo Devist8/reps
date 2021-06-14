@@ -71,7 +71,7 @@ export const CalendarNavBar = () => {
     const classes = useStyles();
     const location = useLocation();
     const [selected, setSelected] = React.useState([new Date()]);
-    console.log(location);
+
     const handleDateClick = (value) => {
         let data = [...selected];
         selected.find(

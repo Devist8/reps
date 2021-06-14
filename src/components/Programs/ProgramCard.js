@@ -14,12 +14,15 @@ import {
     Typography,
     Button,
     Modal,
+    IconButton,
+    Popper,
 } from "@material-ui/core";
 import ScheduleIcon from "@material-ui/icons/Schedule";
 
 //Components
 import { Difficulty } from "../Difficulty";
 import { ProgramModal } from "./ProgramModal";
+import { Scheduler } from "../Scheduler";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -47,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
 export const ProgramCard = (props) => {
     const { program } = props;
     const [modalOpen, setModalOpen] = React.useState(false);
+    const [popperOpen, setPopperOpen] = React.useState(false);
+    const [anchor, setAnchor] = React.useState(null);
     const classes = useStyles();
     const location = useLocation();
 
@@ -97,16 +102,41 @@ export const ProgramCard = (props) => {
                 <CardActions
                     style={{
                         display: "flex",
-                        justifyContent: "flex-end",
+
                         padding: 0,
                     }}
                 >
                     <Button
-                        style={{ color: "white" }}
+                        style={{ justifySelf: "flex-start" }}
                         onClick={() => setModalOpen(true)}
+                        variant="text"
                     >
                         See More
                     </Button>
+                    <IconButton
+                        style={{
+                            position: "aboslute",
+                            left: "7.5vw",
+                        }}
+                    >
+                        <ScheduleIcon
+                            item={program}
+                            onClick={(e) => {
+                                setAnchor(e.currentTarget);
+                                setPopperOpen(true);
+                            }}
+                        />
+                        <Popper
+                            open={popperOpen}
+                            anchorEl={anchor}
+                            style={{ zIndex: "1000" }}
+                        >
+                            <Scheduler
+                                item={program}
+                                popperToggle={() => setPopperOpen(false)}
+                            />
+                        </Popper>
+                    </IconButton>
                 </CardActions>
             </Card>
             <Grid
