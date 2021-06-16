@@ -55,11 +55,9 @@ const token = localStorage.FBIdToken;
 
 if (token) {
     const idToken = token.split("Bearer ")[1];
-    console.log(idToken);
     const decodedToken = jwtDecode(idToken);
     if (decodedToken.exp * 1000 < Date.now()) {
         const refreshToken = localStorage.RefreshToken;
-        console.log(refreshToken);
         store.dispatch(getNewToken());
         store.dispatch({ type: SET_AUTHENTICATED });
         axios.defaults.headers.common["Authorization"] = token;
@@ -75,11 +73,15 @@ const styles = (theme) => ({
     container: {
         marginTop: "80px",
         marginLeft: "10vw",
-        maxWidth: "90%",
+        width: "80vw",
 
         [theme.breakpoints.up("lg")]: {
-            marginRight: "23vw",
-            maxWidth: "80%",
+            marginLeft: "10vw",
+            width: "66vw",
+        },
+        [theme.breakpoints.up("xl")]: {
+            width: "70vw",
+            marginLeft: "10vw",
         },
     },
 });

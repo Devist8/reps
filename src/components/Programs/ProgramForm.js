@@ -98,7 +98,7 @@ export const ProgramForm = (props) => {
             ...newProgram.workouts,
             [week]: [...newProgram.workouts[week], workout],
         };
-
+        workout.program = newProgram.title && newProgram.title;
         const data = {
             name: "workouts",
             value: updatedWeek,
@@ -111,11 +111,13 @@ export const ProgramForm = (props) => {
         data.name = "exerciseCount";
         data.value = newProgram.exerciseCount + workout.exerciseCount;
         dispatch(updateNewProgram(data));
+        data.name = "program";
+
+        dispatch(updateNewProgram(data));
+        console.log(data);
         const newMuscles = workout.muscles.filter(
             (muscle) => !newProgram.muscles.includes(muscle)
         );
-        console.log(workout);
-        console.log(newProgram.muscles.includes(workout.muscles));
         data.name = "muscles";
         data.value = [...newProgram.muscles, ...newMuscles];
         console.log(data);

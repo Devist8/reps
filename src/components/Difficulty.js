@@ -57,7 +57,7 @@ export const Difficulty = (props) => {
                     editDifficulty(e);
                 }}
                 precision={0.5}
-                style={small && { fontSize: "1rem" }}
+                style={small && { fontSize: "0.8rem" }}
                 icon={<FitnessCenterIcon fontSize="inherit" />}
             />
         </Box>

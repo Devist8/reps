@@ -32,10 +32,11 @@ const useStyles = makeStyles((theme) => ({
     root: {
         width: "100%",
         minHeight: "563px",
+        display: "flex",
     },
     creatorContainer: {
         boxShadow: "1px 2px 4px 1px rgba(0,0,0,0.1)",
-        marginLeft: "5vw",
+        marginLeft: "1.5vw",
     },
     buttonContainer: {
         textAlign: "center",
@@ -166,7 +167,7 @@ export const Studio = () => {
                                     style={{
                                         margin: "0% 2% 2% 2%",
                                         width: "75vw",
-                                        display: "flex",
+
                                         justifyContent: "center",
                                     }}
                                     key={workout.id}

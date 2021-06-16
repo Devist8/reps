@@ -66,7 +66,7 @@ export const Exercise = (props) => {
                             {!edit ? (
                                 <Typography
                                     className={classes.title}
-                                    style={{ minWidth: "100px" }}
+                                    style={{ minWidth: "5vw" }}
                                 >
                                     {exercise.title}
                                 </Typography>
@@ -139,7 +139,7 @@ export const Exercise = (props) => {
                 {!noButton && (
                     <Grid
                         item
-                        xs={2}
+                        xs={1}
                         style={
                             ({
                                 display: "flex",
