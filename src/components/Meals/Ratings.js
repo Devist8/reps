@@ -2,7 +2,7 @@ import React from "react";
 
 //MUI
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { Grid, Box } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 
@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({}));
 
 export const Ratings = (props) => {
     const { small, editRating, rating } = props;
-    const classes = useStyles();
 
     return (
         <Box>

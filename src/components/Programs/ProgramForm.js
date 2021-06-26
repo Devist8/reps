@@ -99,6 +99,7 @@ export const ProgramForm = (props) => {
             [week]: [...newProgram.workouts[week], workout],
         };
         workout.program = newProgram.title && newProgram.title;
+        console.log(workout);
         const data = {
             name: "workouts",
             value: updatedWeek,
@@ -107,10 +108,22 @@ export const ProgramForm = (props) => {
         dispatch(updateNewProgram(data));
         data.name = "workoutCount";
         data.value = newProgram.workoutCount + 1;
-        dispatch(updateNewProgram(data));
+        console.log(newProgram.workoutCount);
+        dispatch(
+            updateNewProgram({
+                name: "workoutCount",
+                value: newProgram.workouts.length + 1,
+            })
+        );
         data.name = "exerciseCount";
         data.value = newProgram.exerciseCount + workout.exerciseCount;
-        dispatch(updateNewProgram(data));
+        console.log(data);
+        dispatch(
+            updateNewProgram({
+                name: "exerciseCount",
+                value: newProgram.exerciseCount + workout.exerciseCount,
+            })
+        );
         data.name = "program";
 
         dispatch(updateNewProgram(data));

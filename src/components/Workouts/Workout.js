@@ -1,11 +1,5 @@
 import React from "react";
-import firebase from "firebase/app";
 import "firebase/storage";
-import { v4 as uuid_v4 } from "uuid";
-import dayjs from "dayjs";
-
-//React Router
-import { useLocation } from "react-router-dom";
 
 //MUI
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -24,7 +18,6 @@ import {
     Popper,
     TextField,
     IconButton,
-    Badge,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import ScheduleIcon from "@material-ui/icons/Schedule";
@@ -39,8 +32,6 @@ import { Scheduler } from "../Scheduler";
 
 import { useDispatch } from "react-redux";
 import { CLEAR_FILE, SET_FILE } from "../../redux/types";
-import { uploadToFirebase } from "../../redux/actions/dataActions";
-import { GolfCourseSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
     cardRoot: {
@@ -99,11 +90,6 @@ export const WorkoutHeader = (props) => {
         } else {
             dispatch({ type: CLEAR_FILE, payload: file });
         }
-    };
-
-    const handleEditDate = () => {
-        const selectDate = document.getElementById("scheduleDate");
-        selectDate.select();
     };
 
     return (
@@ -200,7 +186,7 @@ export const WorkoutHeader = (props) => {
                     )
                 )}
 
-                <Grid item xs={8} className={classes.cardContent}>
+                <Grid item xs={7} className={classes.cardContent}>
                     <CardActionArea
                         onClick={(e) => handleOpen(e)}
                         style={{ height: "85px" }}
@@ -238,7 +224,7 @@ export const WorkoutHeader = (props) => {
                 {!noButton && (
                     <Grid
                         item
-                        xs={2}
+                        xs={3}
                         style={{
                             display: "flex",
                             alignItems: "center",
@@ -247,13 +233,13 @@ export const WorkoutHeader = (props) => {
                     >
                         <CardActions>
                             {schedule ? (
-                                <IconButton>
-                                    <ScheduleIcon
-                                        onClick={(e) => {
-                                            setAnchor(e.currentTarget);
-                                            setOpen(!open);
-                                        }}
-                                    />
+                                <IconButton
+                                    onClick={(e) => {
+                                        setAnchor(e.currentTarget);
+                                        setOpen(!open);
+                                    }}
+                                >
+                                    <ScheduleIcon />
                                     <Popper
                                         open={open}
                                         anchorEl={anchor}
@@ -280,12 +266,11 @@ export const WorkoutHeader = (props) => {
 };
 
 export const ExerciseList = (props) => {
-    const classes = useStyles();
     const { workout, open, small, noButton } = props;
     return (
         <Grid
             container
-            style={{ display: "flex", flexWrap: "nowrap", maxWidth: "500px" }}
+            style={{ display: "flex", flexWrap: "nowrap", width: "100%" }}
         >
             <GridList
                 cols={1}
@@ -294,6 +279,7 @@ export const ExerciseList = (props) => {
                     margin: "auto",
                     display: "flex",
                     justifyContent: "center",
+                    width: "100%",
                 }}
             >
                 {workout.exercises.map((exercise, index) => {
@@ -303,6 +289,7 @@ export const ExerciseList = (props) => {
                             in={open}
                             mountOnEnter
                             unmountOnExit
+                            style={{ width: "50vw" }}
                             timeout={{
                                 enter:
                                     workout.exercises.length * 350 -
@@ -322,7 +309,7 @@ export const ExerciseList = (props) => {
                                               justifyContent: "center",
                                               marginTop: "0.5rem",
                                               height: "5rem",
-
+                                              width: "100%",
                                               borderRadius: "18px",
                                           }
                                         : {
@@ -330,7 +317,7 @@ export const ExerciseList = (props) => {
                                               display: "flex",
                                               justifyContent: "center",
                                               marginTop: "0.5rem",
-
+                                              width: "100%",
                                               height: "5rem",
                                               borderRadius: "18px",
                                           }
@@ -340,7 +327,6 @@ export const ExerciseList = (props) => {
                                     exercise={exercise}
                                     style={{ marginLeft: "1rem" }}
                                     small={small}
-                                    noButton={noButton}
                                 />
                             </GridListTile>
                         </Slide>
@@ -353,7 +339,7 @@ export const ExerciseList = (props) => {
 
 export const Workout = (props) => {
     const theme = useTheme();
-    const classes = useStyles();
+
     const {
         workout,
         edit,
@@ -377,7 +363,7 @@ export const Workout = (props) => {
             style={{
                 overflow: "hidden",
                 backgroundColor: theme.palette.secondary.light,
-                maxWidth: "500px",
+                maxWidth: "450px",
                 display: "flex",
                 borderRadius: "4px",
             }}

@@ -2,14 +2,12 @@ import React from "react";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
-import RemoveIcon from "@material-ui/icons/Remove";
 import AddIcon from "@material-ui/icons/Add";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import {
     Card,
     CardMedia,
     CardContent,
-    CardActions,
     IconButton,
     CardActionArea,
     Grid,

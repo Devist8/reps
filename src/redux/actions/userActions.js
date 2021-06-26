@@ -5,8 +5,6 @@ import {
     LOADING_UI,
     SET_UNAUTHENTICATED,
     LOADING_USER,
-    SET_OPEN,
-    SET_ADDOPEN,
     SET_AUTHENTICATED,
 } from "../types";
 import axios from "axios";
@@ -107,7 +105,7 @@ export const getUserData = () => (dispatch) => {
 };
 
 export const getNewToken = () => (dispatch) => {
-    const refreshToken = localStorage.RefreshToken;
+    let refreshToken = localStorage.RefreshToken;
     const getRefreshToken = firebase.auth().onAuthStateChanged((user) => {
         console.log(firebase.auth().currentUser.refreshToken);
         refreshToken = firebase.auth().currentUser.refreshToken;

@@ -2,7 +2,8 @@ import React from "react";
 import Calendar from "react-calendar";
 import "./Calendar.css";
 import dayjs from "dayjs";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import LocalizedFormat from "dayjs/plugin/localizedFormat";
+import { useLocation } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,7 +16,9 @@ import Typography from "@material-ui/core/Typography";
 import { Exercise } from "../Exercises/Exercise";
 
 //Redux
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+
+dayjs.extend(LocalizedFormat);
 
 const useStyles = makeStyles((theme) => ({
     root: {},
@@ -52,7 +55,8 @@ const useStyles = makeStyles((theme) => ({
     },
     dateDisplayContainer: {
         marginTop: "1rem",
-        width: "80%",
+        marginLeft: "0.8vw",
+        width: "100%",
     },
 }));
 
@@ -76,7 +80,9 @@ export const DateHeader = (props) => {
 export const CalendarNavBar = () => {
     const classes = useStyles();
     const location = useLocation();
-    const [selected, setSelected] = React.useState([new Date()]);
+    const [selected, setSelected] = React.useState([
+        dayjs(new Date()).format("l"),
+    ]);
     const schedule = useSelector((state) => state.data.schedule);
     const [scheduledExercises, setScheduledExercises] = React.useState([]);
 
@@ -86,15 +92,17 @@ export const CalendarNavBar = () => {
             if (item.type === "program") {
                 console.log("got a program");
                 Object.values(item.workouts).map((week) => {
-                    week.map((workout) => {
-                        exercises.push(workout);
+                    return week.map((workout) => {
+                        return workout.exercises.map((exercise) => {
+                            return exercises.push(exercise);
+                        });
                     });
                 });
             }
 
             if (item.type === "workout") {
                 item.exercises.map((exercise) => {
-                    exercises.push(exercise);
+                    return exercises.push(exercise);
                 });
             }
 
@@ -102,21 +110,21 @@ export const CalendarNavBar = () => {
                 exercises.push(item);
             }
 
-            setScheduledExercises(exercises);
+            return setScheduledExercises(exercises);
         });
     }, [schedule]);
 
     const handleDateClick = (value) => {
         let data = [...selected];
-        selected.find(
-            (x) =>
-                dayjs(x).format("DD-MM-YYYY") ===
-                dayjs(value).format("DD-MM-YYYY")
-        )
-            ? (data = selected
-                  .slice(0, selected.indexOf(value))
-                  .concat(selected.slice(selected.indexOf(value)) + 1))
-            : data.push(value);
+        const formattedValue = dayjs(value).format("l");
+        console.log(formattedValue);
+        console.log(value);
+        console.log(data[0] === value);
+        const index = selected.indexOf(value);
+        data.includes(formattedValue)
+            ? (data = data.filter((x) => x !== formattedValue))
+            : data.push(dayjs(value).format("l"));
+        console.log(data);
         setSelected(data);
     };
     return (
@@ -164,15 +172,10 @@ export const CalendarNavBar = () => {
                     </Grid>
                     <Grid item xs={12} className={classes.dateDisplayContainer}>
                         {selected.map((date, index) => {
-                            console.log(
-                                dayjs(dayjs(date).format("L")).valueOf()
-                            );
                             return (
                                 <Grid
                                     item
-                                    key={Math.round(
-                                        index * Math.random() * index
-                                    )}
+                                    key={Math.round(index * Math.random())}
                                     xs={12}
                                     className={classes.dateDisplay}
                                 >
@@ -187,6 +190,7 @@ export const CalendarNavBar = () => {
                                                 <Exercise
                                                     exercise={exercise}
                                                     small
+                                                    key={exercise.id}
                                                 />
                                             );
                                         }

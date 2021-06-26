@@ -4,20 +4,16 @@ import { Link } from "react-router-dom";
 //MUI
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
-    useMediaQuery,
     GridList,
     GridListTile,
     GridListTileBar,
-    IconButton,
     ButtonBase,
-    CardActionArea,
 } from "@material-ui/core";
-import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple.js";
+
 import Rating from "@material-ui/lab/Rating";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 
 //Redux
-import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({}));
 

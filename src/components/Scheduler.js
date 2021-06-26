@@ -14,7 +14,7 @@ dayjs.extend(LocalizedFormat);
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        backgroundColor: "rgba(255, 255, 255, 1)",
         width: "20vw",
         height: "15vh",
         display: "flex",
@@ -54,6 +54,7 @@ export const Scheduler = (props) => {
     const classes = useStyles();
 
     const handleChange = (e) => {
+        e.preventDefault();
         setSelectedDate(e.target.value);
     };
 

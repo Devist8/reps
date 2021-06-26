@@ -2,18 +2,12 @@ import React from "react";
 
 //MUI
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import {
-    Grid,
-    Typography,
-    List,
-    ListItem,
-    ListItemText,
-} from "@material-ui/core";
+import { Grid, Typography, List } from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 
 //Redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({}));
 

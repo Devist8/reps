@@ -1,32 +1,30 @@
 import React from "react";
+import dayjs from "dayjs";
+
+//functions
+import { sortObjsByDifficulty, sortObjsByTitle } from "../../util/functions";
 
 //MUI
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import {
     Grid,
     Button,
     Typography,
     TextField,
-    GridList,
     IconButton,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import ScheduleIcon from "@material-ui/icons/Schedule";
-import dayjs from "dayjs";
 
 //Components
 import { ExerciseForm } from "../../components/Exercises/ExerciseForm";
 import { WorkoutForm } from "../../components/Workouts/WorkoutForm";
 import { ProgramForm } from "../../components/Programs/ProgramForm";
-import { WorkoutSelectionModal } from "../../components/Programs/WorkoutSelectionModal";
-import { ProgramCard } from "../../components/Programs/ProgramCard";
-import { WorkoutDisplay } from "../../components/Programs/WorkoutDisplay";
 import { Workout } from "../../components/Workouts/Workout";
 import { Exercise } from "../../components/Exercises/Exercise";
 import { ProgramCarousel } from "../../components/Programs/ProgramCarousel";
 
 //Redux
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -53,23 +51,27 @@ const useStyles = makeStyles((theme) => ({
 
 export const Studio = () => {
     const classes = useStyles();
-    const newProgram = useSelector((state) => state.data.newProgram);
     const [creator, setCreator] = React.useState("program");
     const exercises = useSelector((state) => state.data.exercises);
     const workouts = useSelector((state) => state.data.workouts);
     const programs = useSelector((state) => state.data.programs);
+    const [exerciseSort, setExerciseSort] = React.useState(exercises);
+    const [workoutSort, setWorkoutSort] = React.useState(workouts);
+    const [programSort, setProgramSort] = React.useState(programs);
+
+    console.log(exerciseSort);
 
     const displayCreator = (creator) => {
         switch (creator) {
             case "exercise":
                 return <ExerciseForm />;
-                break;
+
             case "workout":
                 return <WorkoutForm />;
-                break;
+
             case "program":
                 return <ProgramForm />;
-                break;
+
             default:
                 return null;
         }
@@ -79,10 +81,6 @@ export const Studio = () => {
         setCreator(selected);
     };
 
-    const handleEditDate = () => {
-        const selectDate = document.getElementById("scheduleDate");
-        selectDate.click();
-    };
     const handleDateChange = () => {};
 
     return (
@@ -135,19 +133,80 @@ export const Studio = () => {
             </Grid>
             <Grid container className={classes.collectionContainer}>
                 <Grid item xs={12} style={{ width: "100%" }}>
-                    <Typography variant="h4" style={{ margin: "1rem 0 0 0 " }}>
-                        Programs
-                    </Typography>
+                    <Grid
+                        item
+                        xs={12}
+                        style={{ display: "flex", flexWrap: "noWrap" }}
+                    >
+                        <Typography variant="h4" style={{ margin: "1vh 0 " }}>
+                            Programs
+                        </Typography>
+                        <Typography
+                            style={{ marginLeft: "2vw", marginTop: "1vw" }}
+                        >
+                            Sort by:
+                        </Typography>
+                        <Button
+                            onClick={() =>
+                                setProgramSort((prevState) => [
+                                    ...sortObjsByTitle(programs),
+                                ])
+                            }
+                        >
+                            Title
+                        </Button>
+                        <Button
+                            onClick={() =>
+                                setProgramSort((prevState) => [
+                                    ...sortObjsByDifficulty(programs),
+                                ])
+                            }
+                        >
+                            Difficulty
+                        </Button>
+                    </Grid>
                     <Grid item xs={12} style={{ width: "100%" }}>
                         {programs && (
-                            <ProgramCarousel type="program" array={programs} />
+                            <ProgramCarousel
+                                type="program"
+                                array={programSort}
+                            />
                         )}
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography variant="h4" style={{ margin: "1rem 0 0 0 " }}>
-                        Workouts
-                    </Typography>
+                    <Grid
+                        item
+                        xs={12}
+                        style={{ display: "flex", flexWrap: "noWrap" }}
+                    >
+                        <Typography variant="h4" style={{ margin: "1vh 0 " }}>
+                            Workouts
+                        </Typography>
+                        <Typography
+                            style={{ marginLeft: "2vw", marginTop: "1vw" }}
+                        >
+                            Sort by:
+                        </Typography>
+                        <Button
+                            onClick={() =>
+                                setWorkoutSort((prevState) => [
+                                    ...sortObjsByTitle(workouts),
+                                ])
+                            }
+                        >
+                            Title
+                        </Button>
+                        <Button
+                            onClick={() =>
+                                setWorkoutSort((prevState) => [
+                                    ...sortObjsByDifficulty(workouts),
+                                ])
+                            }
+                        >
+                            Difficulty
+                        </Button>
+                    </Grid>
                     <Grid
                         item
                         xs={12}
@@ -155,24 +214,25 @@ export const Studio = () => {
                             width: "75vw",
                             display: "flex",
                             flexWrap: "wrap",
-                            margin: "0 2vw",
                         }}
                     >
-                        {workouts.map((workout) => {
+                        {workoutSort.map((workout) => {
                             return (
                                 <Grid
                                     item
                                     lg={5}
                                     md={9}
                                     style={{
-                                        margin: "0% 2% 2% 2%",
-                                        width: "75vw",
+                                        margin: "0% 4% 4% 4%",
 
                                         justifyContent: "center",
                                     }}
                                     key={workout.id}
                                 >
-                                    <Workout workout={workout} schedule />
+                                    <Workout
+                                        workout={workout}
+                                        schedule={true}
+                                    />
                                     <TextField
                                         id="scheduleDate"
                                         type="date"
@@ -188,19 +248,49 @@ export const Studio = () => {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography
-                        variant="h4"
-                        style={{ margin: "1rem 0 0.5rem 0 " }}
+                    <Grid
+                        item
+                        xs={12}
+                        style={{ display: "flex", flexWrap: "noWrap" }}
                     >
-                        Exercises
-                    </Typography>
+                        <Typography variant="h4" style={{ margin: "1vh 0" }}>
+                            Exercises
+                        </Typography>
+                        <Typography
+                            style={{ marginLeft: "2vw", marginTop: "1vw" }}
+                        >
+                            Sort by:
+                        </Typography>
+                        <Button
+                            onClick={() =>
+                                exerciseSort !== "title"
+                                    ? setExerciseSort((prevState) => [
+                                          ...sortObjsByTitle(exercises),
+                                      ])
+                                    : setExerciseSort(null)
+                            }
+                        >
+                            Title
+                        </Button>
+                        <Button
+                            onClick={() =>
+                                exerciseSort !== "difficulty"
+                                    ? setExerciseSort((prevState) => [
+                                          ...sortObjsByDifficulty(exercises),
+                                      ])
+                                    : setExerciseSort(null)
+                            }
+                        >
+                            Difficulty
+                        </Button>
+                    </Grid>
                     <Grid
                         container
                         style={{
                             width: "75vw",
                         }}
                     >
-                        {exercises.map((exercise, i) => {
+                        {exerciseSort.map((exercise, i) => {
                             return (
                                 <Grid
                                     item

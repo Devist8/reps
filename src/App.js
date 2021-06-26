@@ -17,6 +17,7 @@ import AuthRoute from "./util/AuthRoute";
 import {
     ThemeProvider as MuiThemeProvider,
     withStyles,
+    makeStyles,
     responsiveFontSizes,
 } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
@@ -37,6 +38,7 @@ import { Studio } from "./pages/Dashboard/Studio";
 import { Meals } from "./pages/Dashboard/Meals";
 import { Meal } from "./pages/Meal";
 import { Store } from "./pages/Dashboard/Store";
+import { Checkout } from "./pages/Dashboard/Checkout";
 
 //Redux
 import { Provider } from "react-redux";
@@ -44,6 +46,10 @@ import store from "./redux/store";
 import { SET_AUTHENTICATED } from "./redux/types";
 import { logoutUser, getNewToken } from "./redux/actions/userActions";
 import { getUserData } from "./redux/actions/dataActions";
+
+//Stripe
+import { StripeProvider, Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 const app = firebase.initializeApp(config);
 
@@ -69,7 +75,7 @@ if (token) {
     store.dispatch(getUserData());
 }
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
     container: {
         marginTop: "80px",
         marginLeft: "10vw",
@@ -84,26 +90,22 @@ const styles = (theme) => ({
             marginLeft: "10vw",
         },
     },
-});
+}));
 
 //Persistent Login
 //Set up for Facebook Auth
 //It is preventing Login with email & password,
 //because auth().currentUser.getIdToken returns null
+const stripePromise = loadStripe(
+    "pk_test_51Hr3CTBp908J0ZFHC8eQsjRQ5jKJBLDuDCGR2lm78hOHmTZxgrJEAfxMff0oDMJ14oyyvADBVr5ivdx2ZdMWkbmb00lR0Vm7tB"
+);
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount = () => {
-        console.log(firebase.auth().currentUser);
+const App = () => {
+    React.useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
-            console.log(user);
-            console.log("checking");
             store.dispatch(getUserData());
         });
-    };
+    });
     /*componentDidMount = () => {
         const refreshToken = localStorage.RefreshToken;
 
@@ -129,58 +131,53 @@ class App extends React.Component {
         return () => checkToken();
     };*/
 
-    render() {
-        const { classes } = this.props;
-        return (
-            <MuiThemeProvider theme={theme}>
-                <Provider store={store}>
-                    <Router>
-                        <Navbar />
-                        <AuthNavbar />
-                        <Hidden mdDown>
-                            <CalendarNavBar />
-                        </Hidden>
-                        <div className={classes.container}>
-                            <Switch>
-                                <Route exact path="/" component={Home} />
-                                <Route exact path="/login" component={Login} />
-                                <Route
-                                    exact
-                                    path="/signup"
-                                    component={Signup}
-                                />
-                                <Route
-                                    exact
-                                    path="/meals/:mealId"
-                                    component={Meal}
-                                />
-                                <AuthRoute
-                                    exact
-                                    path="/dashboard"
-                                    component={DashboardHome}
-                                />
-                                <AuthRoute
-                                    exact
-                                    path="/workouts"
-                                    component={Studio}
-                                />
-                                <AuthRoute
-                                    exact
-                                    path="/meals"
-                                    component={Meals}
-                                />
-                                <AuthRoute
-                                    exact
-                                    path="/store"
-                                    component={Store}
-                                />
-                            </Switch>
-                        </div>
-                    </Router>
-                </Provider>
-            </MuiThemeProvider>
-        );
-    }
-}
+    const classes = useStyles();
+    return (
+        <MuiThemeProvider theme={theme}>
+            <Provider store={store}>
+                <Router>
+                    <Navbar />
+                    <AuthNavbar />
+                    <Hidden mdDown>
+                        <CalendarNavBar />
+                    </Hidden>
+                    <div className={classes.container}>
+                        <Switch>
+                            <Route exact path="/" component={Home} />
+                            <Route exact path="/login" component={Login} />
+                            <Route exact path="/signup" component={Signup} />
+                            <Route
+                                exact
+                                path="/meals/:mealId"
+                                component={Meal}
+                            />
+                            <AuthRoute
+                                exact
+                                path="/dashboard"
+                                component={DashboardHome}
+                            />
+                            <AuthRoute
+                                exact
+                                path="/workouts"
+                                component={Studio}
+                            />
+                            <AuthRoute exact path="/meals" component={Meals} />
+                            <AuthRoute
+                                exact
+                                path="/checkout"
+                                component={Checkout}
+                            />
+                            <Elements
+                                stripe={stripePromise !== null && stripePromise}
+                            >
+                                <Route exact path="/store" component={Store} />
+                            </Elements>
+                        </Switch>
+                    </div>
+                </Router>
+            </Provider>
+        </MuiThemeProvider>
+    );
+};
 
-export default withStyles(styles)(App);
+export default App;

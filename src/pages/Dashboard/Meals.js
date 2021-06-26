@@ -6,11 +6,10 @@ import { Grid, Button, Typography } from "@material-ui/core";
 
 //Components
 import { MealForm } from "../../components/Meals/MealForm";
-import { MealCardList } from "../../components/Meals/MealCardList";
 import { MealCarousel } from "../../components/Meals/MealCarousel";
 
 //Redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     creatorContainer: {

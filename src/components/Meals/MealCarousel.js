@@ -6,18 +6,14 @@ import {
     Grid,
     IconButton,
     GridList,
-    GridListTile,
     MobileStepper,
-    Slide,
+    Typography,
 } from "@material-ui/core";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
 //Components
 import { MealCard } from "../Meals/MealCard";
-
-//Redux
-import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     arrowContainer: {
@@ -34,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
     dotActive: {
         backgroundColor: "#A9ECB0",
     },
+    root: {
+        width: "75vw",
+        [theme.breakpoints.up("xl")]: {
+            width: "80vw",
+        },
+    },
 }));
 
 export const MealCarousel = (props) => {
@@ -43,17 +45,6 @@ export const MealCarousel = (props) => {
     const [show, setShow] = React.useState([0, 1, 2]);
     const [slide, setSlide] = React.useState(1);
     const maxSlide = meals.length > 2 ? Math.floor(meals.length / 3) : 1;
-    console.log(maxSlide);
-
-    const calculateNewShowArray = () => {
-        const original = [0, 1, 2];
-        const newArray = [];
-        for (const item of original) {
-            newArray.push(item + slide * 3);
-        }
-
-        return newArray;
-    };
 
     const incrementSlide = () => {
         setSlide(slide + 1);
@@ -69,7 +60,7 @@ export const MealCarousel = (props) => {
     };
 
     return (
-        <Grid container style={{ width: "75vw" }}>
+        <Grid container className={classes.root}>
             <Grid item xs={1} className={classes.arrowContainer}>
                 <IconButton onClick={decrementSlide} disabled={slide === 1}>
                     <ArrowBackIosIcon />
@@ -97,6 +88,8 @@ export const MealCarousel = (props) => {
                                     key={meals[element].id}
                                 />
                             );
+                        } else {
+                            return <Typography>Loading...</Typography>;
                         }
                     })}
                 </GridList>

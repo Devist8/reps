@@ -25,10 +25,11 @@ export const ActionButton = (props) => {
                 </Grid>
             )}
 
-            <Grid item style={!duration && { marginTop: "2.5vh" }}>
+            <Grid item style={!duration && { marginTop: "2vh" }}>
                 <IconButton
                     onClick={(e) => {
-                        addHandler(exercise);
+                        addHandler({ ...exercise });
+                        exercise.reps = "";
                     }}
                     style={
                         !duration && {

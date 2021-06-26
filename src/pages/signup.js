@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
@@ -6,14 +6,12 @@ import firebase from "firebase";
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import withStyles from "@material-ui/styles/withStyles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import { Redirect } from "react-router-dom";
 
 //Redux
-import { connect, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { signupUser } from "../redux/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({

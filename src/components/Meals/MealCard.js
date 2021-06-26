@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 //MUI
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
-    Grid,
     GridListTile,
     ButtonBase,
     GridListTileBar,
@@ -35,7 +34,6 @@ export const MealCard = (props) => {
     return (
         <GridListTile
             key={meal.id}
-            key={meal.imageURL}
             cols={1}
             component={Link}
             to={`/meals/${meal.id}`}

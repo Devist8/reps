@@ -1,7 +1,6 @@
 import React from "react";
 import ReactPlayer from "react-player";
 import met from "../../util/met";
-import firebase from "firebase/app";
 import "firebase/storage";
 import { muscles, equipment } from "../../util/static-data";
 
@@ -15,7 +14,6 @@ import {
     Select,
     MenuItem,
     Divider,
-    InputLabel,
     FormControl,
     IconButton,
     Badge,
@@ -30,7 +28,6 @@ import { BubbleArray } from "../BubbleArray";
 //Redux
 import { useDispatch, useSelector } from "react-redux";
 import {
-    uploadVideo,
     updateNewExercise,
     submitExercise,
     uploadToFirebase,
@@ -73,7 +70,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const ExerciseForm = (props) => {
-    const {} = props;
     const dispatch = useDispatch();
 
     const file = useSelector((state) => state.data.file);
@@ -100,7 +96,7 @@ export const ExerciseForm = (props) => {
                     console.log(file);
                     dispatch({ type: SET_FILE, payload: file });
                     setPreview(window.URL.createObjectURL(file));
-                    console.log(preview);
+                    dispatch({ type: "CLEAR_PROGRESS" });
                 }
             };
             reader.readAsDataURL(e.target.files[0]);
@@ -123,15 +119,20 @@ export const ExerciseForm = (props) => {
         dispatch(updateNewExercise(data));
     };
 
-    const uploadFile = (file, handleImageChange) => {
-        if (file) {
-            dispatch(uploadToFirebase(file, handleImageChange));
-        }
-    };
-
     const submit = () => {
         dispatch(submitExercise(newExercise, file));
+        progress === 100 && setPreview(null);
+        progress === 100 && dispatch({ type: "CLEAR_PROGRESS" });
     };
+
+    React.useEffect(
+        (dispatch) => {
+            progress === 100 && setPreview(null);
+            (progress === 100) & (preview === null) &&
+                dispatch({ type: "CLEAR_PROGRESS" });
+        },
+        [progress]
+    );
 
     return (
         <Grid container className={classes.root}>
@@ -173,6 +174,7 @@ export const ExerciseForm = (props) => {
                                 }
                                 width="320px"
                                 height="180px"
+                                loop="true"
                                 controls
                             />
                         ) : (

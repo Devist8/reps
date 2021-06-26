@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Chip, GridList, GridListTile } from "@material-ui/core";
+import { Grid, Chip } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     bubbleArray: {
@@ -25,16 +25,19 @@ const useStyles = makeStyles((theme) => ({
     bubbleLabel: {
         whiteSpace: "normal",
         padding: 2,
+        minWidth: "20px",
     },
     bubble: {
         padding: 5,
         margin: "auto",
         boxShadow: "2px 2px 3px -2px rgba(0,0,0,0.40)",
+        borderRadius: "20px",
+        minWidth: "30px",
     },
 }));
 
 export const BubbleArray = (props) => {
-    const { array, itemType, selectedArray, addHandler, color, rr } = props;
+    const { array, itemType, selectedArray, addHandler, color } = props;
     const classes = useStyles();
     const location = useLocation();
 
@@ -59,7 +62,9 @@ export const BubbleArray = (props) => {
                                 })
                             }
                             className={classes.bubble}
-                            classes={{ label: classes.bubbleLabel }}
+                            classes={{
+                                label: classes.bubbleLabel,
+                            }}
                             style={
                                 color === "secondary"
                                     ? { color: "black" }

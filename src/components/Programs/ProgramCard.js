@@ -1,8 +1,5 @@
 import React from "react";
 
-//React Router
-import { useLocation } from "react-router-dom";
-
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -53,7 +50,6 @@ export const ProgramCard = (props) => {
     const [popperOpen, setPopperOpen] = React.useState(false);
     const [anchor, setAnchor] = React.useState(null);
     const classes = useStyles();
-    const location = useLocation();
 
     const closeModal = () => {
         setModalOpen(false);

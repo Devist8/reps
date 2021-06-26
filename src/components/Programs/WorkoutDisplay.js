@@ -3,12 +3,7 @@ import React from "react";
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
-import {
-    Grid,
-    GridListTile,
-    GridListTileBar,
-    IconButton,
-} from "@material-ui/core";
+import { GridListTile, GridListTileBar, IconButton } from "@material-ui/core";
 
 //Components
 import { Difficulty } from "../Difficulty";
@@ -36,7 +31,7 @@ export const WorkoutDisplay = (props) => {
                 tile: classes.tile,
             }}
         >
-            <img src={workout.imageURL} />
+            <img src={workout.imageURL} alt={workout.title} />
             <GridListTileBar
                 style={{ height: "40%" }}
                 classes={{

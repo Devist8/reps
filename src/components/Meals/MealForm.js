@@ -18,8 +18,6 @@ import {
     Button,
     MenuItem,
     FormControl,
-    ListItemText,
-    ListItem,
     LinearProgress,
     Divider,
 } from "@material-ui/core";
@@ -32,12 +30,8 @@ import { BubbleArray } from "../BubbleArray";
 
 //Redux
 import { useSelector, useDispatch } from "react-redux";
-import { uploadToFirebase, submitMeal } from "../../redux/actions/dataActions";
+import { submitMeal } from "../../redux/actions/dataActions";
 import { UPDATE_NEW_MEAL, SET_FILE, CLEAR_FILE } from "../../redux/types";
-
-const mealsTextField = withStyles({
-    root: {},
-});
 
 const useStyles = makeStyles((theme) => ({
     editImageIcon: {
@@ -145,7 +139,7 @@ export const MealForm = (props) => {
 
     const changeNewNutrition = (e) => {
         e.persist();
-        let newArray = [];
+
         if (e.target.name === "nutrition") {
             const newObject = { ...newNutrition, name: e.target.value };
 
@@ -153,7 +147,6 @@ export const MealForm = (props) => {
         } else {
             setNewNutrition({ ...newNutrition, value: e.target.value });
         }
-        console.log(newNutrition);
     };
 
     const handleFieldSubmit = (e) => {
@@ -227,6 +220,7 @@ export const MealForm = (props) => {
                                         ? newMeal.imageURL
                                         : preview
                                 }
+                                alt={newMeal.id}
                                 style={{
                                     width: "20vw",
                                     height: "20vh",

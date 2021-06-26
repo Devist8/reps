@@ -18,10 +18,8 @@ import { BubbleArray } from "../BubbleArray";
 //Redux
 import { useSelector, useDispatch } from "react-redux";
 import {
-    uploadImage,
     updateNewWorkout,
     submitWorkout,
-    uploadToFirebase,
 } from "../../redux/actions/dataActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,15 +47,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const WorkoutForm = (props) => {
-    const {} = props;
     const dispatch = useDispatch();
     const classes = useStyles();
     const [preview, setPreview] = React.useState(null);
+    const [errors, setErrors] = React.useState({});
     const progress = useSelector((state) => state.ui.progress);
     const file = useSelector((state) => state.data.file);
     const exercises = useSelector((state) => state.data.exercises);
     const newWorkout = useSelector((state) => state.data.newWorkout);
-    console.log(progress);
     const handleChange = (e) => {
         const data = {
             name: e.target.name,
@@ -71,23 +68,27 @@ export const WorkoutForm = (props) => {
             name: "exercises",
             value: newWorkout.exercises.concat(exercise),
         };
-
-        dispatch(updateNewWorkout(data));
-        data.name = "exerciseCount";
-        data.value = newWorkout.exerciseCount + 1;
-        dispatch(updateNewWorkout(data));
-        const newMuscles = exercise.muscles.filter(
-            (muscle) => !newWorkout.muscles.includes(muscle)
-        );
-        data.name = "muscles";
-        data.value = [...newWorkout.muscles, ...newMuscles];
-        dispatch(updateNewWorkout(data));
-        const newEquipment = exercise.equipment.filter(
-            (item) => !newWorkout.equipment.includes(item)
-        );
-        data.name = "equipment";
-        data.value = [...newWorkout.equipment, ...newEquipment];
-        dispatch(updateNewWorkout(data));
+        console.log(exercise);
+        if (exercise.reps) {
+            dispatch(updateNewWorkout(data));
+            data.name = "exerciseCount";
+            data.value = newWorkout.exerciseCount + 1;
+            dispatch(updateNewWorkout(data));
+            const newMuscles = exercise.muscles.filter(
+                (muscle) => !newWorkout.muscles.includes(muscle)
+            );
+            data.name = "muscles";
+            data.value = [...newWorkout.muscles, ...newMuscles];
+            dispatch(updateNewWorkout(data));
+            const newEquipment = exercise.equipment.filter(
+                (item) => !newWorkout.equipment.includes(item)
+            );
+            data.name = "equipment";
+            data.value = [...newWorkout.equipment, ...newEquipment];
+            dispatch(updateNewWorkout(data));
+        } else {
+            setErrors({ reps: "Please set reps before adding exercise" });
+        }
     };
 
     const submit = () => {
@@ -117,6 +118,7 @@ export const WorkoutForm = (props) => {
                             edit
                             handleChange={handleChange}
                             preview={preview}
+                            noButton
                             setPreview={setPreview}
                         />
                     </Grid>
@@ -194,15 +196,21 @@ export const WorkoutForm = (props) => {
                             maxHeight: "300px",
                             overflowY: "scroll",
                             padding: "1rem",
+                            textAlign: "center",
+                            justifyContent: "flex-start",
                         }}
                     >
+                        {errors.reps && (
+                            <Typography style={{ color: "red" }}>
+                                {errors.reps}
+                            </Typography>
+                        )}
                         {exercises.map((exercise) => {
                             return (
-                                <Grid item style={{ marginLeft: "25%" }}>
+                                <Grid item style={{ marginLeft: "15%" }}>
                                     <Exercise
                                         exercise={exercise}
                                         addExercise={addExercise}
-                                        small
                                     />
                                 </Grid>
                             );

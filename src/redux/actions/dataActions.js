@@ -17,9 +17,7 @@ import {
     SET_AUTHENTICATED,
     SET_MEALS,
     SET_PROGRESS,
-    CLEAR_PROGRESS,
     ADD_MEAL,
-    ADD_NEW_MEAL,
     UPDATE_NEW_MEAL,
     CLEAR_NEW_MEAL,
     SET_SCHEDULE,
@@ -28,15 +26,9 @@ import {
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 
-import { getFBToken } from "./userActions";
-import {
-    generateDateRange,
-    getWorkoutCount,
-    scheduleExercises,
-} from "../../util/functions";
+import { generateDateRange, scheduleExercises } from "../../util/functions";
 
 import axios from "axios";
-import { Redirect } from "react-router-dom";
 import firebase from "firebase";
 dayjs.extend(LocalizedFormat);
 
@@ -159,7 +151,7 @@ export const submitExercise = (exercise, file) => (dispatch) => {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
         fileRef.put(file).then(() => {
-            alert("File uploaded.");
+            console.log("File uploaded");
         });
 
         const fileUpload = fileRef.put(file);
@@ -347,7 +339,7 @@ export const addToSchedule = (itemToSchedule) => (dispatch) => {
 
     if (type === "workout") {
         itemToSchedule.exercises.map((exercise, index) => {
-            exercise.date = itemToSchedule.date;
+            return (exercise.date = itemToSchedule.date);
         });
     }
     if (type === "program") {
@@ -356,10 +348,10 @@ export const addToSchedule = (itemToSchedule) => (dispatch) => {
         console.log(generateDateRange(itemToSchedule));
         Object.values(itemToSchedule.workouts).map((week) => {
             week.sort();
-            week.map((workout) => {
+            return week.map((workout) => {
                 workout.date = itemToSchedule.dateRange[dateIndex];
                 scheduleExercises(workout);
-                dateIndex = dateIndex + 1;
+                return (dateIndex = dateIndex + 1);
             });
         });
     }

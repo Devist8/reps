@@ -43,3 +43,39 @@ export const scheduleExercises = (workout) => {
     console.log(workout);
     return workout;
 };
+
+export const sortObjsByTitle = (array) => {
+    array.sort((a, b) => {
+        let titleA = a.title.toUpperCase();
+        let titleB = b.title.toUpperCase();
+
+        if (titleA < titleB) {
+            return -1;
+        }
+
+        if (titleA > titleB) {
+            return 1;
+        }
+
+        return 0;
+    });
+    return array;
+};
+
+export const sortObjsByDifficulty = (array) => {
+    array.sort((a, b) => {
+        let difficultyA = parseFloat(a.difficulty);
+        let difficultyB = parseFloat(b.difficulty);
+        console.log(difficultyA, difficultyB);
+        if (difficultyA < difficultyB) {
+            return -1;
+        }
+
+        if (difficultyA > difficultyB) {
+            return 1;
+        }
+
+        return 0;
+    });
+    return array;
+};

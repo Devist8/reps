@@ -4,7 +4,6 @@ import { Link, useLocation, useRouteMatch } from "react-router-dom";
 //MUI
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import AppBar from "@material-ui/core/AppBar";
 import ToolBar from "@material-ui/core/Toolbar";
@@ -18,7 +17,7 @@ import { ReactComponent as MealsIcon } from "../../icons/meals_icon.svg";
 import { ReactComponent as StoreIcon } from "../../icons/store_icon.svg";
 
 //Redux
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/actions/userActions";
 
 const GlobalCss = withStyles({
