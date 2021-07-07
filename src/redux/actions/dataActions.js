@@ -5,12 +5,14 @@ import {
     LOADING_USER,
     SET_USER,
     SET_ERRORS,
-    UPDATE_NEW_EXERCISE,
-    UPDATE_NEW_WORKOUT,
-    UPDATE_NEW_PROGRAM,
     ADD_EXERCISE,
     ADD_PROGRAM,
     ADD_WORKOUT,
+    ADD_TO_SCHEDULE,
+    DELETE_WORKOUT,
+    UPDATE_NEW_EXERCISE,
+    UPDATE_NEW_WORKOUT,
+    UPDATE_NEW_PROGRAM,
     CLEAR_NEW_EXERCISE,
     CLEAR_NEW_WORKOUT,
     CLEAR_NEW_PROGRAM,
@@ -20,7 +22,10 @@ import {
     ADD_MEAL,
     UPDATE_NEW_MEAL,
     CLEAR_NEW_MEAL,
+    SET_API_CALL,
+    CLEAR_API_CALL,
     SET_SCHEDULE,
+    CLEAR_PROGRESS,
 } from "../types";
 
 import dayjs from "dayjs";
@@ -85,7 +90,7 @@ export const uploadToFirebase = (file, setImage) => (dispatch) => {
 
 export const getUserData = () => (dispatch) => {
     dispatch({ type: LOADING_USER });
-    console.log(firebase.auth().currentUser);
+
     firebase.auth().onAuthStateChanged((user) => {
         user
             ? firebase
@@ -101,6 +106,7 @@ export const getUserData = () => (dispatch) => {
                           .then((res) => {
                               const data = {
                                   ...res.data.userData,
+                                  id: res.data.id,
                               };
                               console.log(data);
                               dispatch(setUserCollection(data));
@@ -121,6 +127,7 @@ export const getUserData = () => (dispatch) => {
 };
 
 export const uploadNewWorkoutImage = (formData) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
     axios
         .post("/user/image", formData)
         .then((res) => {
@@ -131,6 +138,8 @@ export const uploadNewWorkoutImage = (formData) => (dispatch) => {
             dispatch(updateNewWorkout(data));
         })
         .catch((err) => console.log(err));
+
+    dispatch({ type: CLEAR_API_CALL });
 };
 
 export const uploadNewProgramImage = (formData) => (dispatch) => {
@@ -147,6 +156,7 @@ export const uploadNewProgramImage = (formData) => (dispatch) => {
 };
 
 export const submitExercise = (exercise, file) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
     if (file) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
@@ -181,6 +191,7 @@ export const submitExercise = (exercise, file) => (dispatch) => {
                         .post("/workouts/exercise", exercise)
                         .then((res) => {
                             dispatch({ type: ADD_EXERCISE, payload: exercise });
+                            dispatch({ type: CLEAR_PROGRESS });
                             dispatch({ type: CLEAR_NEW_EXERCISE });
                         })
                         .catch((err) => console.log(err));
@@ -190,9 +201,11 @@ export const submitExercise = (exercise, file) => (dispatch) => {
     } else {
         alert("Please select a file.");
     }
+    dispatch({ type: CLEAR_API_CALL });
 };
 
 export const submitWorkout = (workout, file) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
     if (file) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
@@ -228,20 +241,25 @@ export const submitWorkout = (workout, file) => (dispatch) => {
                         .post("/workouts/workout", workout)
                         .then(() => {
                             dispatch({ type: ADD_WORKOUT, payload: workout });
+                            dispatch({ type: CLEAR_API_CALL });
                             dispatch({ type: CLEAR_NEW_WORKOUT });
+                            dispatch({ type: CLEAR_PROGRESS });
                         })
-                        .catch((err) =>
-                            dispatch({ type: SET_ERRORS, payload: err })
-                        );
+                        .catch((err) => {
+                            dispatch({ type: SET_ERRORS, payload: err });
+                            dispatch({ type: CLEAR_API_CALL });
+                        });
                 });
             }
         );
     } else {
+        dispatch({ type: CLEAR_API_CALL });
         alert("Please select a file.");
     }
 };
 
 export const submitProgram = (program, file) => (dispatch) => {
+    dispatch({ type: "SET_API_CALL" });
     if (file) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
@@ -276,9 +294,13 @@ export const submitProgram = (program, file) => (dispatch) => {
                         .post("/workouts/program", program)
                         .then(() => {
                             dispatch({ type: ADD_PROGRAM, payload: program });
+                            dispatch({ type: CLEAR_API_CALL });
                             dispatch({ type: CLEAR_NEW_PROGRAM });
                         })
-                        .catch((err) => console.log(err));
+                        .catch((err) => {
+                            console.log(err);
+                            dispatch({ type: CLEAR_API_CALL });
+                        });
                 });
             }
         );
@@ -288,6 +310,7 @@ export const submitProgram = (program, file) => (dispatch) => {
 };
 
 export const submitMeal = (meal, file) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
     if (file) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
@@ -323,9 +346,13 @@ export const submitMeal = (meal, file) => (dispatch) => {
                         .post("/meals", meal)
                         .then(() => {
                             dispatch({ type: ADD_MEAL, payload: meal });
+                            dispatch({ type: CLEAR_API_CALL });
                             dispatch({ type: CLEAR_NEW_MEAL });
                         })
-                        .catch((err) => console.log(err));
+                        .catch((err) => {
+                            console.log(err);
+                            dispatch({ type: CLEAR_API_CALL });
+                        });
                 });
             }
         );
@@ -334,7 +361,21 @@ export const submitMeal = (meal, file) => (dispatch) => {
     }
 };
 
+export const addToCollection = (docId, userId) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
+    axios
+        .post(`/user/${userId}/workouts/${docId}`)
+        .then(() => {
+            console.log(firebase.auth().currentUser);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+    dispatch({ type: CLEAR_API_CALL });
+};
+
 export const addToSchedule = (itemToSchedule) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
     const type = itemToSchedule.type;
 
     if (type === "workout") {
@@ -360,6 +401,8 @@ export const addToSchedule = (itemToSchedule) => (dispatch) => {
         .post("/schedule", itemToSchedule)
         .then((res) => {
             console.log(res);
+            dispatch({ type: ADD_TO_SCHEDULE, payload: itemToSchedule });
+            dispatch({ type: CLEAR_API_CALL });
         })
         .catch((err) => {
             console.error(err);
@@ -368,8 +411,42 @@ export const addToSchedule = (itemToSchedule) => (dispatch) => {
 
 export const getScheduled = () => (dispatch) => {
     axios.get("/schedule").then((res) => {
-        const thisMorning = dayjs(dayjs(Date.now()).format("L")).valueOf();
-        console.log(thisMorning);
-        console.log(res.data);
+        //const thisMorning = dayjs(dayjs(Date.now()).format("L")).valueOf();
     });
 };
+
+export const deleteWorkout = (docId) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
+    axios
+        .delete(`/workouts/${docId}`)
+        .then((res) => {
+            dispatch({ type: DELETE_WORKOUT, payload: docId });
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+    dispatch({ type: CLEAR_API_CALL });
+};
+
+export const updateScheduledExerciseStatus =
+    (scheduledItem, exercise, status) => (dispatch) => {
+        dispatch({ type: SET_API_CALL });
+        if (exercise.week) {
+            scheduledItem.workouts[exercise.week][
+                exercise.workoutIndex
+            ].exercises[exercise.exerciseIndex].status = status;
+        }
+        axios
+            .post("/schedule/update", scheduledItem)
+            .then((res) => {
+                console.log("schedule updated");
+                axios.get(`/schedule`).then((res) => {
+                    console.log(res.data);
+                    dispatch({ type: SET_SCHEDULE, payload: res.data });
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+        dispatch({ type: CLEAR_API_CALL });
+    };
