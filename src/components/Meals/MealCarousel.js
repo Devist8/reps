@@ -48,15 +48,12 @@ export const MealCarousel = (props) => {
 
     const incrementSlide = () => {
         setSlide(slide + 1);
-        console.log(slide);
         setShow(show.map((x) => x + 3));
         console.log(show);
     };
     const decrementSlide = () => {
         setSlide(slide - 1);
-        console.log(slide);
         setShow(show.map((x) => x - 3));
-        console.log(show);
     };
 
     return (

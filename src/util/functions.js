@@ -30,7 +30,6 @@ export const generateDateRange = (itemToSchedule) => {
             currentDate = currentDate + 86400000;
         } else {
             currentDate = currentDate + 86400000;
-            console.log(currentDate);
         }
     }
     return newDateRange;
@@ -40,7 +39,7 @@ export const scheduleExercises = (workout) => {
     workout.exercises.map((exercise, index) => {
         exercise.date = workout.date;
     });
-    console.log(workout);
+
     return workout;
 };
 
@@ -66,7 +65,7 @@ export const sortObjsByDifficulty = (array) => {
     array.sort((a, b) => {
         let difficultyA = parseFloat(a.difficulty);
         let difficultyB = parseFloat(b.difficulty);
-        console.log(difficultyA, difficultyB);
+
         if (difficultyA < difficultyB) {
             return -1;
         }
@@ -77,5 +76,6 @@ export const sortObjsByDifficulty = (array) => {
 
         return 0;
     });
+
     return array;
 };

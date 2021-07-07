@@ -27,7 +27,6 @@ import { Hidden } from "@material-ui/core";
 import { Navbar } from "./components/Navigation/Navbar";
 import { AuthNavbar } from "./components/Navigation/AuthNavbar";
 import { CalendarNavBar } from "./components/Navigation/CalendarNavBar";
-import { Exercise } from "./components/Exercises/Exercise";
 
 //Pages
 import { Home } from "./pages/Home";
@@ -39,6 +38,7 @@ import { Meals } from "./pages/Dashboard/Meals";
 import { Meal } from "./pages/Meal";
 import { Store } from "./pages/Dashboard/Store";
 import { Checkout } from "./pages/Dashboard/Checkout";
+import { Exercise } from "./pages/Dashboard/WorkoutPages/Exercise";
 
 //Redux
 import { Provider } from "react-redux";
@@ -50,8 +50,6 @@ import { getUserData } from "./redux/actions/dataActions";
 //Stripe
 import { StripeProvider, Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-
-const app = firebase.initializeApp(config);
 
 const theme = responsiveFontSizes(createMuiTheme(themeObject));
 
@@ -77,18 +75,12 @@ if (token) {
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        marginTop: "80px",
-        marginLeft: "10vw",
-        width: "80vw",
+        marginTop: "64px",
+        marginLeft: "8.0vw",
+        marginRight: "15.58vw",
 
-        [theme.breakpoints.up("lg")]: {
-            marginLeft: "10vw",
-            width: "66vw",
-        },
-        [theme.breakpoints.up("xl")]: {
-            width: "70vw",
-            marginLeft: "10vw",
-        },
+        [theme.breakpoints.up("lg")]: {},
+        [theme.breakpoints.up("xl")]: {},
     },
 }));
 
@@ -150,6 +142,11 @@ const App = () => {
                                 exact
                                 path="/meals/:mealId"
                                 component={Meal}
+                            />
+                            <Route
+                                exact
+                                path="/exercise/:exerciseId"
+                                component={Exercise}
                             />
                             <AuthRoute
                                 exact

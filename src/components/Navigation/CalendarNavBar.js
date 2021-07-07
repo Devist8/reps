@@ -11,6 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
 //Components
 import { Exercise } from "../Exercises/Exercise";
@@ -90,11 +91,11 @@ export const CalendarNavBar = () => {
         const exercises = [];
         schedule.map((item) => {
             if (item.type === "program") {
-                console.log("got a program");
                 Object.values(item.workouts).map((week) => {
                     return week.map((workout) => {
                         return workout.exercises.map((exercise) => {
-                            return exercises.push(exercise);
+                            exercise.status !== "canceled" &&
+                                exercises.push(exercise);
                         });
                     });
                 });
@@ -117,15 +118,30 @@ export const CalendarNavBar = () => {
     const handleDateClick = (value) => {
         let data = [...selected];
         const formattedValue = dayjs(value).format("l");
-        console.log(formattedValue);
-        console.log(value);
-        console.log(data[0] === value);
+
         const index = selected.indexOf(value);
+        console.log(value);
+        console.log(dayjs(formattedValue).valueOf());
         data.includes(formattedValue)
             ? (data = data.filter((x) => x !== formattedValue))
             : data.push(dayjs(value).format("l"));
-        console.log(data);
-        setSelected(data);
+        const dataSet = [
+            ...new Set(
+                data.sort((a, b) => {
+                    console.log(dayjs(a).valueOf());
+                    if (dayjs(a).valueOf() < dayjs(b).valueOf()) {
+                        return -1;
+                    }
+
+                    if (dayjs(a).valueOf() > dayjs(b).valueOf()) {
+                        return 1;
+                    }
+                    return 0;
+                })
+            ),
+        ];
+        console.log(dataSet);
+        setSelected(dataSet);
     };
     return (
         <AppBar style={{ zIndex: "1000", border: "none" }}>
@@ -175,7 +191,7 @@ export const CalendarNavBar = () => {
                             return (
                                 <Grid
                                     item
-                                    key={Math.round(index * Math.random())}
+                                    key={date}
                                     xs={12}
                                     className={classes.dateDisplay}
                                 >
@@ -187,11 +203,16 @@ export const CalendarNavBar = () => {
                                             ).valueOf() === exercise.date
                                         ) {
                                             return (
-                                                <Exercise
-                                                    exercise={exercise}
-                                                    small
+                                                <Box
                                                     key={exercise.id}
-                                                />
+                                                    style={{ margin: "1vh 0" }}
+                                                >
+                                                    <Exercise
+                                                        exercise={exercise}
+                                                        small
+                                                        key={exercise.id}
+                                                    />
+                                                </Box>
                                             );
                                         }
                                     })}

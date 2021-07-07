@@ -99,7 +99,8 @@ export const ProgramForm = (props) => {
             [week]: [...newProgram.workouts[week], workout],
         };
         workout.program = newProgram.title && newProgram.title;
-        console.log(workout);
+        workout.week = week;
+        workout.exercises.map((exercise) => (exercise.week = week));
         const data = {
             name: "workouts",
             value: updatedWeek,
@@ -108,11 +109,11 @@ export const ProgramForm = (props) => {
         dispatch(updateNewProgram(data));
         data.name = "workoutCount";
         data.value = newProgram.workoutCount + 1;
-        console.log(newProgram.workoutCount);
+
         dispatch(
             updateNewProgram({
                 name: "workoutCount",
-                value: newProgram.workouts.length + 1,
+                value: data.value,
             })
         );
         data.name = "exerciseCount";
@@ -186,6 +187,22 @@ export const ProgramForm = (props) => {
     const submit = () => {
         dispatch(submitProgram(newProgram, file));
         setPreview(null);
+    };
+
+    const removeWorkout = (workoutId, week) => {
+        const workout = newProgram.workouts[week].filter(
+            (x) => x.id === workoutId
+        );
+
+        const newArray = newProgram.workouts[week].filter(
+            (x) => x.id !== workoutId
+        );
+        const newWorkouts = { ...newProgram.workouts, [week]: newArray };
+        const data = {
+            name: "workouts",
+            value: newWorkouts,
+        };
+        dispatch(updateNewProgram(data));
     };
 
     return (
@@ -403,6 +420,7 @@ export const ProgramForm = (props) => {
                                 small={true}
                                 noButton
                                 edit
+                                handleDelete={removeWorkout}
                             />
                         </Grid>
                     </Grid>

@@ -7,6 +7,7 @@ import { Grid, Button, Typography } from "@material-ui/core";
 //Components
 import { MealForm } from "../../components/Meals/MealForm";
 import { MealCarousel } from "../../components/Meals/MealCarousel";
+import { Carousel } from "../../components/Carousel";
 
 //Redux
 import { useSelector } from "react-redux";
@@ -57,25 +58,25 @@ export const Meals = (props) => {
                     <Grid item xs={12}>
                         <Typography>Get your day started</Typography>
                     </Grid>
-                    <MealCarousel meals={breakfast} />
+                    <Carousel array={breakfast} type="meal" size={3} />
                 </Grid>
                 <Grid item xs={12} className={classes.lunch}>
                     <Grid item xs={12}>
                         <Typography>What's for lunch?</Typography>
                     </Grid>
-                    <MealCarousel meals={lunch} />
+                    <Carousel array={lunch} type="meal" size={3} />
                 </Grid>
                 <Grid item xs={12} className={classes.snacks}>
                     <Grid item xs={12}>
                         <Typography>Take a snack break.</Typography>
                     </Grid>
-                    <MealCarousel meals={snacks} />
+                    <Carousel array={snacks} type="meal" size={3} />
                 </Grid>
                 <Grid item xs={12} className={classes.dinners}>
                     <Grid item xs={12}>
                         <Typography>Dinner Ideas</Typography>
                     </Grid>
-                    <MealCarousel meals={dinners} />
+                    <Carousel array={dinners} type="meal" size={3} />
                 </Grid>
             </Grid>
         </Grid>

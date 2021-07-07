@@ -1,9 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 //MUI
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
     Grid,
+    Box,
     Card,
     CardActions,
     CardActionArea,
@@ -14,16 +16,28 @@ import {
     Modal,
     Button,
     Popper,
+    Menu,
+    MenuItem,
 } from "@material-ui/core";
 import ScheduleIcon from "@material-ui/icons/Schedule";
 import AddIcon from "@material-ui/icons/Add";
+import CloseIcon from "@material-ui/icons/Close";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 //Components
 import { Difficulty } from "../Difficulty";
 import { ActionButton } from "../ActionButton";
 import { ExerciseInfo } from "./ExerciseInfo";
 import { Scheduler } from "../Scheduler";
+import { Timer } from "../Timer";
+
 //Redux
+import { useSelector, useDispatch } from "react-redux";
+import {
+    deleteWorkout,
+    deleteUserWorkout,
+    updateScheduledExerciseStatus,
+} from "../../redux/actions/dataActions";
 
 const useStyles = makeStyles(() => ({
     cardRoot: {
@@ -39,39 +53,88 @@ const useStyles = makeStyles(() => ({
         flexWrap: "wrap",
     },
     title: {
+        maxWidth: "10vw",
         overflow: "hidden",
         textOverflow: "ellipsis",
         whiteSpace: "noWrap",
-        maxWidth: "8vw",
+        fontSize: "0.8879rem",
+    },
+    actionRoot: {
+        padding: 0,
+        paddingTop: "3px",
     },
 }));
 
 export const Exercise = (props) => {
     const classes = useStyles();
     const theme = useTheme();
+    const dispatch = useDispatch();
+    const userInfo = useSelector((state) => state.user.info);
+
+    const scheduleData = useSelector((state) => state.data.schedule);
+    const [scheduleItem, setScheduleItem] = React.useState();
     const [modalOpen, setModalOpen] = React.useState(false);
+    const [timerModal, setTimerModal] = React.useState(false);
     const [popperOpen, setPopperOpen] = React.useState(false);
     const [anchor, setAnchor] = React.useState(null);
+    const [menuAnchor, setMenuAnchor] = React.useState(null);
     const [errors, setErrors] = React.useState({});
-    const { exercise, small, edit, index, addExercise, noButton, schedule } =
-        props;
+    const {
+        exercise,
+        small,
+        edit,
+        index,
+        addExercise,
+        noButton,
+        schedule,
+        handleDelete,
+    } = props;
 
     const closeModal = () => {
         setModalOpen(false);
     };
 
+    const closeTimerModal = () => {
+        setTimerModal(false);
+    };
+
+    const cancelExercise = () => {
+        dispatch(
+            updateScheduledExerciseStatus(scheduleItem, exercise, "canceled")
+        );
+    };
+
+    const closePopper = () => {
+        setPopperOpen(false);
+        setAnchor(null);
+        exercise.reps = "";
+    };
     const openScheduler = (e) => {
         const scheduleItem = {
             ...exercise,
         };
         if (scheduleItem.reps) {
             setAnchor(e.currentTarget);
-            setPopperOpen(!popperOpen);
+            setPopperOpen(true);
         } else {
             setErrors({ reps: "Set reps " });
         }
     };
+    const openMenu = (e) => {
+        setMenuAnchor(e.currentTarget);
+    };
 
+    React.useEffect(() => {
+        setScheduleItem(
+            scheduleData.filter((x) =>
+                exercise.week
+                    ? x.id === exercise.programId
+                    : exercise.workoutId
+                    ? x.id === exercise.workoutId
+                    : x.id === exercise.id
+            )[0]
+        );
+    }, []);
     return (
         <Card
             className={classes.cardRoot}
@@ -85,7 +148,7 @@ export const Exercise = (props) => {
             }
         >
             <Grid container style={{ display: "flex" }}>
-                <Grid item xs={8} className={classes.cardContent}>
+                <Grid item xs={small ? 8 : 9} className={classes.cardContent}>
                     <CardActionArea
                         style={{
                             display: "flex",
@@ -93,12 +156,14 @@ export const Exercise = (props) => {
                             alignItems: "center",
                             alignContent: "center",
                             height: "8vh",
-
+                            marginLeft: "0.3vw",
                             width: "68%",
                         }}
-                        onClick={() => setModalOpen(true)}
+                        component={Link}
+                        to={`/exercise/${exercise.id}`}
+                        //onClick={() => setModalOpen(true)}
                     >
-                        <Grid item xs={7}>
+                        <Grid item xs={12}>
                             <Grid
                                 item
                                 xs={12}
@@ -113,6 +178,7 @@ export const Exercise = (props) => {
                                             className={classes.title}
                                             aria-label={exercise.title}
                                             aria-required="true"
+                                            variant="body2"
                                         >
                                             {exercise.title}
                                         </Typography>
@@ -139,7 +205,8 @@ export const Exercise = (props) => {
                                 <Difficulty
                                     difficulty={exercise.difficulty}
                                     small
-                                    edit={edit}
+                                    editDifficulty={edit}
+                                    id={exercise.id}
                                 />
                             </Grid>
                         </Grid>
@@ -148,7 +215,7 @@ export const Exercise = (props) => {
                         {!edit ? (
                             exercise.reps ? (
                                 <Typography
-                                    style={{ width: "5vw", marginTop: "20%" }}
+                                    style={{ width: "5vw", marginTop: "2.5vh" }}
                                 >
                                     {exercise.reps}
                                 </Typography>
@@ -185,17 +252,18 @@ export const Exercise = (props) => {
                 {!noButton && (
                     <Grid
                         item
-                        xs={3}
+                        xs={2}
                         style={
                             ({
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 width: "1vw",
+                                marginLeft: "0",
                             },
                             small
-                                ? { marginLeft: "0" }
-                                : { marginLeft: "0.9rem" })
+                                ? { marginRight: "0.3vw" }
+                                : { marginLeft: "0" })
                         }
                     >
                         <CardActions
@@ -203,6 +271,7 @@ export const Exercise = (props) => {
                                 ({
                                     display: "flex",
                                     flexWrap: "wrap",
+                                    padding: 0,
                                 },
                                 errors.reps && {
                                     display: "flex",
@@ -210,9 +279,61 @@ export const Exercise = (props) => {
                                     paddingTop: "0px",
                                 })
                             }
+                            classes={
+                                exercise.date && { root: classes.actionRoot }
+                            }
                         >
-                            {schedule ? (
+                            {userInfo.type === "trainer" ? (
+                                handleDelete ? (
+                                    <IconButton
+                                        onClick={() =>
+                                            handleDelete(exercise.id)
+                                        }
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                ) : exercise.date ? (
+                                    <Box style={{ marginBottom: "1vh" }}>
+                                        <Button
+                                            className={classes.scheduledButton}
+                                            size={small && "small"}
+                                            onClick={() => setTimerModal(true)}
+                                        >
+                                            Start
+                                        </Button>
+                                        <Button
+                                            style={{ marginBottom: "2.5vh" }}
+                                            className={classes.scheduledButton}
+                                            onClick={cancelExercise}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Box>
+                                ) : (
+                                    <IconButton
+                                        onClick={(e) => {
+                                            openMenu(e);
+                                        }}
+                                    >
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                )
+                            ) : exercise.reps ? (
+                                <Box>
+                                    <Button
+                                        style={{ marginTop: "1vh" }}
+                                        size={small && "small"}
+                                        onClick={() => setTimerModal(true)}
+                                    >
+                                        Start
+                                    </Button>
+                                    <Button onClick={() => cancelExercise()}>
+                                        Cancel
+                                    </Button>
+                                </Box>
+                            ) : (
                                 <IconButton
+                                    disable={popperOpen}
                                     onClick={(e) => {
                                         openScheduler(e);
                                     }}
@@ -223,40 +344,45 @@ export const Exercise = (props) => {
                                     }
                                 >
                                     <ScheduleIcon />
-                                    <Popper
-                                        open={popperOpen}
-                                        anchorEl={anchor}
-                                        style={{ zIndex: "1000" }}
-                                    >
-                                        <Scheduler
-                                            id={exercise.id}
-                                            item={exercise}
-                                            popperToggle={() =>
-                                                setPopperOpen(!popperOpen)
-                                            }
-                                        />
-                                    </Popper>
-                                </IconButton>
-                            ) : exercise.reps ? (
-                                <Button>Start</Button>
-                            ) : (
-                                <IconButton
-                                    onClick={() => {
-                                        addExercise({ ...exercise });
-                                        exercise.reps = "";
-                                    }}
-                                >
-                                    <AddIcon />
                                 </IconButton>
                             )}
+
+                            <Popper
+                                open={popperOpen}
+                                anchorEl={anchor}
+                                style={{ zIndex: "1000" }}
+                            >
+                                <Scheduler
+                                    id={exercise.id}
+                                    item={exercise}
+                                    popperToggle={closePopper}
+                                />
+                            </Popper>
                         </CardActions>
                     </Grid>
                 )}
             </Grid>
+            <Menu
+                open={Boolean(menuAnchor)}
+                anchorEl={menuAnchor}
+                onClose={() => setMenuAnchor(null)}
+            >
+                <MenuItem
+                    onClick={() => {
+                        addExercise({ ...exercise });
+                        exercise.reps = "";
+                    }}
+                >
+                    Send to user
+                </MenuItem>
+                <MenuItem onClick={openScheduler}>Schedule</MenuItem>
+                <MenuItem>Delete</MenuItem>
+            </Menu>
+
             <Modal
-                open={modalOpen}
-                onClose={() => closeModal()}
-                onBackdropClick={() => closeModal()}
+                open={timerModal}
+                onClose={closeTimerModal}
+                onBackdropClick={closeTimerModal}
                 style={{
                     display: "flex",
                     justifyContent: "center",
@@ -266,7 +392,7 @@ export const Exercise = (props) => {
                     overflowY: "scroll",
                 }}
             >
-                <ExerciseInfo exercise={exercise} />
+                <Timer exercise={exercise} />
             </Modal>
         </Card>
     );

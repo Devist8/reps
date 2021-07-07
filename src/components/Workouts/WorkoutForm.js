@@ -207,7 +207,13 @@ export const WorkoutForm = (props) => {
                         )}
                         {exercises.map((exercise) => {
                             return (
-                                <Grid item style={{ marginLeft: "15%" }}>
+                                <Grid
+                                    item
+                                    style={{
+                                        marginLeft: "15%",
+                                        marginBottom: "1vh",
+                                    }}
+                                >
                                     <Exercise
                                         exercise={exercise}
                                         addExercise={addExercise}

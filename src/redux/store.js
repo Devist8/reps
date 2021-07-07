@@ -1,13 +1,15 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
+import { authTokenMiddleWare } from "./sagas";
+import createSagaMiddleware from "redux-saga";
 
 import userReducer from "./reducers/userReducer";
 import uiReducer from "./reducers/uiReducer";
 import dataReducer from "./reducers/dataReducer";
 
 const initialState = {};
-
-const middleware = [thunk];
+const sagaMiddleware = createSagaMiddleware();
+const middleware = [thunk, sagaMiddleware];
 
 const reducers = combineReducers({
     user: userReducer,
@@ -25,5 +27,5 @@ const store = createStore(
             : (f) => f
     )
 );
-
+sagaMiddleware.run(authTokenMiddleWare);
 export default store;

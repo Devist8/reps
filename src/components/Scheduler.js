@@ -62,25 +62,31 @@ export const Scheduler = (props) => {
         const scheduleObject = {
             ...item,
         };
+        console.log(selectedDate);
         const dateInMilliseconds = dayjs(selectedDate).valueOf();
         const yesterdayInMilliseconds = dayjs(
             dayjs(Date.now() - 86400000).format("L")
         ).valueOf();
         const today = new Date();
+        console.log(dateInMilliseconds);
         item.type === "program"
             ? (scheduleObject.dateRange = [dateInMilliseconds])
             : (scheduleObject.date = dateInMilliseconds);
 
         scheduleObject.status = "pending";
-        dispatch(addToSchedule(scheduleObject));
-
+        console.log(scheduleObject);
         popperToggle();
+        dispatch(addToSchedule(scheduleObject));
     };
 
     return (
         <Grid container className={classes.root}>
             <Grid item xs={12} className={classes.dateSelect}>
-                <TextField type="date" onChange={handleChange} />
+                <TextField
+                    type="date"
+                    onChange={handleChange}
+                    value={selectedDate}
+                />
             </Grid>
             <Grid item xs={12} className={classes.scheduleBtn}>
                 <Button

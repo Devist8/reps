@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const WorkoutList = (props) => {
     const classes = useStyles();
-    const { workouts, openModal, small, noButton, edit } = props;
+    const { workouts, openModal, small, noButton, edit, handleDelete } = props;
     const [open, setOpen] = React.useState("");
     const handleOpen = (e) => {
         e.persist();
@@ -182,7 +182,7 @@ export const WorkoutList = (props) => {
                                                 <Workout
                                                     workout={workout}
                                                     small={small}
-                                                    noButton={noButton}
+                                                    handleDelete={handleDelete}
                                                 />
                                             </Grid>
                                         </Slide>

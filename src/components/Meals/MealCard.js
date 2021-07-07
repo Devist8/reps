@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
     GridListTile,
+    Grid,
     ButtonBase,
     GridListTileBar,
     FormControl,
@@ -32,50 +33,52 @@ export const MealCard = (props) => {
     const classes = useStyles();
     console.log(meal.id);
     return (
-        <GridListTile
-            key={meal.id}
-            cols={1}
-            component={Link}
-            to={`/meals/${meal.id}`}
-            style={{
-                width: "20vw",
-                height: "20vh",
-                margin: "0 0.4vw",
-                borderRadius: "8px",
-            }}
-        >
-            <FormControl>
-                <ButtonBase
-                    className={classes.buttonBase}
-                    children={
-                        <img
-                            src={meal.imageURL}
-                            alt={meal.title}
-                            style={{
-                                width: "20vw",
-                                height: "20vh",
-                                borderRadius: "8px",
-                            }}
+        <Grid container>
+            <GridListTile
+                key={meal.id}
+                cols={1}
+                component={Link}
+                to={`/meals/${meal.id}`}
+                style={{
+                    width: "20vw",
+                    height: "20vh",
+                    margin: "0 0.4vw",
+                    borderRadius: "8px",
+                }}
+            >
+                <FormControl>
+                    <ButtonBase
+                        className={classes.buttonBase}
+                        children={
+                            <img
+                                src={meal.imageURL}
+                                alt={meal.title}
+                                style={{
+                                    width: "20vw",
+                                    height: "20vh",
+                                    borderRadius: "8px",
+                                }}
+                            />
+                        }
+                    />
+                </FormControl>
+                <GridListTileBar
+                    title={meal.title}
+                    style={{ borderRadius: "0 0 8px 8px" }}
+                    subtitle={
+                        <StyledRating
+                            readOnly
+                            name="customized-color"
+                            defaultValue={meal.rating}
+                            getLabelText={(value) =>
+                                `${value} Heart${value !== 1 ? "s" : ""}`
+                            }
+                            precision={0.5}
+                            icon={<FavoriteIcon fontSize="inherit" />}
                         />
                     }
                 />
-            </FormControl>
-            <GridListTileBar
-                title={meal.title}
-                style={{ borderRadius: "0 0 8px 8px" }}
-                subtitle={
-                    <StyledRating
-                        readOnly
-                        name="customized-color"
-                        defaultValue={meal.rating}
-                        getLabelText={(value) =>
-                            `${value} Heart${value !== 1 ? "s" : ""}`
-                        }
-                        precision={0.5}
-                        icon={<FavoriteIcon fontSize="inherit" />}
-                    />
-                }
-            />
-        </GridListTile>
+            </GridListTile>
+        </Grid>
     );
 };

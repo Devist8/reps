@@ -5,7 +5,10 @@ import {
     LOADING_UI,
     SET_UNAUTHENTICATED,
     LOADING_USER,
+    SET_API_CALL,
+    CLEAR_API_CALL,
     SET_AUTHENTICATED,
+    UPDATE_USER_DATA,
 } from "../types";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
@@ -45,8 +48,6 @@ export const signupUser = (newUserData, history) => (dispatch) => {
             dispatch({ type: SET_AUTHENTICATED });
 
             dispatch({ type: CLEAR_ERRORS });
-
-            history.push("/");
         })
         .catch((err) => {
             dispatch({
@@ -140,4 +141,17 @@ const authHeader = (token) => {
     const FBIdToken = `Bearer ${token}`;
     localStorage.setItem("FBIdToken", FBIdToken);
     axios.defaults.headers.common["Authorization"] = FBIdToken;
+};
+
+export const updateUserData = (data) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
+    axios
+        .post("/user", data)
+        .then(() => {
+            dispatch({ type: UPDATE_USER_DATA, payload: data });
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+    dispatch({ type: CLEAR_API_CALL });
 };

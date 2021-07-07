@@ -18,9 +18,13 @@ import {
     Popper,
     TextField,
     IconButton,
+    Button,
+    Tooltip,
 } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import ScheduleIcon from "@material-ui/icons/Schedule";
+import CloseIcon from "@material-ui/icons/Close";
 
 //Components
 import { Difficulty } from "../Difficulty";
@@ -30,8 +34,12 @@ import { Scheduler } from "../Scheduler";
 
 //Redux
 
-import { useDispatch } from "react-redux";
-import { CLEAR_FILE, SET_FILE } from "../../redux/types";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    deleteWorkout,
+    deleteUserWorkout,
+} from "../../redux/actions/dataActions";
+import { ADD_WORKOUT, CLEAR_FILE, SET_FILE } from "../../redux/types";
 
 const useStyles = makeStyles((theme) => ({
     cardRoot: {
@@ -49,12 +57,18 @@ const useStyles = makeStyles((theme) => ({
     cardContent: {
         padding: 0,
     },
+    title: {
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "noWrap",
+    },
     video: {},
 }));
 
 export const WorkoutHeader = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const userInfo = useSelector((state) => state.user.info);
     const [anchor, setAnchor] = React.useState(null);
     const [open, setOpen] = React.useState(false);
     const {
@@ -66,6 +80,8 @@ export const WorkoutHeader = (props) => {
         schedule,
         preview,
         setPreview,
+        handleDelete,
+        addWorkout,
     } = props;
 
     const handleEditPicture = () => {
@@ -198,21 +214,28 @@ export const WorkoutHeader = (props) => {
                                 margin: "auto",
                             }}
                         >
-                            {!edit ? (
-                                <Typography style={{ marginBottom: "0.6rem" }}>
-                                    {workout.title}
-                                </Typography>
-                            ) : (
-                                <TextField
-                                    name="title"
-                                    id="title"
-                                    aria-label={workout.title}
-                                    aria-required="true"
-                                    value={workout.title}
-                                    onChange={(e) => handleChange(e)}
-                                />
-                            )}
-
+                            <Tooltip title={workout.title}>
+                                {!edit ? (
+                                    <Typography
+                                        className={classes.title}
+                                        style={{
+                                            marginBottom: "0.6rem",
+                                            overflow: "ellipsis",
+                                        }}
+                                    >
+                                        {workout.title}
+                                    </Typography>
+                                ) : (
+                                    <TextField
+                                        name="title"
+                                        id="title"
+                                        aria-label={workout.title}
+                                        aria-required="true"
+                                        value={workout.title}
+                                        onChange={(e) => handleChange(e)}
+                                    />
+                                )}
+                            </Tooltip>
                             <Difficulty
                                 difficulty={workout.difficulty}
                                 editDifficulty={handleChange}
@@ -232,31 +255,49 @@ export const WorkoutHeader = (props) => {
                         }}
                     >
                         <CardActions>
-                            {schedule ? (
+                            {userInfo.type === "trainer" ? (
+                                handleDelete ? (
+                                    <IconButton
+                                        onClick={() =>
+                                            handleDelete(
+                                                workout.id,
+                                                workout.week
+                                            )
+                                        }
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton
+                                        onClick={() => {
+                                            addWorkout({ ...workout });
+                                        }}
+                                    >
+                                        <AddIcon />
+                                    </IconButton>
+                                )
+                            ) : (
                                 <IconButton
                                     onClick={(e) => {
                                         setAnchor(e.currentTarget);
-                                        setOpen(!open);
+                                        setOpen(true);
                                     }}
                                 >
                                     <ScheduleIcon />
-                                    <Popper
-                                        open={open}
-                                        anchorEl={anchor}
-                                        style={{ zIndex: "1000" }}
-                                    >
-                                        <Scheduler
-                                            id={workout.id}
-                                            item={workout}
-                                            popperToggle={() => setOpen(false)}
-                                        />
-                                    </Popper>
                                 </IconButton>
-                            ) : (
-                                <Box>
-                                    <ActionButton edit={edit} />
-                                </Box>
                             )}
+
+                            <Popper
+                                open={open}
+                                anchorEl={anchor}
+                                style={{ zIndex: "1000" }}
+                            >
+                                <Scheduler
+                                    id={workout.id}
+                                    item={workout}
+                                    popperToggle={() => setOpen(false)}
+                                />
+                            </Popper>
                         </CardActions>
                     </Grid>
                 )}
@@ -349,6 +390,7 @@ export const Workout = (props) => {
         schedule,
         preview,
         setPreview,
+        handleDelete,
     } = props;
 
     const [open, setOpen] = React.useState(false);
@@ -377,6 +419,7 @@ export const Workout = (props) => {
                 schedule={schedule}
                 preview={preview}
                 setPreview={setPreview}
+                handleDelete={handleDelete}
             />
             {workout.exercises.length > 0 && (
                 <ExerciseList

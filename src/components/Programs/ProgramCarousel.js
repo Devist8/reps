@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     stepperRoot: {
         background: "none",
     },
+    root: {
+        width: "75vw",
+    },
 }));
 
 export const ProgramCarousel = (props) => {
@@ -35,7 +38,7 @@ export const ProgramCarousel = (props) => {
     const classes = useStyles();
     const [show, setShow] = useState([0, 1, 2]);
     const [slide, setSlide] = useState(1);
-    const maxSlide = Math.floor(programs.length / 3) + 1;
+    const maxSlide = programs.length > 2 ? Math.floor(programs.length / 3) : 1;
 
     /*const changeProgramsShown = () => ({
         //setShow([0 + slide * 3, 1 + slide * 3, 2 + slide * 3]);
@@ -63,7 +66,7 @@ export const ProgramCarousel = (props) => {
     };
 
     return (
-        <Grid container style={{ width: "75vw" }}>
+        <Grid container className={classes.root}>
             <Grid item xs={1} className={classes.arrowContainer}>
                 <IconButton onClick={decrementSlide} disabled={slide === 1}>
                     <ArrowBackIosIcon />

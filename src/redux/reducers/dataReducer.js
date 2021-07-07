@@ -11,6 +11,9 @@ import {
     ADD_EXERCISE,
     ADD_WORKOUT,
     ADD_PROGRAM,
+    ADD_TO_SCHEDULE,
+    UPDATE_SCHEDULE,
+    DELETE_WORKOUT,
     CLEAR_NEW_EXERCISE,
     CLEAR_NEW_WORKOUT,
     CLEAR_NEW_PROGRAM,
@@ -19,9 +22,12 @@ import {
     SET_MEALS,
     CLEAR_NEW_MEAL,
     SET_SCHEDULE,
+    SET_API_CALL,
+    CLEAR_API_CALL,
 } from "../types";
 
 const initialState = {
+    apiCall: false,
     exercises: [],
     workouts: [],
     programs: [],
@@ -86,6 +92,16 @@ export default function (state = initialState, action) {
                 ...state,
                 file: null,
             };
+        case SET_API_CALL:
+            return {
+                ...state,
+                apiCall: true,
+            };
+        case CLEAR_API_CALL:
+            return {
+                ...state,
+                apiCall: false,
+            };
         case SET_EXERCISES:
             return {
                 ...state,
@@ -125,6 +141,29 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 programs: [...state.programs, action.payload],
+            };
+        case ADD_TO_SCHEDULE:
+            return {
+                ...state,
+                schedule: [...state.schedule, action.payload],
+            };
+        case UPDATE_SCHEDULE:
+            const newSchedule = state.schedule.filter(
+                (x) => x.id === action.payload.id
+            );
+            newSchedule.concat(action.payload);
+            return {
+                ...state,
+                schedule: newSchedule,
+            };
+        case DELETE_WORKOUT:
+            return {
+                ...state,
+                programs: state.programs.filter((x) => x.id !== action.payload),
+                workouts: state.workouts.filter((x) => x.id !== action.payload),
+                exercises: state.exercises.filter(
+                    (x) => x.id !== action.payload
+                ),
             };
         case UPDATE_NEW_EXERCISE:
             console.log(action.payload);

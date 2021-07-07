@@ -8,10 +8,13 @@ import { sortObjsByDifficulty, sortObjsByTitle } from "../../util/functions";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Grid,
+    Box,
     Button,
     Typography,
     TextField,
     IconButton,
+    Switch,
+    FormControlLabel,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -22,19 +25,29 @@ import { ProgramForm } from "../../components/Programs/ProgramForm";
 import { Workout } from "../../components/Workouts/Workout";
 import { Exercise } from "../../components/Exercises/Exercise";
 import { ProgramCarousel } from "../../components/Programs/ProgramCarousel";
+import { Carousel } from "../../components/Carousel";
 
 //Redux
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {
+    addToCollection,
+    deleteWorkout,
+    deleteUserWorkout,
+} from "../../redux/actions/dataActions";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: "100%",
+        width: "70vw",
         minHeight: "563px",
         display: "flex",
+        padding: "25px",
+        justifyContent: "center",
+        [theme.breakpoints.up("xl")]: {
+            margin: "auto",
+        },
     },
     creatorContainer: {
         boxShadow: "1px 2px 4px 1px rgba(0,0,0,0.1)",
-        marginLeft: "1.5vw",
     },
     buttonContainer: {
         textAlign: "center",
@@ -51,15 +64,17 @@ const useStyles = makeStyles((theme) => ({
 
 export const Studio = () => {
     const classes = useStyles();
-    const [creator, setCreator] = React.useState("program");
+    const dispatch = useDispatch();
     const exercises = useSelector((state) => state.data.exercises);
     const workouts = useSelector((state) => state.data.workouts);
     const programs = useSelector((state) => state.data.programs);
+    const userInfo = useSelector((state) => state.user.info);
+    const [creator, setCreator] = React.useState("");
     const [exerciseSort, setExerciseSort] = React.useState(exercises);
     const [workoutSort, setWorkoutSort] = React.useState(workouts);
     const [programSort, setProgramSort] = React.useState(programs);
-
-    console.log(exerciseSort);
+    const [filter, setFilter] = React.useState("difficulty");
+    const [edit, setEdit] = React.useState(false);
 
     const displayCreator = (creator) => {
         switch (creator) {
@@ -77,17 +92,69 @@ export const Studio = () => {
         }
     };
 
+    const handleFilter = (type, filter) => {
+        setFilter(filter);
+        if (type === "programs") {
+            setProgramSort((prevState) => {
+                return filter === "title"
+                    ? [...sortObjsByTitle(programs)]
+                    : [...sortObjsByDifficulty(programs)];
+            });
+        } else if (type === "workouts") {
+            setWorkoutSort((prevState) => {
+                return filter === "title"
+                    ? [...sortObjsByTitle(workouts)]
+                    : [...sortObjsByDifficulty(workouts)];
+            });
+        } else {
+            setExerciseSort((prevState) => {
+                return filter === "title"
+                    ? [...sortObjsByTitle(exercises)]
+                    : [...sortObjsByDifficulty(exercises)];
+            });
+        }
+
+        return setFilter(filter);
+    };
+
+    const handleDelete = (docId) => {
+        dispatch(deleteWorkout(docId));
+    };
+
     const changeCreator = (selected) => {
         setCreator(selected);
     };
 
-    const handleDateChange = () => {};
+    const addToUserCollection = (exercise, userId) => {
+        const docId = exercise.id;
+        dispatch(addToCollection(docId, userId ? userId : userInfo.id));
+    };
+
+    React.useEffect(() => {
+        handleFilter("programs", filter);
+        handleFilter("workouts", filter);
+        return handleFilter("exercises", filter);
+    }, [exercises, workouts, programs]);
 
     return (
         <Grid container className={classes.root}>
             <Grid container className={classes.creatorContainer}>
                 <Grid item xs={12} className={classes.buttonContainer}>
-                    <Grid item xs={11} style={{ marginLeft: "2rem" }}>
+                    <Grid item xs={1}>
+                        <Box style={{ marginLeft: "1vh" }}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        color="primary"
+                                        checked={edit}
+                                        onChange={() => setEdit(!edit)}
+                                    />
+                                }
+                                label="Delete"
+                            />
+                        </Box>
+                    </Grid>
+                    <Grid item xs={10} style={{ marginLeft: "2rem" }}>
                         <Button
                             name="exercise"
                             disabled={creator === "exercise"}
@@ -147,29 +214,26 @@ export const Studio = () => {
                             Sort by:
                         </Typography>
                         <Button
-                            onClick={() =>
-                                setProgramSort((prevState) => [
-                                    ...sortObjsByTitle(programs),
-                                ])
-                            }
+                            onClick={() => {
+                                handleFilter("programs", "title");
+                            }}
                         >
                             Title
                         </Button>
                         <Button
-                            onClick={() =>
-                                setProgramSort((prevState) => [
-                                    ...sortObjsByDifficulty(programs),
-                                ])
-                            }
+                            onClick={() => {
+                                handleFilter("programs", "difficulty");
+                            }}
                         >
                             Difficulty
                         </Button>
                     </Grid>
                     <Grid item xs={12} style={{ width: "100%" }}>
                         {programs && (
-                            <ProgramCarousel
-                                type="program"
+                            <Carousel
                                 array={programSort}
+                                type="program"
+                                size={3}
                             />
                         )}
                     </Grid>
@@ -189,20 +253,16 @@ export const Studio = () => {
                             Sort by:
                         </Typography>
                         <Button
-                            onClick={() =>
-                                setWorkoutSort((prevState) => [
-                                    ...sortObjsByTitle(workouts),
-                                ])
-                            }
+                            onClick={() => {
+                                handleFilter("workouts", "title");
+                            }}
                         >
                             Title
                         </Button>
                         <Button
-                            onClick={() =>
-                                setWorkoutSort((prevState) => [
-                                    ...sortObjsByDifficulty(workouts),
-                                ])
-                            }
+                            onClick={() => {
+                                handleFilter("workouts", "difficulty");
+                            }}
                         >
                             Difficulty
                         </Button>
@@ -224,7 +284,6 @@ export const Studio = () => {
                                     md={9}
                                     style={{
                                         margin: "0% 4% 4% 4%",
-
                                         justifyContent: "center",
                                     }}
                                     key={workout.id}
@@ -232,15 +291,7 @@ export const Studio = () => {
                                     <Workout
                                         workout={workout}
                                         schedule={true}
-                                    />
-                                    <TextField
-                                        id="scheduleDate"
-                                        type="date"
-                                        defaultValue={dayjs(new Date()).format(
-                                            "DD-MM-YYYY"
-                                        )}
-                                        onChange={handleDateChange}
-                                        style={{ visibility: "hidden" }}
+                                        handleDelete={edit && handleDelete}
                                     />
                                 </Grid>
                             );
@@ -262,24 +313,17 @@ export const Studio = () => {
                             Sort by:
                         </Typography>
                         <Button
-                            onClick={() =>
-                                exerciseSort !== "title"
-                                    ? setExerciseSort((prevState) => [
-                                          ...sortObjsByTitle(exercises),
-                                      ])
-                                    : setExerciseSort(null)
-                            }
+                            onClick={() => {
+                                handleFilter("exercises", "title");
+                            }}
                         >
                             Title
                         </Button>
                         <Button
-                            onClick={() =>
-                                exerciseSort !== "difficulty"
-                                    ? setExerciseSort((prevState) => [
-                                          ...sortObjsByDifficulty(exercises),
-                                      ])
-                                    : setExerciseSort(null)
-                            }
+                            onClick={() => {
+                                console.log("difficulty");
+                                handleFilter("exercises", "difficulty");
+                            }}
                         >
                             Difficulty
                         </Button>
@@ -308,7 +352,12 @@ export const Studio = () => {
                                     <Exercise
                                         exercise={exercise}
                                         key={exercise.id}
-                                        schedule
+                                        handleDelete={edit && handleDelete}
+                                        schedule={userInfo.type !== "trainer"}
+                                        addExercise={
+                                            userInfo.type === "trainer" &&
+                                            addToUserCollection
+                                        }
                                     />
                                 </Grid>
                             );

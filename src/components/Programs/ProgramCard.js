@@ -13,9 +13,12 @@ import {
     Modal,
     IconButton,
     Popper,
+    ClickAwayListener,
 } from "@material-ui/core";
 import ScheduleIcon from "@material-ui/icons/Schedule";
-
+import ShareIcon from "@material-ui/icons/Share";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
 //Components
 import { Difficulty } from "../Difficulty";
 import { ProgramModal } from "./ProgramModal";
@@ -42,12 +45,19 @@ const useStyles = makeStyles((theme) => ({
     content: {
         padding: "8px",
     },
+
+    speedDialBtn: {
+        backgroundColor: theme.palette.secondary.main,
+        width: "13%",
+        height: "50%",
+    },
 }));
 
 export const ProgramCard = (props) => {
     const { program } = props;
     const [modalOpen, setModalOpen] = React.useState(false);
     const [popperOpen, setPopperOpen] = React.useState(false);
+    const [speedDial, setSpeedDial] = React.useState(false);
     const [anchor, setAnchor] = React.useState(null);
     const classes = useStyles();
 
@@ -55,13 +65,19 @@ export const ProgramCard = (props) => {
         setModalOpen(false);
     };
 
+    const closePopper = () => {
+        setPopperOpen(false);
+    };
+
+    const scheduleClick = (e) => {
+        setAnchor(e.currentTarget);
+        setPopperOpen(!popperOpen);
+    };
+
     return (
         <Grid container>
             <Card className={classes.root}>
-                <CardMedia
-                    image={"/beachbody-original.jpg"}
-                    className={classes.media}
-                />
+                <CardMedia image={program.imageURL} className={classes.media} />
                 <CardContent className={classes.content}>
                     <Typography
                         variant="h5"
@@ -102,37 +118,56 @@ export const ProgramCard = (props) => {
                         padding: 0,
                     }}
                 >
-                    <Button
-                        style={{ justifySelf: "flex-start" }}
-                        onClick={() => setModalOpen(true)}
-                        variant="text"
-                    >
-                        See More
-                    </Button>
-                    <IconButton
-                        style={{
-                            position: "aboslute",
-                            left: "7.5vw",
-                        }}
-                    >
-                        <ScheduleIcon
-                            item={program}
-                            onClick={(e) => {
-                                setAnchor(e.currentTarget);
-                                setPopperOpen(true);
+                    <Grid item xs={12}>
+                        <SpeedDial
+                            ariaLabel="ProgramSpeedDial"
+                            icon={<SpeedDialIcon />}
+                            open={speedDial}
+                            onOpen={() => setSpeedDial(true)}
+                            onClose={() => setSpeedDial(false)}
+                            direction="left"
+                            classes={{
+                                root: classes.speedDialRoot,
+                                fab: classes.speedDialBtn,
                             }}
-                        />
+                            style={{ marginRight: "0.5vw" }}
+                        >
+                            <SpeedDialAction
+                                key={"schedule3"}
+                                icon={<DeleteIcon />}
+                                onClick={scheduleClick}
+                                tooltipPlacement={"top"}
+                                tooltipTitle="schedule"
+                            />
+                            <SpeedDialAction
+                                key={"schedule2"}
+                                icon={<ScheduleIcon />}
+                                onClick={scheduleClick}
+                                tooltipPlacement={"top"}
+                                tooltipTitle="schedule"
+                            />
+
+                            <SpeedDialAction
+                                key={"schedule"}
+                                icon={<ShareIcon />}
+                                onClick={scheduleClick}
+                                tooltipPlacement={"top"}
+                                tooltipTitle="schedule"
+                            />
+                        </SpeedDial>
+
                         <Popper
                             open={popperOpen}
                             anchorEl={anchor}
                             style={{ zIndex: "1000" }}
                         >
                             <Scheduler
+                                id={program.id}
                                 item={program}
-                                popperToggle={() => setPopperOpen(false)}
+                                popperToggle={closePopper}
                             />
                         </Popper>
-                    </IconButton>
+                    </Grid>
                 </CardActions>
             </Card>
             <Grid
