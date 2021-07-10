@@ -8,6 +8,10 @@ import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple.js";
 import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        display: "flex",
+        justifyContent: "center",
+    },
     badge: {
         borderRadius: "30px",
         height: "30px",
@@ -15,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const EditButton = (props) => {
-    const {} = props;
+    const { handleEdit } = props;
     const classes = useStyles();
     const [edit, setEdit] = React.useState(false);
 
@@ -24,7 +28,7 @@ export const EditButton = (props) => {
     };
 
     return (
-        <Grid container>
+        <Grid container className={classes.root}>
             <Grid item>
                 <Badge
                     badgeContent={

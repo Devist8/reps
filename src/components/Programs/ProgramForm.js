@@ -168,7 +168,6 @@ export const ProgramForm = (props) => {
         if (file) {
             reader.onload = () => {
                 if (reader.readyState === 2) {
-                    console.log(file);
                     dispatch({ type: SET_FILE, payload: file });
                     setPreview(URL.createObjectURL(file));
                 }

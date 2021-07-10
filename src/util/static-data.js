@@ -92,3 +92,32 @@ export const quotes = [
     "“Don’t count the days, make the days count.” —Muhammad Ali",
     "“Just believe in yourself. Even if you don’t pretend that you do and, and some point, you will.” —Venus Williams",
 ];
+
+export const allergies = [
+    "Celery",
+    "Gluten",
+    "Crustaceans",
+    "Eggs",
+    "Fish",
+    "Lupin",
+    "Milk",
+    "Molluscs",
+    "Mustard",
+    "Peanuts",
+    "Seasame",
+    "Soybeans",
+    "Sulphur dioxide",
+    "Tree nuts",
+    "None",
+];
+
+export const fitnessGoals = [
+    "Getting in shape",
+    "Losing weight",
+    "Building muscle",
+    "Gaining mass",
+    "Getting healthy",
+    "Improve endurance",
+    "Increase flexibility",
+    "Toning",
+];

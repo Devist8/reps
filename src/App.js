@@ -61,7 +61,6 @@ if (token) {
     const idToken = token.split("Bearer ")[1];
     const decodedToken = jwtDecode(idToken);
     if (decodedToken.exp * 1000 < Date.now()) {
-        const refreshToken = localStorage.RefreshToken;
         store.dispatch(getNewToken());
         store.dispatch({ type: SET_AUTHENTICATED });
         axios.defaults.headers.common["Authorization"] = token;
@@ -69,7 +68,8 @@ if (token) {
     }
     const FBIdToken = `Bearer ${idToken}`;
     localStorage.setItem("FBIdToken", FBIdToken);
-    axios.defaults.headers.common["Authorization"] = token;
+    console.log(localStorage.getItem("FBIdToken"));
+    axios.defaults.headers.common["Authorization"] = FBIdToken;
     store.dispatch(getUserData());
 }
 
@@ -96,20 +96,12 @@ const App = () => {
     React.useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
             store.dispatch(getUserData());
-        });
-    });
-    /*componentDidMount = () => {
-        const refreshToken = localStorage.RefreshToken;
-
-        const checkToken = () => {};
-        firebase.auth().onAuthStateChanged((user) => {
-            console.log("checking");
-
             firebase
                 .auth()
                 .currentUser.getIdToken()
                 .then((idToken) => {
                     const FBIdToken = `Bearer ${idToken}`;
+                    console.log(FBIdToken);
                     localStorage.setItem("FBIdToken", FBIdToken);
                     store.dispatch({ type: SET_AUTHENTICATED });
                     axios.defaults.headers.common["Authorization"] = token;
@@ -119,9 +111,7 @@ const App = () => {
                     console.log(err.error);
                 });
         });
-
-        return () => checkToken();
-    };*/
+    });
 
     const classes = useStyles();
     return (

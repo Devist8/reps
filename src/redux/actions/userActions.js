@@ -9,6 +9,7 @@ import {
     CLEAR_API_CALL,
     SET_AUTHENTICATED,
     UPDATE_USER_DATA,
+    SET_PROGRESS,
 } from "../types";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
@@ -38,6 +39,26 @@ export const loginUser = (userData, history) => (dispatch) => {
         });
 };
 
+export const oAuthSignUp = (newUserData, userId) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
+    console.log(userId);
+    axios
+        .post(`/user/${userId}`, newUserData)
+        .then((res) => {
+            dispatch({ type: SET_AUTHENTICATED });
+
+            dispatch({ type: CLEAR_ERRORS });
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err,
+            });
+        });
+
+    dispatch({ type: CLEAR_API_CALL });
+};
+
 export const signupUser = (newUserData, history) => (dispatch) => {
     dispatch({ type: LOADING_UI });
     console.log(newUserData);
@@ -52,7 +73,7 @@ export const signupUser = (newUserData, history) => (dispatch) => {
         .catch((err) => {
             dispatch({
                 type: SET_ERRORS,
-                payload: err,
+                payload: err.response.data,
             });
         });
 };
@@ -106,6 +127,7 @@ export const getUserData = () => (dispatch) => {
 };
 
 export const getNewToken = () => (dispatch) => {
+    console.log("get new token");
     let refreshToken = localStorage.RefreshToken;
     const getRefreshToken = firebase.auth().onAuthStateChanged((user) => {
         console.log(firebase.auth().currentUser.refreshToken);
@@ -143,15 +165,58 @@ const authHeader = (token) => {
     axios.defaults.headers.common["Authorization"] = FBIdToken;
 };
 
-export const updateUserData = (data) => (dispatch) => {
+export const updateUserData = (data, file) => (dispatch) => {
     dispatch({ type: SET_API_CALL });
-    axios
-        .post("/user", data)
-        .then(() => {
-            dispatch({ type: UPDATE_USER_DATA, payload: data });
-        })
-        .catch((err) => {
-            console.error(err);
+
+    if (file) {
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child("profileImages");
+        fileRef.put(file).then(() => {
+            console.log("file uploaded");
         });
-    dispatch({ type: CLEAR_API_CALL });
+
+        const fileUpload = fileRef.put(file);
+
+        fileUpload.on(
+            "state_changed",
+            (snapshot) => {
+                dispatch({
+                    type: SET_PROGRESS,
+                    payload:
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+                });
+            },
+            (error) => {
+                console.log(error);
+            },
+            () => {
+                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    console.log(downloadURL);
+                    data.imageURL = downloadURL;
+
+                    axios
+                        .post("/user", data)
+                        .then(() => {
+                            dispatch({ type: UPDATE_USER_DATA, payload: data });
+                            dispatch({ type: "CLEAR_PROGRESS" });
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
+                    dispatch({ type: CLEAR_API_CALL });
+                });
+            }
+        );
+    } else {
+        axios
+            .post("/user", data)
+            .then(() => {
+                dispatch({ type: UPDATE_USER_DATA, payload: data });
+                dispatch({ type: "CLEAR_PROGRESS" });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+        dispatch({ type: CLEAR_API_CALL });
+    }
 };
