@@ -76,26 +76,27 @@ export const StoreCarousel = (props) => {
     return (
         <Grid container>
             <Grid item xs={12}>
-                {array.map((item, i) => {
-                    console.log(item);
-                    return (
-                        <Slide
-                            direction="left"
-                            in={i === index}
-                            mountOnEnter
-                            unmountOnExit
-                        >
-                            <Box>
-                                <OverlayImage
-                                    image={item.imageURL}
-                                    title={item.title}
-                                    body={item.body}
-                                    align={item.align}
-                                />
-                            </Box>
-                        </Slide>
-                    );
-                })}
+                {array &&
+                    array.map((item, i) => {
+                        console.log(item);
+                        return (
+                            <Slide
+                                direction="left"
+                                in={i === index}
+                                mountOnEnter
+                                unmountOnExit
+                            >
+                                <Box>
+                                    <OverlayImage
+                                        image={item.imageURL}
+                                        title={item.title}
+                                        body={item.body}
+                                        align={item.align}
+                                    />
+                                </Box>
+                            </Slide>
+                        );
+                    })}
             </Grid>
         </Grid>
     );

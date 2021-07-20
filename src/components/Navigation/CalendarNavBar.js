@@ -7,14 +7,23 @@ import { useLocation } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
+import {
+    Grid,
+    Drawer,
+    AppBar,
+    Typography,
+    Box,
+    IconButton,
+    BottomNavigation,
+    BottomNavigationAction,
+} from "@material-ui/core";
+import ChatIcon from "@material-ui/icons/Chat";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 
 //Components
 import { Exercise } from "../Exercises/Exercise";
+import { Chat } from "../Chat/Chat";
+import { ChatList } from "../Chat/ChatList";
 
 //Redux
 import { useSelector } from "react-redux";
@@ -25,13 +34,19 @@ const useStyles = makeStyles((theme) => ({
     root: {},
     calendarContainer: {
         margin: "auto",
-        marginTop: "5rem",
+        marginTop: "10vh",
         width: "90%",
         justifyContent: "center",
+    },
+    chatContainer: {
+        marginTop: "10vh",
     },
     calendar: { width: "90%", marginLeft: "5%" },
     drawerPaper: {
         width: "300px",
+        backgroundColor: "#e3f6ff",
+    },
+    bottomNavigation: {
         backgroundColor: "#e3f6ff",
     },
     mealsDrawerPaper: {
@@ -59,6 +74,11 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: "0.8vw",
         width: "100%",
     },
+    buttons: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-end",
+    },
 }));
 
 export const DateHeader = (props) => {
@@ -78,7 +98,7 @@ export const DateHeader = (props) => {
     );
 };
 
-export const CalendarNavBar = () => {
+export const CalendarDisplay = (props) => {
     const classes = useStyles();
     const location = useLocation();
     const [selected, setSelected] = React.useState([
@@ -120,15 +140,13 @@ export const CalendarNavBar = () => {
         const formattedValue = dayjs(value).format("l");
 
         const index = selected.indexOf(value);
-        console.log(value);
-        console.log(dayjs(formattedValue).valueOf());
+
         data.includes(formattedValue)
             ? (data = data.filter((x) => x !== formattedValue))
             : data.push(dayjs(value).format("l"));
         const dataSet = [
             ...new Set(
                 data.sort((a, b) => {
-                    console.log(dayjs(a).valueOf());
                     if (dayjs(a).valueOf() < dayjs(b).valueOf()) {
                         return -1;
                     }
@@ -140,9 +158,95 @@ export const CalendarNavBar = () => {
                 })
             ),
         ];
-        console.log(dataSet);
+
         setSelected(dataSet);
     };
+    return (
+        <Grid item xs={12} className={classes.calendarContainer}>
+            <Grid item xs={12} className={classes.calendar}>
+                <Calendar
+                    tileClassName={({ date, view }) => {
+                        if (
+                            selected.find(
+                                (x) =>
+                                    dayjs(x).format("DD-MM-YYYY") ===
+                                    dayjs(date).format("DD-MM-YYYY")
+                            )
+                        ) {
+                            return !location.pathname.includes("meals")
+                                ? classes.selectedTile
+                                : classes.mealsSelectedTile;
+                        } else {
+                            return classes.tile;
+                        }
+                    }}
+                    formatShortWeekday={(locale, date) =>
+                        dayjs(date).format("dd")
+                    }
+                    prev2Label={null}
+                    next2Label={null}
+                    onClickDay={(value, event) => handleDateClick(value)}
+                    className={classes.calendar}
+                />
+            </Grid>
+            <Grid item xs={12} className={classes.dateDisplayContainer}>
+                {selected.map((date, index) => {
+                    return (
+                        <Grid
+                            item
+                            key={date}
+                            xs={12}
+                            className={classes.dateDisplay}
+                        >
+                            <DateHeader date={date} />
+                            {scheduledExercises.map((exercise) => {
+                                if (
+                                    dayjs(dayjs(date).format("L")).valueOf() ===
+                                    exercise.date
+                                ) {
+                                    console.log(exercise);
+                                    return (
+                                        <Box
+                                            key={exercise.id}
+                                            style={{ margin: "1vh 0" }}
+                                        >
+                                            <Exercise
+                                                exercise={exercise}
+                                                small
+                                                key={exercise.id}
+                                            />
+                                        </Box>
+                                    );
+                                }
+                            })}
+                        </Grid>
+                    );
+                })}
+            </Grid>
+        </Grid>
+    );
+};
+
+export const ChatDisplay = () => {
+    const classes = useStyles();
+    const [contacts, setContacts] = React.useState([]);
+
+    return (
+        <Grid container className={classes.chatContainer}>
+            {contacts.length > 0 ? (
+                <Chat members={contacts} small setContacts={setContacts} />
+            ) : (
+                <ChatList setContacts={setContacts} />
+            )}
+        </Grid>
+    );
+};
+
+export const CalendarNavBar = () => {
+    const classes = useStyles();
+    const location = useLocation();
+    const [display, setDisplay] = React.useState("");
+
     return (
         <AppBar style={{ zIndex: "1000", border: "none" }}>
             <Drawer
@@ -157,69 +261,24 @@ export const CalendarNavBar = () => {
                     paperAnchorDockedRight: classes.rightDrawer,
                 }}
             >
-                <Grid item xs={12} className={classes.calendarContainer}>
-                    <Grid item xs={12} className={classes.calendar}>
-                        <Calendar
-                            tileClassName={({ date, view }) => {
-                                if (
-                                    selected.find(
-                                        (x) =>
-                                            dayjs(x).format("DD-MM-YYYY") ===
-                                            dayjs(date).format("DD-MM-YYYY")
-                                    )
-                                ) {
-                                    return !location.pathname.includes("meals")
-                                        ? classes.selectedTile
-                                        : classes.mealsSelectedTile;
-                                } else {
-                                    return classes.tile;
-                                }
-                            }}
-                            formatShortWeekday={(locale, date) =>
-                                dayjs(date).format("dd")
-                            }
-                            prev2Label={null}
-                            next2Label={null}
-                            onClickDay={(value, event) =>
-                                handleDateClick(value)
-                            }
-                            className={classes.calendar}
+                <Grid item xs={12} className={classes.displayContainer}>
+                    {display === "calendar" && <CalendarDisplay />}
+                    {display === "chat" && <ChatDisplay />}
+                </Grid>
+                <Grid item xs={12} className={classes.buttons}>
+                    <BottomNavigation
+                        className={classes.bottomNavigation}
+                        onChange={(e, value) => setDisplay(value)}
+                    >
+                        <BottomNavigationAction
+                            value="calendar"
+                            icon={<CalendarTodayIcon />}
                         />
-                    </Grid>
-                    <Grid item xs={12} className={classes.dateDisplayContainer}>
-                        {selected.map((date, index) => {
-                            return (
-                                <Grid
-                                    item
-                                    key={date}
-                                    xs={12}
-                                    className={classes.dateDisplay}
-                                >
-                                    <DateHeader date={date} />
-                                    {scheduledExercises.map((exercise) => {
-                                        if (
-                                            dayjs(
-                                                dayjs(date).format("L")
-                                            ).valueOf() === exercise.date
-                                        ) {
-                                            return (
-                                                <Box
-                                                    key={exercise.id}
-                                                    style={{ margin: "1vh 0" }}
-                                                >
-                                                    <Exercise
-                                                        exercise={exercise}
-                                                        small
-                                                        key={exercise.id}
-                                                    />
-                                                </Box>
-                                            );
-                                        }
-                                    })}
-                                </Grid>
-                            );
-                        })}
-                    </Grid>
+                        <BottomNavigationAction
+                            value="chat"
+                            icon={<ChatIcon />}
+                        />
+                    </BottomNavigation>
                 </Grid>
             </Drawer>
         </AppBar>

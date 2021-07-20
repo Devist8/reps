@@ -94,7 +94,6 @@ export const Carousel = (props) => {
                 style={{
                     display: "flex",
                     flexWrap: "noWrap",
-                    margin: "auto",
                     justifyContent: "center",
                 }}
             >

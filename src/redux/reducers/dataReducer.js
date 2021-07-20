@@ -4,6 +4,8 @@ import {
     SET_EXERCISES,
     SET_PROGRAMS,
     SET_WORKOUTS,
+    SET_RECENT_MESSAGES,
+    CLEAR_RECENT_MESSAGES,
     UPDATE_NEW_EXERCISE,
     UPDATE_NEW_WORKOUT,
     UPDATE_NEW_PROGRAM,
@@ -24,6 +26,11 @@ import {
     SET_SCHEDULE,
     SET_API_CALL,
     CLEAR_API_CALL,
+    SET_STORE,
+    UPDATE_STORE_INFO,
+    ADD_STORE_ITEM,
+    DELETE_STORE_ITEM,
+    CLEAR_DATA,
 } from "../types";
 
 const initialState = {
@@ -31,9 +38,11 @@ const initialState = {
     exercises: [],
     workouts: [],
     programs: [],
+    recentMessages: [],
     meals: [],
     schedule: [],
     file: null,
+    store: {},
     newExercise: {
         title: "",
         difficulty: 1,
@@ -258,6 +267,34 @@ export default function (state = initialState, action) {
                     type: "",
                 },
             };
+        case SET_STORE:
+            return {
+                ...state,
+                store: action.payload,
+            };
+        case UPDATE_STORE_INFO:
+            return {
+                ...state,
+                store: {
+                    ...state.store,
+                    info: { ...state.store.info, ...action.payload },
+                },
+            };
+        case ADD_STORE_ITEM:
+            return {
+                ...state,
+                store: {
+                    ...state.store,
+                    collection: [...state.store.collection, action.payload],
+                },
+            };
+        case SET_RECENT_MESSAGES:
+            return {
+                ...state,
+                recentMessages: action.payload,
+            };
+        case CLEAR_DATA:
+            return initialState;
         default:
             return state;
     }

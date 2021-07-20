@@ -42,7 +42,7 @@ export const MealCard = (props) => {
                 style={{
                     width: "20vw",
                     height: "20vh",
-                    margin: "0 0.4vw",
+
                     borderRadius: "8px",
                 }}
             >

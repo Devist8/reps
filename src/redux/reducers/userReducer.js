@@ -6,6 +6,7 @@ import {
     SET_API_CALL,
     CLEAR_API_CALL,
     UPDATE_USER_DATA,
+    CLEAR_USER,
 } from "../types";
 
 const initialState = {
@@ -33,7 +34,7 @@ export default function (state = initialState, action) {
         case LOADING_USER:
             return {
                 ...state,
-                loading: true,
+                loading: !state.loading,
             };
         case UPDATE_USER_DATA:
             return {
@@ -43,6 +44,8 @@ export default function (state = initialState, action) {
                     ...action.payload,
                 },
             };
+        case CLEAR_USER:
+            return initialState;
         default:
             return state;
     }

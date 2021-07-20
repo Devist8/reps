@@ -1,12 +1,10 @@
 import firebase from "firebase";
 import axios from "axios";
-import config from "../util/config";
+import { auth } from "../util/config";
 import { takeEvery } from "redux-saga/effects";
 
-firebase.initializeApp(config);
-
 const getToken = () => {
-    firebase.auth().onAuthStateChanged((user) => {
+    auth().onAuthStateChanged((user) => {
         user &&
             firebase
                 .auth()

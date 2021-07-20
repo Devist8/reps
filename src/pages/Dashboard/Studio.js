@@ -37,7 +37,7 @@ import {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: "70vw",
+        width: "72vw",
         minHeight: "563px",
         display: "flex",
         padding: "25px",
@@ -68,7 +68,7 @@ export const Studio = () => {
     const exercises = useSelector((state) => state.data.exercises);
     const workouts = useSelector((state) => state.data.workouts);
     const programs = useSelector((state) => state.data.programs);
-    const userInfo = useSelector((state) => state.user.info);
+    const user = useSelector((state) => state.user.info);
     const [creator, setCreator] = React.useState("");
     const [exerciseSort, setExerciseSort] = React.useState(exercises);
     const [workoutSort, setWorkoutSort] = React.useState(workouts);
@@ -127,7 +127,7 @@ export const Studio = () => {
 
     const addToUserCollection = (exercise, userId) => {
         const docId = exercise.id;
-        dispatch(addToCollection(docId, userId ? userId : userInfo.id));
+        dispatch(addToCollection(docId, userId ? userId : user.id));
     };
 
     React.useEffect(() => {
@@ -138,66 +138,73 @@ export const Studio = () => {
 
     return (
         <Grid container className={classes.root}>
-            <Grid container className={classes.creatorContainer}>
-                <Grid item xs={12} className={classes.buttonContainer}>
-                    <Grid item xs={1}>
-                        <Box style={{ marginLeft: "1vh" }}>
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        color="primary"
-                                        checked={edit}
-                                        onChange={() => setEdit(!edit)}
-                                    />
-                                }
-                                label="Delete"
-                            />
-                        </Box>
+            {user.type === "trainer" && (
+                <Grid container className={classes.creatorContainer}>
+                    <Grid item xs={12} className={classes.buttonContainer}>
+                        <Grid item xs={1}>
+                            <Box style={{ marginLeft: "1vh" }}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            color="primary"
+                                            checked={edit}
+                                            onChange={() => setEdit(!edit)}
+                                        />
+                                    }
+                                    label="Delete"
+                                />
+                            </Box>
+                        </Grid>
+                        <Grid item xs={10} style={{ marginLeft: "2rem" }}>
+                            <Button
+                                name="exercise"
+                                disabled={creator === "exercise"}
+                                className={classes.button}
+                                onClick={(e) => changeCreator("exercise")}
+                            >
+                                Exercise
+                            </Button>
+                            <Button
+                                name="workout"
+                                disabled={creator === "workout"}
+                                className={classes.button}
+                                onClick={(e) => changeCreator("workout")}
+                            >
+                                Workout
+                            </Button>
+                            <Button
+                                name="program"
+                                disabled={creator === "program"}
+                                className={classes.button}
+                                onClick={(e) => changeCreator("program")}
+                            >
+                                Program
+                            </Button>
+                        </Grid>
+                        <Grid item xs={1} style={{ flexBasis: 0 }}>
+                            <IconButton
+                                size="small"
+                                style={{ marginTop: "0.18rem" }}
+                                onClick={() => setCreator("")}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={10} style={{ marginLeft: "2rem" }}>
-                        <Button
-                            name="exercise"
-                            disabled={creator === "exercise"}
-                            className={classes.button}
-                            onClick={(e) => changeCreator("exercise")}
+                    {user.type === "trainer" && (
+                        <Grid
+                            item
+                            xs={12}
+                            style={{
+                                flexDirection: "column",
+                                overflow: "hidden",
+                            }}
                         >
-                            Exercise
-                        </Button>
-                        <Button
-                            name="workout"
-                            disabled={creator === "workout"}
-                            className={classes.button}
-                            onClick={(e) => changeCreator("workout")}
-                        >
-                            Workout
-                        </Button>
-                        <Button
-                            name="program"
-                            disabled={creator === "program"}
-                            className={classes.button}
-                            onClick={(e) => changeCreator("program")}
-                        >
-                            Program
-                        </Button>
-                    </Grid>
-                    <Grid item xs={1} style={{ flexBasis: 0 }}>
-                        <IconButton
-                            size="small"
-                            style={{ marginTop: "0.18rem" }}
-                            onClick={() => setCreator("")}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                    </Grid>
+                            {displayCreator(creator)}
+                        </Grid>
+                    )}
                 </Grid>
-                <Grid
-                    item
-                    xs={12}
-                    style={{ flexDirection: "column", overflow: "hidden" }}
-                >
-                    {displayCreator(creator)}
-                </Grid>
-            </Grid>
+            )}
             <Grid container className={classes.collectionContainer}>
                 <Grid item xs={12} style={{ width: "100%" }}>
                     <Grid
@@ -353,9 +360,9 @@ export const Studio = () => {
                                         exercise={exercise}
                                         key={exercise.id}
                                         handleDelete={edit && handleDelete}
-                                        schedule={userInfo.type !== "trainer"}
+                                        schedule={user.type !== "trainer"}
                                         addExercise={
-                                            userInfo.type === "trainer" &&
+                                            user.type === "trainer" &&
                                             addToUserCollection
                                         }
                                     />

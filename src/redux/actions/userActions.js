@@ -10,6 +10,9 @@ import {
     SET_AUTHENTICATED,
     UPDATE_USER_DATA,
     SET_PROGRESS,
+    CLEAR_UI,
+    CLEAR_DATA,
+    CLEAR_USER,
 } from "../types";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
@@ -37,6 +40,7 @@ export const loginUser = (userData, history) => (dispatch) => {
         .catch((err) => {
             console.error(err);
         });
+    dispatch({ type: LOADING_UI });
 };
 
 export const oAuthSignUp = (newUserData, userId) => (dispatch) => {
@@ -76,13 +80,17 @@ export const signupUser = (newUserData, history) => (dispatch) => {
                 payload: err.response.data,
             });
         });
+    dispatch({ type: LOADING_UI });
 };
 
 export const logoutUser = () => (dispatch) => {
+    dispatch({ type: LOADING_UI });
     localStorage.removeItem("FBIdToken");
     firebase.auth().signOut();
     delete axios.defaults.headers.common["Authorization"];
-    dispatch({ type: SET_UNAUTHENTICATED });
+    dispatch({ type: CLEAR_USER });
+    dispatch({ type: CLEAR_DATA });
+    dispatch({ type: LOADING_UI });
 };
 
 export const getFBToken = async () => (dispatch) => {

@@ -9,7 +9,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 //Utilities
 import { exercise } from "./util/TestData";
-import config from "./util/config";
 import themeObject from "./util/theme";
 import AuthRoute from "./util/AuthRoute";
 
@@ -50,6 +49,7 @@ import { getUserData } from "./redux/actions/dataActions";
 //Stripe
 import { StripeProvider, Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { getRecentMessages } from "./redux/actions/messageActions";
 
 const theme = responsiveFontSizes(createMuiTheme(themeObject));
 
@@ -68,7 +68,7 @@ if (token) {
     }
     const FBIdToken = `Bearer ${idToken}`;
     localStorage.setItem("FBIdToken", FBIdToken);
-    console.log(localStorage.getItem("FBIdToken"));
+
     axios.defaults.headers.common["Authorization"] = FBIdToken;
     store.dispatch(getUserData());
 }
@@ -95,20 +95,22 @@ const stripePromise = loadStripe(
 const App = () => {
     React.useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
+            console.log(user.uid);
             store.dispatch(getUserData());
+            store.dispatch(getRecentMessages(user.uid));
             firebase
                 .auth()
                 .currentUser.getIdToken()
                 .then((idToken) => {
                     const FBIdToken = `Bearer ${idToken}`;
-                    console.log(FBIdToken);
+
                     localStorage.setItem("FBIdToken", FBIdToken);
                     store.dispatch({ type: SET_AUTHENTICATED });
                     axios.defaults.headers.common["Authorization"] = token;
                     store.dispatch(getUserData());
                 })
                 .catch((err) => {
-                    console.log(err.error);
+                    console.error(err.error);
                 });
         });
     });

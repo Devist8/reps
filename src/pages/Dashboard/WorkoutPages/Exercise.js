@@ -44,6 +44,7 @@ export const Exercise = (props) => {
     const featuredPrograms = useSelector((state) =>
         state.data.programs.filter((program) =>
             Object.values(program.workouts).map((week) => {
+                console.log(week);
                 week.map((workout) =>
                     workout.exercises.find(
                         (exercise) => exercise.id === exerciseId
@@ -52,7 +53,7 @@ export const Exercise = (props) => {
             })
         )
     );
-
+    console.log(featuredPrograms);
     const exercise = exercises.length > 0 && exercises[0];
     console.log(exercise);
     console.log(featuredWorkouts);
@@ -134,7 +135,7 @@ export const Exercise = (props) => {
                             <Carousel
                                 size={1}
                                 array={featuredPrograms}
-                                component={ProgramCard}
+                                type="program"
                             />
                         </Grid>
                         <Grid item xs={6}>

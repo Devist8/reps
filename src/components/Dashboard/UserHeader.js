@@ -78,7 +78,6 @@ export const UserHeader = (props) => {
         });
     }, [schedule]);
 
-    console.log(Math.floor(Math.random() * quotes.length));
     return (
         <Grid container className={classes.root}>
             <Grid item xs={1} className={classes.avatar}>
@@ -114,7 +113,7 @@ export const UserHeader = (props) => {
                 <Grid container className={classes.bubbleArrays} spacing={1}>
                     {scheduledWorkouts.length > 0 ? (
                         <Box>
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <Typography
                                     variant="h5"
                                     style={{ fontWeight: 600 }}
@@ -125,12 +124,13 @@ export const UserHeader = (props) => {
                                     <BubbleArray
                                         array={muscles}
                                         itemType="muscles"
+                                        color="secondary"
                                     />
                                 ) : (
                                     <Typography>Loadding...</Typography>
                                 )}
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <Typography
                                     variant="h5"
                                     style={{ fontWeight: 600 }}
@@ -141,6 +141,7 @@ export const UserHeader = (props) => {
                                     <BubbleArray
                                         array={equipment}
                                         itemType="equipment"
+                                        color="secondary"
                                     />
                                 ) : (
                                     <Typography>No equipment needed</Typography>

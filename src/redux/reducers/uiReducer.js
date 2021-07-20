@@ -6,6 +6,7 @@ import {
     SET_ADDOPEN,
     SET_PROGRESS,
     CLEAR_PROGRESS,
+    CLEAR_UI,
 } from "../types";
 
 const initialState = {
@@ -33,7 +34,7 @@ export default function (state = initialState, action) {
         case LOADING_UI:
             return {
                 ...state,
-                loading: true,
+                loading: !state.loading,
             };
         case SET_OPEN:
             return {
@@ -56,6 +57,8 @@ export default function (state = initialState, action) {
                 ...state,
                 progress: 0,
             };
+        case CLEAR_UI:
+            return initialState;
         default:
             return state;
     }

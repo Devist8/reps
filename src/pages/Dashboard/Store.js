@@ -5,7 +5,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Button } from "@material-ui/core";
 import { StoreItemDisplay } from "../../components/Store/StoreItemDisplay";
 
+//Components
+import { StoreCarousel } from "../../components/Store/StoreCarousel";
+
 const useStyles = makeStyles((theme) => ({
+    root: {
+        padding: "25px",
+        width: "72vw",
+        display: "flex",
+        justifyContent: "center",
+    },
     storeNav: {
         backgroundColor: "#3e3e3e",
     },
@@ -45,7 +54,7 @@ export const Store = (props) => {
     ];
 
     return (
-        <Grid container>
+        <Grid container className={classes.root}>
             <Grid item xs={12} className={classes.storeNav}>
                 <Button
                     name="Best Sellers"
@@ -84,9 +93,7 @@ export const Store = (props) => {
                 </Button>
             </Grid>
             <Grid item xs={12}></Grid>
-            <Grid item xs={12} style={{ marginTop: "35vh" }}>
-                <StoreItemDisplay image={array[0].imageURL} />
-            </Grid>
+            <Grid item xs={12} style={{ marginTop: "35vh" }}></Grid>
         </Grid>
     );
 };
