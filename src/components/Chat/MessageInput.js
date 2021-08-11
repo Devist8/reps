@@ -19,6 +19,7 @@ import SendIcon from "@material-ui/icons/Send";
 
 //Redux
 import { useSelector } from "react-redux";
+import { TextField } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     sendMessage: {
@@ -64,11 +65,12 @@ export const MessageInput = (props) => {
                     className={classes.sendMessage}
                     style={small && { marginBottom: "5vh" }}
                 >
-                    <Input
+                    <TextField
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        style={small ? { width: "12vw" } : { width: "73vw" }}
+                        style={small ? { width: "16vw" } : { width: "73vw" }}
+                        fullWidth
                     />
                     <IconButton type="submit" size={small && "small"}>
                         <SendIcon />

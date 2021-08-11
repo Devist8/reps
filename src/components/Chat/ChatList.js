@@ -21,7 +21,6 @@ export const ChatList = (props) => {
     const recentMessages = useSelector((state) => state.data.recentMessages);
     const classes = useStyles();
 
-    console.log(recentMessages);
     return (
         <Grid container>
             <List style={{ width: "100%" }}>

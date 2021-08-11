@@ -217,6 +217,7 @@ export const WorkoutForm = (props) => {
                                     <Exercise
                                         exercise={exercise}
                                         addExercise={addExercise}
+                                        addToWorkout
                                     />
                                 </Grid>
                             );

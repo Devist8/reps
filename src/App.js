@@ -19,7 +19,7 @@ import {
     makeStyles,
     responsiveFontSizes,
 } from "@material-ui/core/styles";
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import { createMuiTheme } from "@material-ui/core/styles";
 import { Hidden } from "@material-ui/core";
 
 //Components
@@ -38,13 +38,17 @@ import { Meal } from "./pages/Meal";
 import { Store } from "./pages/Dashboard/Store";
 import { Checkout } from "./pages/Dashboard/Checkout";
 import { Exercise } from "./pages/Dashboard/WorkoutPages/Exercise";
+import { Profile } from "./pages/Dashboard/UserPages/Profile";
+import { Settings } from "./pages/Dashboard/UserPages/Settings";
+import { Account } from "./pages/Dashboard/UserPages/Account";
 
 //Redux
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "./redux/store";
 import { SET_AUTHENTICATED } from "./redux/types";
 import { logoutUser, getNewToken } from "./redux/actions/userActions";
 import { getUserData } from "./redux/actions/dataActions";
+import { getStore } from "./redux/actions/storeActions";
 
 //Stripe
 import { StripeProvider, Elements } from "@stripe/react-stripe-js";
@@ -59,6 +63,7 @@ const token = localStorage.FBIdToken;
 
 if (token) {
     const idToken = token.split("Bearer ")[1];
+
     const decodedToken = jwtDecode(idToken);
     if (decodedToken.exp * 1000 < Date.now()) {
         store.dispatch(getNewToken());
@@ -77,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     container: {
         marginTop: "64px",
         marginLeft: "8.0vw",
-        marginRight: "15.58vw",
+        marginRight: "20vw",
 
         [theme.breakpoints.up("lg")]: {},
         [theme.breakpoints.up("xl")]: {},
@@ -95,7 +100,9 @@ const stripePromise = loadStripe(
 const App = () => {
     React.useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
-            console.log(user.uid);
+            console.log(user.metadata.lastSignInTime);
+            const userId = user.uid;
+
             store.dispatch(getUserData());
             store.dispatch(getRecentMessages(user.uid));
             firebase
@@ -108,6 +115,7 @@ const App = () => {
                     store.dispatch({ type: SET_AUTHENTICATED });
                     axios.defaults.headers.common["Authorization"] = token;
                     store.dispatch(getUserData());
+                    store.dispatch(getStore(userId));
                 })
                 .catch((err) => {
                     console.error(err.error);
@@ -121,10 +129,13 @@ const App = () => {
             <Provider store={store}>
                 <Router>
                     <Navbar />
-                    <AuthNavbar />
-                    <Hidden mdDown>
-                        <CalendarNavBar />
-                    </Hidden>
+                    {token && <AuthNavbar />}
+
+                    {token && (
+                        <Hidden mdDown>
+                            <CalendarNavBar />
+                        </Hidden>
+                    )}
                     <div className={classes.container}>
                         <Switch>
                             <Route exact path="/" component={Home} />
@@ -151,6 +162,13 @@ const App = () => {
                                 component={Studio}
                             />
                             <AuthRoute exact path="/meals" component={Meals} />
+                            <Route exact path="/account" componet={Account} />
+                            <Route
+                                exact
+                                path="/settings"
+                                component={Settings}
+                            />
+                            <Route exact path="/profile" component={Profile} />
                             <AuthRoute
                                 exact
                                 path="/checkout"

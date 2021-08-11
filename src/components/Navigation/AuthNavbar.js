@@ -17,7 +17,7 @@ import { ReactComponent as MealsIcon } from "../../icons/meals_icon.svg";
 import { ReactComponent as StoreIcon } from "../../icons/store_icon.svg";
 
 //Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/actions/userActions";
 
 const GlobalCss = withStyles({
@@ -69,12 +69,12 @@ const useStyles = makeStyles((theme) => ({
 export const AuthNavbar = () => {
     const dispatch = useDispatch();
     const location = useLocation();
+    const user = useSelector((state) => state.user.info);
     const classes = useStyles();
-
     return (
         <AppBar style={{ zIndex: "1000", overflow: "hidden" }}>
             <Drawer
-                open={true}
+                open={user.authenticated}
                 variant="permanent"
                 classes={{
                     paper: !location.pathname.includes("meals")

@@ -63,6 +63,7 @@ const useStyles = makeStyles(() => ({
         padding: 0,
         paddingTop: "3px",
     },
+    tooltip: {},
 }));
 
 export const Exercise = (props) => {
@@ -85,6 +86,7 @@ export const Exercise = (props) => {
         edit,
         index,
         addExercise,
+        addToWorkout,
         noButton,
         schedule,
         handleDelete,
@@ -172,7 +174,20 @@ export const Exercise = (props) => {
                                     textAlign: "flex-start",
                                 }}
                             >
-                                <Tooltip title={exercise.title}>
+                                <Tooltip
+                                    title={`${
+                                        exercise.title
+                                    } • muscles:${exercise.muscles.map(
+                                        (muscle) => muscle
+                                    )} • equipment: ${
+                                        exercise.equipment.length > 0
+                                            ? exercise.equipment.map(
+                                                  (item) => item
+                                              )
+                                            : "no equipment"
+                                    }`}
+                                    classes={{ tooltip: classes.tooltip }}
+                                >
                                     {!edit ? (
                                         <Typography
                                             className={classes.title}
@@ -283,67 +298,39 @@ export const Exercise = (props) => {
                                 exercise.date && { root: classes.actionRoot }
                             }
                         >
-                            {userInfo.type === "trainer" ? (
-                                handleDelete ? (
-                                    <IconButton
-                                        onClick={() =>
-                                            handleDelete(exercise.id)
-                                        }
-                                    >
-                                        <CloseIcon />
-                                    </IconButton>
-                                ) : exercise.date ? (
-                                    <Box style={{ marginBottom: "1vh" }}>
-                                        <Button
-                                            className={classes.scheduledButton}
-                                            size={small && "small"}
-                                            onClick={() => setTimerModal(true)}
-                                        >
-                                            Start
-                                        </Button>
-                                        <Button
-                                            style={{ marginBottom: "2.5vh" }}
-                                            className={classes.scheduledButton}
-                                            onClick={cancelExercise}
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </Box>
-                                ) : (
-                                    <IconButton
-                                        onClick={(e) => {
-                                            openMenu(e);
-                                        }}
-                                    >
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                )
-                            ) : exercise.reps ? (
-                                <Box>
+                            {exercise.date ? (
+                                <Box style={{ marginBottom: "1vh" }}>
                                     <Button
-                                        style={{ marginTop: "1vh" }}
+                                        className={classes.scheduledButton}
                                         size={small && "small"}
                                         onClick={() => setTimerModal(true)}
                                     >
                                         Start
                                     </Button>
-                                    <Button onClick={() => cancelExercise()}>
+                                    <Button
+                                        style={{ marginBottom: "2.5vh" }}
+                                        className={classes.scheduledButton}
+                                        onClick={cancelExercise}
+                                    >
                                         Cancel
                                     </Button>
                                 </Box>
+                            ) : addToWorkout ? (
+                                <IconButton>
+                                    <AddIcon
+                                        onClick={() => {
+                                            addExercise({ ...exercise });
+                                            exercise.reps = "";
+                                        }}
+                                    />
+                                </IconButton>
                             ) : (
                                 <IconButton
-                                    disable={popperOpen}
                                     onClick={(e) => {
-                                        openScheduler(e);
+                                        openMenu(e);
                                     }}
-                                    styles={
-                                        errors.rep && {
-                                            marginBottom: "5px",
-                                        }
-                                    }
                                 >
-                                    <ScheduleIcon />
+                                    <MoreVertIcon />
                                 </IconButton>
                             )}
 

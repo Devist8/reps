@@ -121,3 +121,17 @@ export const fitnessGoals = [
     "Increase flexibility",
     "Toning",
 ];
+
+export const storeSections = [
+    "Trainer's Favorites",
+    "Best Sellers",
+    "Full Body",
+];
+
+export const storeCategories = [
+    "Best sellers",
+    "Trainer's favorite",
+    "Beginner",
+    "Intermediate",
+    "Advanced",
+];

@@ -3,7 +3,14 @@ import ReactPlayer from "react-player";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Box, Typography, Button, TextField } from "@material-ui/core";
+import {
+    Grid,
+    Box,
+    Typography,
+    Button,
+    TextField,
+    IconButton,
+} from "@material-ui/core";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";

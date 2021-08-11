@@ -3,9 +3,7 @@ import { Link, useLocation, useRouteMatch } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Button from "@material-ui/core/Button";
+import { AppBar, Toolbar, Button, Badge } from "@material-ui/core";
 
 //Componrnts
 import { UserButton } from "./UserButton";

@@ -42,7 +42,10 @@ const initialState = {
     meals: [],
     schedule: [],
     file: null,
-    store: {},
+    store: {
+        info: {},
+        inventory: [],
+    },
     newExercise: {
         title: "",
         difficulty: 1,

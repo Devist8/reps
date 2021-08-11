@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 export const MealCard = (props) => {
     const { meal } = props;
     const classes = useStyles();
-    console.log(meal.id);
     return (
         <Grid container>
             <GridListTile

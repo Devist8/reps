@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Box, Typography, Slide } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-    root: { position: "relative", width: "100%" },
+    root: { position: "relative", width: "100%", height: "20vh" },
     imageContainer: {
         position: "absolute",
         width: "100%",
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     overlayContainer: {
         position: "absolute",
         top: "30vh",
-
+        overflow: "hidden",
         backgroundColor: "rgba(62, 62, 62, 0.4)",
         width: "99.9%",
         marginLeft: "1.5px",
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 export const OverlayImage = (props) => {
     const { image, title, body, align, color } = props;
     const classes = useStyles();
-    console.log(align);
+
     return (
         <Grid container className={classes.root}>
             <Grid item xs={12} className={classes.imageContainer}>
@@ -78,7 +78,6 @@ export const StoreCarousel = (props) => {
             <Grid item xs={12}>
                 {array &&
                     array.map((item, i) => {
-                        console.log(item);
                         return (
                             <Slide
                                 direction="left"
@@ -90,7 +89,7 @@ export const StoreCarousel = (props) => {
                                     <OverlayImage
                                         image={item.imageURL}
                                         title={item.title}
-                                        body={item.body}
+                                        body={item.description}
                                         align={item.align}
                                     />
                                 </Box>

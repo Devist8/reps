@@ -4,13 +4,13 @@ import "firebase/storage";
 //MUI
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
+    Box,
     Grid,
     Card,
     CardContent,
     CardActionArea,
     CardActions,
     CardMedia,
-    Box,
     GridList,
     GridListTile,
     Typography,
@@ -18,19 +18,28 @@ import {
     Popper,
     TextField,
     IconButton,
+    Menu,
     Button,
+    MenuItem,
+    Modal,
     Tooltip,
+    ClickAwayListener,
 } from "@material-ui/core";
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import ScheduleIcon from "@material-ui/icons/Schedule";
 import CloseIcon from "@material-ui/icons/Close";
+import ShareIcon from "@material-ui/icons/Share";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 //Components
 import { Difficulty } from "../Difficulty";
 import { ActionButton } from "../ActionButton";
 import { Exercise } from "../Exercises/Exercise";
 import { Scheduler } from "../Scheduler";
+
+import { AddToStoreModal } from "../Store/AddToStoreModal";
 
 //Redux
 
@@ -39,7 +48,14 @@ import {
     deleteWorkout,
     deleteUserWorkout,
 } from "../../redux/actions/dataActions";
+import { addToStore } from "../../redux/actions/storeActions";
 import { ADD_WORKOUT, CLEAR_FILE, SET_FILE } from "../../redux/types";
+
+///////////////////////////////////
+///////////////////////////////////
+///////////////STYLES//////////////
+///////////////////////////////////
+///////////////////////////////////
 
 const useStyles = makeStyles((theme) => ({
     cardRoot: {
@@ -63,14 +79,32 @@ const useStyles = makeStyles((theme) => ({
         whiteSpace: "noWrap",
     },
     video: {},
+    speedDialBtn: {
+        height: "2.5vw",
+        width: "2.5vw",
+    },
 }));
 
 export const WorkoutHeader = (props) => {
+    ///////////////////////////////////
+    ///////////////////////////////////
+    /////////////VARIABLES/////////////
+    ///////////////////////////////////
+    ///////////////////////////////////
+
     const classes = useStyles();
     const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.user.info);
+    const card = React.useRef();
     const [anchor, setAnchor] = React.useState(null);
     const [open, setOpen] = React.useState(false);
+    const [modal, setModal] = React.useState(false);
+    const [menuAnchor, setMenuAnchor] = React.useState(null);
+    const [speedDial, setSpeedDial] = React.useState(false);
+    const [storeItemInfo, setStoreItemInfo] = React.useState({
+        sections: [],
+        categories: [],
+    });
     const {
         workout,
         handleOpen,
@@ -83,6 +117,13 @@ export const WorkoutHeader = (props) => {
         handleDelete,
         addWorkout,
     } = props;
+
+    ///////////////////////////////////
+    ///////////////////////////////////
+    /////////////FUNCTIONS/////////////
+    ////////////////METHODS////////////
+    ///////////////////////////////////
+    ///////////////////////////////////
 
     const handleEditPicture = () => {
         const fileInput = document.getElementById("imageInput");
@@ -108,6 +149,16 @@ export const WorkoutHeader = (props) => {
         }
     };
 
+    const openMenu = (e) => {
+        console.log(e.currentTarget);
+        setMenuAnchor(e.currentTarget);
+    };
+
+    ///////////////////////////////////
+    //////////RENDER///////////////////
+    ////////////METHOD/////////////////
+    //////////////////////////JSX//////
+    ///////////////////////////////////
     return (
         <Card
             className={classes.cardRoot}
@@ -254,60 +305,94 @@ export const WorkoutHeader = (props) => {
                             justifyContent: "center",
                         }}
                     >
-                        <CardActions>
-                            {userInfo.type === "trainer" ? (
-                                handleDelete ? (
-                                    <IconButton
-                                        onClick={() =>
-                                            handleDelete(
-                                                workout.id,
-                                                workout.week
-                                            )
-                                        }
-                                    >
-                                        <CloseIcon />
-                                    </IconButton>
-                                ) : (
-                                    <IconButton
-                                        onClick={() => {
-                                            addWorkout({ ...workout });
-                                        }}
-                                    >
-                                        <AddIcon />
-                                    </IconButton>
-                                )
+                        <CardActions ref={card}>
+                            {handleDelete ? (
+                                <IconButton
+                                    onClick={() =>
+                                        handleDelete(workout.id, workout.week)
+                                    }
+                                >
+                                    <CloseIcon />
+                                </IconButton>
                             ) : (
                                 <IconButton
                                     onClick={(e) => {
-                                        setAnchor(e.currentTarget);
-                                        setOpen(true);
+                                        console.log(e.currentTarget);
+                                        openMenu(e);
                                     }}
                                 >
-                                    <ScheduleIcon />
+                                    <MoreVertIcon />
                                 </IconButton>
                             )}
-
-                            <Popper
-                                open={open}
-                                anchorEl={anchor}
-                                style={{ zIndex: "1000" }}
+                            <ClickAwayListener
+                                onClickAway={() => setOpen(false)}
                             >
-                                <Scheduler
-                                    id={workout.id}
-                                    item={workout}
-                                    popperToggle={() => setOpen(false)}
-                                />
-                            </Popper>
+                                <Box>
+                                    <Menu
+                                        open={Boolean(menuAnchor)}
+                                        anchorEl={menuAnchor}
+                                        onClose={() => setMenuAnchor(null)}
+                                    >
+                                        <MenuItem
+                                            onClick={() => {
+                                                setModal(true);
+                                                setMenuAnchor(null);
+                                            }}
+                                        >
+                                            Add to store
+                                        </MenuItem>
+                                        <MenuItem
+                                            onClick={(e) => {
+                                                setAnchor(e.currentTarget);
+                                                setOpen(true);
+                                                setMenuAnchor(null);
+                                            }}
+                                        >
+                                            Schedule
+                                        </MenuItem>
+                                        <MenuItem>Share</MenuItem>
+                                    </Menu>
+
+                                    <Popper
+                                        open={open}
+                                        anchorEl={anchor}
+                                        style={{ zIndex: "1000" }}
+                                    >
+                                        <Scheduler
+                                            id={workout.id}
+                                            item={workout}
+                                            popperToggle={() => setOpen(false)}
+                                        />
+                                    </Popper>
+                                </Box>
+                            </ClickAwayListener>
                         </CardActions>
                     </Grid>
                 )}
             </Grid>
+            <Modal
+                open={modal}
+                onClose={() => setModal(false)}
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    alignContent: "center",
+                }}
+            >
+                <AddToStoreModal item={workout} />
+            </Modal>
         </Card>
     );
 };
 
 export const ExerciseList = (props) => {
     const { workout, open, small, noButton } = props;
+    ///////////////////////////////////
+    //////////RENDER///////////////////
+    ////////////METHOD/////////////////
+    //////////////////////////JSX//////
+    ///////////////////////////////////
     return (
         <Grid
             container
@@ -397,6 +482,12 @@ export const Workout = (props) => {
     const handleOpen = (e) => {
         setOpen((prevState) => !prevState);
     };
+
+    ///////////////////////////////////
+    //////////RENDER///////////////////
+    ////////////METHOD/////////////////
+    //////////////////////////JSX//////
+    ///////////////////////////////////
 
     return (
         <Grid

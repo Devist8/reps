@@ -245,13 +245,15 @@ export const ChatDisplay = () => {
 export const CalendarNavBar = () => {
     const classes = useStyles();
     const location = useLocation();
-    const [display, setDisplay] = React.useState("");
+    const user = useSelector((state) => state.user.info);
+    const [display, setDisplay] = React.useState("calendar");
 
     return (
         <AppBar style={{ zIndex: "1000", border: "none" }}>
             <Drawer
                 variant="permanent"
                 anchor="right"
+                open={user.authenticated}
                 className={classes.drawer}
                 style={{ width: "300px", backgroundColor: "#e3f6ff" }}
                 classes={{
@@ -269,6 +271,11 @@ export const CalendarNavBar = () => {
                     <BottomNavigation
                         className={classes.bottomNavigation}
                         onChange={(e, value) => setDisplay(value)}
+                        style={
+                            location.pathname.includes("meal")
+                                ? { backgroundColor: "#e6ffe9" }
+                                : { backgroundColor: "#e3f6ff" }
+                        }
                     >
                         <BottomNavigationAction
                             value="calendar"

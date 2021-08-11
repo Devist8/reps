@@ -2,7 +2,7 @@ import React from "react";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     imageContainer: {
@@ -17,14 +17,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const StoreItemDisplay = (props) => {
-    const { image, title, price, count, type } = props;
+    const { imageURL, title, price, count, type } = props.item;
     const classes = useStyles();
 
     return (
         <Grid container style={{ width: "20vw" }}>
             <Grid item xs={12} className={classes.imageContainer}>
                 <img
-                    src={image}
+                    src={imageURL}
                     alt={title}
                     style={{
                         width: "20vw",
@@ -35,15 +35,14 @@ export const StoreItemDisplay = (props) => {
             </Grid>
             <Grid item xs={12} className={classes.contentContainer}>
                 <Grid item xs={10}>
-                    {title}
+                    <Typography>{title}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    {price}
+                    <Typography>{price}</Typography>
                 </Grid>
-                <Grid item xs={6}>
-                    {`${count} ${type}s`}
+                <Grid item xs={12}>
+                    <Typography>{type}</Typography>
                 </Grid>
-                <Grid item xs={6}></Grid>
             </Grid>
         </Grid>
     );

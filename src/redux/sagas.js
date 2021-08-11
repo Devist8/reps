@@ -4,7 +4,7 @@ import { auth } from "../util/config";
 import { takeEvery } from "redux-saga/effects";
 
 const getToken = () => {
-    auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged((user) => {
         user &&
             firebase
                 .auth()

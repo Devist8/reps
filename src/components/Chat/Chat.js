@@ -134,7 +134,13 @@ export const Chat = (props) => {
                                                 padding: "8px",
                                             }}
                                         >
-                                            <Avatar src={message.imageURL} />
+                                            <Avatar
+                                                src={message.imageURL}
+                                                style={{
+                                                    height: "2.2vw",
+                                                    width: "2.2vw",
+                                                }}
+                                            />
                                         </CardMedia>
                                     </Card>
                                 ) : (
@@ -167,7 +173,13 @@ export const Chat = (props) => {
                                                 padding: "8px",
                                             }}
                                         >
-                                            <Avatar src={message.imageURL} />
+                                            <Avatar
+                                                src={message.imageURL}
+                                                style={{
+                                                    height: "2.2vw",
+                                                    width: "2.2vw",
+                                                }}
+                                            />
                                         </CardMedia>
                                         <CardContent
                                             style={{

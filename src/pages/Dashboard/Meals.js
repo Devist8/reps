@@ -13,6 +13,7 @@ import { Carousel } from "../../components/Carousel";
 import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
+    root: { padding: "25px" },
     creatorContainer: {
         boxShadow:
             "0px 3px 1px -2px rgb(0 0 0 / 14%), 0px 2px 2px 0px rgb(0 0 0 / 12%), 0px 1px 5px 0px rgb(0 0 0 / 10%)",
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     },
     dinners: {
         marginTop: "2vh",
+        width: "100%",
     },
     creator: {},
 }));
@@ -39,8 +41,9 @@ export const Meals = (props) => {
     const dinners = meals.filter((meal) => meal.type === "dinner");
     const snacks = meals.filter((meal) => meal.type === "snack");
     const breakfast = meals.filter((meal) => meal.type === "breakfast");
-    const lunch = meals.filter((meal) => meal.type === "lucnh");
+    const lunch = meals.filter((meal) => meal.type === "lunch");
 
+    console.log(lunch);
     return (
         <Grid container className={classes.root}>
             <Grid item xs={12} className={classes.creatorContainer}>
@@ -76,7 +79,12 @@ export const Meals = (props) => {
                     <Grid item xs={12}>
                         <Typography>Dinner Ideas</Typography>
                     </Grid>
-                    <Carousel array={dinners} type="meal" size={3} />
+                    <Carousel
+                        array={dinners}
+                        type="meal"
+                        size={3}
+                        edit={true}
+                    />
                 </Grid>
             </Grid>
         </Grid>

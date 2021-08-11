@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const Scheduler = (props) => {
     const { item, popperToggle } = props;
-    const [selectedDate, setSelectedDate] = React.useState(null);
+    const [selectedDate, setSelectedDate] = React.useState("");
     const dispatch = useDispatch();
     const classes = useStyles();
 

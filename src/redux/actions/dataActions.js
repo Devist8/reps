@@ -66,9 +66,6 @@ export const uploadToFirebase = (file, setImage) => (dispatch) => {
     if (file) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
-        fileRef.put(file).then(() => {
-            alert("File uploaded.");
-        });
 
         const fileUpload = fileRef.put(file);
 
@@ -178,7 +175,6 @@ export const submitExercise = (exercise, file) => (dispatch) => {
     if (file) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
-        fileRef.put(file).then(() => {});
 
         const fileUpload = fileRef.put(file);
 
@@ -224,9 +220,6 @@ export const submitWorkout = (workout, file) => (dispatch) => {
     if (file) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
-        fileRef.put(file).then(() => {
-            alert("File uploaded.");
-        });
 
         const fileUpload = fileRef.put(file);
 
@@ -277,7 +270,6 @@ export const submitProgram = (program, file) => (dispatch) => {
     if (file) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
-        fileRef.put(file).then(() => {});
 
         const fileUpload = fileRef.put(file);
 
@@ -325,10 +317,6 @@ export const submitMeal = (meal, file) => (dispatch) => {
     if (file) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(file.name);
-        fileRef.put(file).then(() => {
-            alert("File uploaded.");
-        });
-
         const fileUpload = fileRef.put(file);
 
         fileUpload.on(
@@ -486,4 +474,21 @@ export const getStoreData = (storeId) => (dispatch) => {
 export const updateStoreInfo = (storeId, data) => (dispatch) => {
     dispatch({ type: SET_API_CALL });
     axios.post(`/store/${storeId}/update`, data).then(() => {});
+};
+
+export const getDemoData = () => (dispatch) => {
+    axios
+        .get("/demo")
+        .then((res) => {
+            const data = {
+                ...res.data.demoData,
+                id: res.data.id,
+            };
+            console.log(data);
+            dispatch({ type: SET_EXERCISES, payload: data.exercises });
+            dispatch({ type: SET_WORKOUTS, payload: data.workouts });
+            dispatch({ type: SET_PROGRAMS, payload: data.programs });
+            dispatch({ type: SET_MEALS, payload: data.meals });
+        })
+        .catch((err) => console.error(err));
 };

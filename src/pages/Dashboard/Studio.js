@@ -37,7 +37,7 @@ import {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: "72vw",
+        width: "70vw",
         minHeight: "563px",
         display: "flex",
         padding: "25px",

@@ -19,14 +19,22 @@ import ScheduleIcon from "@material-ui/icons/Schedule";
 import ShareIcon from "@material-ui/icons/Share";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
+import AddIcon from "@material-ui/icons/Add";
+import CloseIcon from "@material-ui/icons/Close";
+
 //Components
 import { Difficulty } from "../Difficulty";
 import { ProgramModal } from "./ProgramModal";
 import { Scheduler } from "../Scheduler";
+import { AddToStoreModal } from "../Store/AddToStoreModal";
+
+//react-redux
+import { useSelector, useDispatch } from "react-redux";
+import { deleteWorkout } from "../../redux/actions/dataActions";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: "17vw",
+        width: "19vw",
         minWidth: "200px",
         maxWidth: "300px",
         overflow: "hidden",
@@ -48,14 +56,17 @@ const useStyles = makeStyles((theme) => ({
 
     speedDialBtn: {
         backgroundColor: theme.palette.secondary.main,
-        width: "13%",
-        height: "50%",
+        width: "2.5vw",
+        height: "2.5vw",
     },
 }));
 
 export const ProgramCard = (props) => {
     const { program } = props;
+    const userInfo = useSelector((state) => state.user.info);
     const [modalOpen, setModalOpen] = React.useState(false);
+    const dispatch = useDispatch();
+    const [storeModal, setStoreModal] = React.useState(false);
     const [popperOpen, setPopperOpen] = React.useState(false);
     const [speedDial, setSpeedDial] = React.useState(false);
     const [anchor, setAnchor] = React.useState(null);
@@ -72,6 +83,10 @@ export const ProgramCard = (props) => {
     const scheduleClick = (e) => {
         setAnchor(e.currentTarget);
         setPopperOpen(!popperOpen);
+    };
+
+    const handleDelete = (docId) => {
+        dispatch(deleteWorkout(docId));
     };
 
     return (
@@ -133,13 +148,6 @@ export const ProgramCard = (props) => {
                             style={{ marginRight: "0.5vw" }}
                         >
                             <SpeedDialAction
-                                key={"schedule3"}
-                                icon={<DeleteIcon />}
-                                onClick={scheduleClick}
-                                tooltipPlacement={"top"}
-                                tooltipTitle="schedule"
-                            />
-                            <SpeedDialAction
                                 key={"schedule2"}
                                 icon={<ScheduleIcon />}
                                 onClick={scheduleClick}
@@ -148,14 +156,23 @@ export const ProgramCard = (props) => {
                             />
 
                             <SpeedDialAction
-                                key={"schedule"}
+                                key={"Send to user"}
                                 icon={<ShareIcon />}
                                 onClick={scheduleClick}
                                 tooltipPlacement={"top"}
-                                tooltipTitle="schedule"
+                                tooltipTitle="Send to user"
+                                style={{ width: "2vw", height: "2vw" }}
                             />
+                            {userInfo.type === "trainer" && (
+                                <SpeedDialAction
+                                    key={"Delete"}
+                                    icon={<DeleteIcon />}
+                                    onClick={() => handleDelete(program.id)}
+                                    tooltipPlacement={"top"}
+                                    tooltipTitle="Delete"
+                                />
+                            )}
                         </SpeedDial>
-
                         <Popper
                             open={popperOpen}
                             anchorEl={anchor}
@@ -193,6 +210,19 @@ export const ProgramCard = (props) => {
                     }}
                 >
                     <ProgramModal program={program} closeModal={closeModal} />
+                </Modal>
+                <Modal
+                    open={storeModal}
+                    onClose={() => setStoreModal(false)}
+                    onBackdropClick={() => closeModal()}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        alignContent: "center",
+                    }}
+                >
+                    <AddToStoreModal item={program} />
                 </Modal>
             </Grid>
         </Grid>
