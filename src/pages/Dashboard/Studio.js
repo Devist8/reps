@@ -137,238 +137,250 @@ export const Studio = () => {
     }, [exercises, workouts, programs]);
 
     return (
-        <Grid container className={classes.root}>
+        <Grid container style={{ justifyContent: "center" }}>
             {user.type === "trainer" && (
-                <Grid container className={classes.creatorContainer}>
-                    <Grid item xs={12} className={classes.buttonContainer}>
-                        <Grid item xs={1}>
-                            <Box style={{ marginLeft: "1vh" }}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            color="primary"
-                                            checked={edit}
-                                            onChange={() => setEdit(!edit)}
-                                        />
-                                    }
-                                    label="Delete"
+                <Grid item xs={12} className={classes.buttonContainer}>
+                    <Grid item xs={1}>
+                        <Box style={{ marginLeft: "1vh" }}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        color="primary"
+                                        checked={edit}
+                                        onChange={() => setEdit(!edit)}
+                                    />
+                                }
+                                label="Delete"
+                            />
+                        </Box>
+                    </Grid>
+                    <Grid item xs={10} style={{ marginLeft: "2rem" }}>
+                        <Button
+                            name="exercise"
+                            disabled={creator === "exercise"}
+                            className={classes.button}
+                            onClick={(e) => changeCreator("exercise")}
+                        >
+                            Exercise
+                        </Button>
+                        <Button
+                            name="workout"
+                            disabled={creator === "workout"}
+                            className={classes.button}
+                            onClick={(e) => changeCreator("workout")}
+                        >
+                            Workout
+                        </Button>
+                        <Button
+                            name="program"
+                            disabled={creator === "program"}
+                            className={classes.button}
+                            onClick={(e) => changeCreator("program")}
+                        >
+                            Program
+                        </Button>
+                    </Grid>
+                    <Grid item xs={1} style={{ flexBasis: 0 }}>
+                        <IconButton
+                            size="small"
+                            style={{ marginTop: "0.18rem" }}
+                            onClick={() => setCreator("")}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                    </Grid>
+                </Grid>
+            )}
+            <Grid container className={classes.root}>
+                {user.type === "trainer" && (
+                    <Grid container className={classes.creatorContainer}>
+                        {user.type === "trainer" && (
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    flexDirection: "column",
+                                    overflow: "hidden",
+                                }}
+                            >
+                                {displayCreator(creator)}
+                            </Grid>
+                        )}
+                    </Grid>
+                )}
+                <Grid container className={classes.collectionContainer}>
+                    <Grid item xs={12} style={{ width: "100%" }}>
+                        <Grid
+                            item
+                            xs={12}
+                            style={{ display: "flex", flexWrap: "noWrap" }}
+                        >
+                            <Typography
+                                variant="h4"
+                                style={{ margin: "1vh 0 " }}
+                            >
+                                Programs
+                            </Typography>
+                            <Typography
+                                style={{ marginLeft: "2vw", marginTop: "1vw" }}
+                            >
+                                Sort by:
+                            </Typography>
+                            <Button
+                                onClick={() => {
+                                    handleFilter("programs", "title");
+                                }}
+                            >
+                                Title
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    handleFilter("programs", "difficulty");
+                                }}
+                            >
+                                Difficulty
+                            </Button>
+                        </Grid>
+                        <Grid item xs={12} style={{ width: "100%" }}>
+                            {programs && (
+                                <Carousel
+                                    array={programSort}
+                                    type="program"
+                                    size={3}
                                 />
-                            </Box>
-                        </Grid>
-                        <Grid item xs={10} style={{ marginLeft: "2rem" }}>
-                            <Button
-                                name="exercise"
-                                disabled={creator === "exercise"}
-                                className={classes.button}
-                                onClick={(e) => changeCreator("exercise")}
-                            >
-                                Exercise
-                            </Button>
-                            <Button
-                                name="workout"
-                                disabled={creator === "workout"}
-                                className={classes.button}
-                                onClick={(e) => changeCreator("workout")}
-                            >
-                                Workout
-                            </Button>
-                            <Button
-                                name="program"
-                                disabled={creator === "program"}
-                                className={classes.button}
-                                onClick={(e) => changeCreator("program")}
-                            >
-                                Program
-                            </Button>
-                        </Grid>
-                        <Grid item xs={1} style={{ flexBasis: 0 }}>
-                            <IconButton
-                                size="small"
-                                style={{ marginTop: "0.18rem" }}
-                                onClick={() => setCreator("")}
-                            >
-                                <CloseIcon />
-                            </IconButton>
+                            )}
                         </Grid>
                     </Grid>
-                    {user.type === "trainer" && (
+                    <Grid item xs={12}>
+                        <Grid
+                            item
+                            xs={12}
+                            style={{ display: "flex", flexWrap: "noWrap" }}
+                        >
+                            <Typography
+                                variant="h4"
+                                style={{ margin: "1vh 0 " }}
+                            >
+                                Workouts
+                            </Typography>
+                            <Typography
+                                style={{ marginLeft: "2vw", marginTop: "1vw" }}
+                            >
+                                Sort by:
+                            </Typography>
+                            <Button
+                                onClick={() => {
+                                    handleFilter("workouts", "title");
+                                }}
+                            >
+                                Title
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    handleFilter("workouts", "difficulty");
+                                }}
+                            >
+                                Difficulty
+                            </Button>
+                        </Grid>
                         <Grid
                             item
                             xs={12}
                             style={{
-                                flexDirection: "column",
-                                overflow: "hidden",
+                                width: "75vw",
+                                display: "flex",
+                                flexWrap: "wrap",
                             }}
                         >
-                            {displayCreator(creator)}
+                            {workoutSort.map((workout) => {
+                                return (
+                                    <Grid
+                                        item
+                                        lg={5}
+                                        md={9}
+                                        style={{
+                                            margin: "0% 4% 4% 4%",
+                                            justifyContent: "center",
+                                        }}
+                                        key={workout.id}
+                                    >
+                                        <Workout
+                                            workout={workout}
+                                            schedule={true}
+                                            handleDelete={edit && handleDelete}
+                                        />
+                                    </Grid>
+                                );
+                            })}
                         </Grid>
-                    )}
-                </Grid>
-            )}
-            <Grid container className={classes.collectionContainer}>
-                <Grid item xs={12} style={{ width: "100%" }}>
-                    <Grid
-                        item
-                        xs={12}
-                        style={{ display: "flex", flexWrap: "noWrap" }}
-                    >
-                        <Typography variant="h4" style={{ margin: "1vh 0 " }}>
-                            Programs
-                        </Typography>
-                        <Typography
-                            style={{ marginLeft: "2vw", marginTop: "1vw" }}
-                        >
-                            Sort by:
-                        </Typography>
-                        <Button
-                            onClick={() => {
-                                handleFilter("programs", "title");
-                            }}
-                        >
-                            Title
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                handleFilter("programs", "difficulty");
-                            }}
-                        >
-                            Difficulty
-                        </Button>
                     </Grid>
-                    <Grid item xs={12} style={{ width: "100%" }}>
-                        {programs && (
-                            <Carousel
-                                array={programSort}
-                                type="program"
-                                size={3}
-                            />
-                        )}
-                    </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid
-                        item
-                        xs={12}
-                        style={{ display: "flex", flexWrap: "noWrap" }}
-                    >
-                        <Typography variant="h4" style={{ margin: "1vh 0 " }}>
-                            Workouts
-                        </Typography>
-                        <Typography
-                            style={{ marginLeft: "2vw", marginTop: "1vw" }}
+                    <Grid item xs={12}>
+                        <Grid
+                            item
+                            xs={12}
+                            style={{ display: "flex", flexWrap: "noWrap" }}
                         >
-                            Sort by:
-                        </Typography>
-                        <Button
-                            onClick={() => {
-                                handleFilter("workouts", "title");
+                            <Typography
+                                variant="h4"
+                                style={{ margin: "1vh 0" }}
+                            >
+                                Exercises
+                            </Typography>
+                            <Typography
+                                style={{ marginLeft: "2vw", marginTop: "1vw" }}
+                            >
+                                Sort by:
+                            </Typography>
+                            <Button
+                                onClick={() => {
+                                    handleFilter("exercises", "title");
+                                }}
+                            >
+                                Title
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    handleFilter("exercises", "difficulty");
+                                }}
+                            >
+                                Difficulty
+                            </Button>
+                        </Grid>
+                        <Grid
+                            container
+                            style={{
+                                width: "75vw",
                             }}
                         >
-                            Title
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                handleFilter("workouts", "difficulty");
-                            }}
-                        >
-                            Difficulty
-                        </Button>
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}
-                        style={{
-                            width: "75vw",
-                            display: "flex",
-                            flexWrap: "wrap",
-                        }}
-                    >
-                        {workoutSort.map((workout) => {
-                            return (
-                                <Grid
-                                    item
-                                    lg={5}
-                                    md={9}
-                                    style={{
-                                        margin: "0% 4% 4% 4%",
-                                        justifyContent: "center",
-                                    }}
-                                    key={workout.id}
-                                >
-                                    <Workout
-                                        workout={workout}
-                                        schedule={true}
-                                        handleDelete={edit && handleDelete}
-                                    />
-                                </Grid>
-                            );
-                        })}
-                    </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid
-                        item
-                        xs={12}
-                        style={{ display: "flex", flexWrap: "noWrap" }}
-                    >
-                        <Typography variant="h4" style={{ margin: "1vh 0" }}>
-                            Exercises
-                        </Typography>
-                        <Typography
-                            style={{ marginLeft: "2vw", marginTop: "1vw" }}
-                        >
-                            Sort by:
-                        </Typography>
-                        <Button
-                            onClick={() => {
-                                handleFilter("exercises", "title");
-                            }}
-                        >
-                            Title
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                console.log("difficulty");
-                                handleFilter("exercises", "difficulty");
-                            }}
-                        >
-                            Difficulty
-                        </Button>
-                    </Grid>
-                    <Grid
-                        container
-                        style={{
-                            width: "75vw",
-                        }}
-                    >
-                        {exerciseSort.map((exercise, i) => {
-                            return (
-                                <Grid
-                                    item
-                                    lg={3}
-                                    sm={5}
-                                    xs={12}
-                                    style={{
-                                        marginBottom: "2%",
-                                        margin: "0% 2% 2% 2%",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                    }}
-                                    key={exercise.id}
-                                >
-                                    <Exercise
-                                        exercise={exercise}
+                            {exerciseSort.map((exercise, i) => {
+                                return (
+                                    <Grid
+                                        item
+                                        lg={3}
+                                        sm={5}
+                                        xs={12}
+                                        style={{
+                                            marginBottom: "2%",
+                                            margin: "0% 2% 2% 2%",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                        }}
                                         key={exercise.id}
-                                        handleDelete={edit && handleDelete}
-                                        schedule={user.type !== "trainer"}
-                                        addExercise={
-                                            user.type === "trainer" &&
-                                            addToUserCollection
-                                        }
-                                    />
-                                </Grid>
-                            );
-                        })}
+                                    >
+                                        <Exercise
+                                            exercise={exercise}
+                                            key={exercise.id}
+                                            handleDelete={edit && handleDelete}
+                                            schedule={user.type !== "trainer"}
+                                            addExercise={
+                                                user.type === "trainer" &&
+                                                addToUserCollection
+                                            }
+                                        />
+                                    </Grid>
+                                );
+                            })}
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

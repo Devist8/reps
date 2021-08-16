@@ -31,6 +31,8 @@ import {
     ADD_STORE_ITEM,
     DELETE_STORE_ITEM,
     CLEAR_DATA,
+    ADD_TO_CART,
+    REMOVE_FROM_CART,
 } from "../types";
 
 const initialState = {
@@ -45,6 +47,7 @@ const initialState = {
     store: {
         info: {},
         inventory: [],
+        cart: [],
     },
     newExercise: {
         title: "",
@@ -273,7 +276,7 @@ export default function (state = initialState, action) {
         case SET_STORE:
             return {
                 ...state,
-                store: action.payload,
+                store: { ...action.payload },
             };
         case UPDATE_STORE_INFO:
             return {
@@ -288,7 +291,27 @@ export default function (state = initialState, action) {
                 ...state,
                 store: {
                     ...state.store,
-                    collection: [...state.store.collection, action.payload],
+                    inventory: [...state.store.inventory, action.payload],
+                },
+            };
+        case ADD_TO_CART:
+            return {
+                ...state,
+                store: {
+                    ...state.store,
+                    cart: [...state.store.cart, action.payload],
+                },
+            };
+        case REMOVE_FROM_CART:
+            return {
+                ...state,
+                store: {
+                    ...state.store,
+                    cart: [
+                        ...state.store.cart.filter(
+                            (x) => x.id !== action.payload.id
+                        ),
+                    ],
                 },
             };
         case SET_RECENT_MESSAGES:

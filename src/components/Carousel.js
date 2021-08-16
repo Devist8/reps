@@ -19,6 +19,7 @@ import { ProgramCard } from "./Programs/ProgramCard";
 import { MealCard } from "./Meals/MealCard";
 import { StoreItemDisplay } from "./Store/StoreItemDisplay";
 import { AddToStoreModal } from "../components/Store/AddToStoreModal";
+import { Skeleton } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
     arrowContainer: {
@@ -29,8 +30,89 @@ const useStyles = makeStyles((theme) => ({
     stepperRoot: {
         background: "none",
     },
-    root: {},
+    listRoot: {
+        justifyContent: "space-around",
+    },
+    hide: {
+        display: "none",
+    },
 }));
+
+const InvisibleSwitch = (props) => {
+    const { type, edit, setStoreModal } = props;
+    switch (type) {
+        case "program":
+            return (
+                <Box
+                    key={`${type}-invisible`}
+                    style={
+                        edit
+                            ? {
+                                  width: "20vw",
+                                  display: "invisible",
+                              }
+                            : {
+                                  width: "20vw",
+                                  visibility: "hidden",
+                              }
+                    }
+                />
+            );
+        case "meal":
+            return (
+                <Box
+                    key={`${type}-invisible`}
+                    style={{
+                        width: "20vw",
+                        height: "20vh",
+                        display: "invisible",
+                    }}
+                />
+            );
+
+        case "store":
+            if (edit) {
+                return (
+                    <Box
+                        style={{
+                            width: "18vw",
+                            height: "18vh",
+                            backgroundColor: "lightgray",
+                            borderRadius: "15px",
+
+                            display: "flex",
+                        }}
+                    >
+                        <IconButton
+                            onClick={() => setStoreModal(true)}
+                            style={{
+                                display: "flex",
+                                margin: "auto",
+                            }}
+                        >
+                            <AddCircleIcon />
+                        </IconButton>
+                    </Box>
+                );
+            } else {
+                return (
+                    <Box
+                        key={`${type}-invisible`}
+                        style={
+                            !edit && {
+                                width: "20vw",
+                                height: "18vh",
+                                display: "invisible",
+                            }
+                        }
+                    />
+                );
+            }
+
+        default:
+            return null;
+    }
+};
 
 export const Carousel = (props) => {
     const { array, size, type, edit, setState } = props;
@@ -74,7 +156,7 @@ export const Carousel = (props) => {
             switch (type) {
                 case "program":
                     return (
-                        <Box key={data.id}>
+                        <Box key={data.id} style={{ width: "100%" }}>
                             <ProgramCard program={data} />
                         </Box>
                     );
@@ -88,7 +170,11 @@ export const Carousel = (props) => {
 
                 case "store":
                     return (
-                        <Box key={data.id} style={{ width: "auto" }}>
+                        <Box
+                            key={data.id}
+                            style={{ width: "auto" }}
+                            className={classes.storeItemContainer}
+                        >
                             <StoreItemDisplay item={data} />
                         </Box>
                     );
@@ -96,48 +182,6 @@ export const Carousel = (props) => {
                 default:
                     return null;
             }
-        }
-    };
-
-    const invisibleSwitch = (type) => {
-        switch (type) {
-            case "program":
-                return (
-                    <Box
-                        key={`${type}-invisible`}
-                        style={{
-                            width: "20vw",
-
-                            display: "invisible",
-                        }}
-                    />
-                );
-            case "meal":
-                return (
-                    <Box
-                        key={`${type}-invisible`}
-                        style={{
-                            width: "20vw",
-                            height: "20vh",
-                            display: "invisible",
-                        }}
-                    />
-                );
-
-            case "store":
-                return (
-                    <Box
-                        key={`${type}-invisible`}
-                        style={{
-                            width: "20vw",
-                            height: "18vh",
-                            display: "invisible",
-                        }}
-                    />
-                );
-
-            default:
-                return null;
         }
     };
 
@@ -153,12 +197,12 @@ export const Carousel = (props) => {
                     item
                     xs={12}
                     style={{
-                        display: "flex",
                         flexWrap: "noWrap",
                         justifyContent: "center",
                     }}
                 >
                     <GridList
+                        classes={{ root: classes.listRoot }}
                         style={
                             ({},
                             array.length > 0
@@ -168,44 +212,40 @@ export const Carousel = (props) => {
                                           display: "flex",
                                           alignContent: "center",
                                           alignItems: "center",
-                                          justifyContent: "center",
                                       }
                                     : {
                                           minHeight: "40vh",
+
                                           marginRight: "3vw",
-                                          display: "flex",
-                                          flexWrap: "nowrap",
                                       }
                                 : { minHeight: 0 })
                         }
                     >
-                        {show.map((element) => {
-                            if (array[element]) {
-                                return displaySwitch(type, array[element]);
-                            } else if (edit) {
-                                return (
-                                    <Box
-                                        style={{
-                                            width: "18vw",
-                                            height: "18vh",
-                                            backgroundColor: "lightgray",
-                                            borderRadius: "15px",
-                                            display: "flex",
-                                        }}
-                                    >
-                                        <IconButton
-                                            onClick={() => setStoreModal(true)}
-                                            style={{
-                                                display: "flex",
-                                                margin: "auto",
-                                            }}
-                                        >
-                                            <AddCircleIcon />
-                                        </IconButton>
-                                    </Box>
-                                );
+                        {show.map((element, i) => {
+                            if (array) {
+                                if (array[element]) {
+                                    return displaySwitch(
+                                        type,
+                                        array[element],
+                                        edit
+                                    );
+                                } else {
+                                    return (
+                                        <InvisibleSwitch
+                                            type={type}
+                                            edit={edit}
+                                            setStoreModal={setStoreModal}
+                                        />
+                                    );
+                                }
                             } else {
-                                return invisibleSwitch(type);
+                                return (
+                                    <Skeleton
+                                        variant="rect"
+                                        width={"20vw"}
+                                        height={"18vh"}
+                                    />
+                                );
                             }
                         })}
                     </GridList>
@@ -213,7 +253,10 @@ export const Carousel = (props) => {
                 <Box className={classes.arrowContainer}>
                     <IconButton
                         onClick={incrementSlide}
-                        disabled={slide === maxSlide || array.length / size < 1}
+                        disabled={
+                            (!edit && slide === maxSlide) ||
+                            array.length / size < 1
+                        }
                     >
                         <ArrowForwardIosIcon />
                     </IconButton>

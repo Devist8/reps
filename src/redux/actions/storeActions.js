@@ -6,18 +6,28 @@ import {
     CLEAR_API_CALL,
     SET_PROGRESS,
     UPDATE_NEW_PROGRAM,
+    ADD_TO_CART,
+    REMOVE_FROM_CART,
 } from "../types";
 
 import axios from "axios";
 import firebase from "firebase";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
 
 export const getStore = (id) => (dispatch) => {
     dispatch({ type: SET_API_CALL });
+    const cart = cookies.get("cart");
     axios
         .get(`/store/${id}`)
         .then((res) => {
-            dispatch({ type: SET_STORE, payload: res.data });
-            console.log(res.data);
+            dispatch({
+                type: SET_STORE,
+                payload: cart
+                    ? { ...res.data, cart: cart }
+                    : { ...res.data, cart: [] },
+            });
         })
         .catch((err) => console.error(err));
     dispatch({ type: CLEAR_API_CALL });
@@ -35,8 +45,9 @@ export const addToStore = (storeId, item) => (dispatch) => {
 
 export const updateStoreSections = (newSection, file) => (dispatch) => {
     dispatch({ type: SET_API_CALL });
+
     const storeId = newSection.store;
-    console.log(newSection);
+
     delete newSection.preview;
     if (file) {
         const storageRef = firebase.storage().ref();
@@ -63,10 +74,7 @@ export const updateStoreSections = (newSection, file) => (dispatch) => {
                         value: downloadURL,
                     };
                     newSection.imageURL = downloadURL;
-                    dispatch({
-                        type: UPDATE_NEW_PROGRAM,
-                        payload: data,
-                    });
+
                     axios
                         .post(`/store/${storeId}/sections`, newSection)
                         .then((res) => {
@@ -77,7 +85,12 @@ export const updateStoreSections = (newSection, file) => (dispatch) => {
             }
         );
     } else {
-        alert("Please select a file.");
+        axios
+            .post(`/store/${storeId}/sections`, newSection)
+            .then((res) => {
+                console.log("Section successfully added");
+            })
+            .catch((err) => console.error(err));
     }
 
     dispatch({ type: CLEAR_API_CALL });
@@ -90,4 +103,12 @@ export const deleteStore = (storeId) => (dispatch) => {
             console.log("store deleted");
         })
         .catch((err) => console.error(err));
+};
+
+export const addToCart = (item) => (dispatch) => {
+    dispatch({ type: ADD_TO_CART, payload: item });
+    const cart = cookies.get("cart");
+    cart
+        ? cookies.set("cart", [...cart, item], "/")
+        : cookies.set("cart", [item], "/");
 };

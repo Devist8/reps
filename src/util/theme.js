@@ -24,5 +24,23 @@ export default {
             contrastText: "#000",
         },
     },
-    spreadStyles: {},
+    spreadStyles: {
+        centerXY: {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+        },
+        centerX: {
+            display: "flex",
+            justifyContent: "center",
+        },
+        wrap: {
+            display: "flex",
+            flexWrap: "wrap",
+        },
+        noWrap: {
+            display: "flex",
+            flexWrap: "noWrap",
+        },
+    },
 };

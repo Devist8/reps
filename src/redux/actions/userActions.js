@@ -135,35 +135,13 @@ export const getUserData = () => (dispatch) => {
 };
 
 export const getNewToken = () => (dispatch) => {
-    console.log("get new token");
-    let refreshToken = localStorage.RefreshToken;
-    const getRefreshToken = firebase.auth().onAuthStateChanged((user) => {
-        console.log(firebase.auth().currentUser.refreshToken);
-        refreshToken = firebase.auth().currentUser.refreshToken;
-    });
-    getRefreshToken();
-    console.log(refreshToken);
-    axios
-        .post(
-            `https://securetoken.googleapis.com/v1/token?key=AIzaSyBLGnhWNspnEWGMZojO6eTKdUE8FpBtFg0`,
-            { grant_type: "refresh_token", refresh_token: refreshToken }
-        )
-        .then((res) => {
-            console.log(res.data);
-            authHeader(res.data.id_token);
-
-            const FBIdToken = `Bearer ${res.data.id_token}`;
-            localStorage.setItem("FBIdToken", FBIdToken);
-            localStorage.setItem(
-                "RefreshToken",
-                firebase.auth().currentUser.refreshToken
-            );
-            axios.defaults.headers.common["Authorization"] = FBIdToken;
-            dispatch({ type: SET_AUTHENTICATED });
-            dispatch(getUserData());
-        })
-        .catch((err) => {
-            dispatch({ type: SET_ERRORS, payload: err });
+    let newToken;
+    firebase
+        .auth()
+        .currentUser.getIdToken()
+        .then((idToken) => {
+            newToken = idToken;
+            authHeader(newToken);
         });
 };
 

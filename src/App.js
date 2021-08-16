@@ -41,6 +41,7 @@ import { Exercise } from "./pages/Dashboard/WorkoutPages/Exercise";
 import { Profile } from "./pages/Dashboard/UserPages/Profile";
 import { Settings } from "./pages/Dashboard/UserPages/Settings";
 import { Account } from "./pages/Dashboard/UserPages/Account";
+import { Cart } from "./pages/Cart";
 
 //Redux
 import { Provider, useSelector } from "react-redux";
@@ -61,28 +62,11 @@ axios.defaults.baseURL = "http://localhost:5001/reps-699b0/us-east1/api";
 
 const token = localStorage.FBIdToken;
 
-if (token) {
-    const idToken = token.split("Bearer ")[1];
-
-    const decodedToken = jwtDecode(idToken);
-    if (decodedToken.exp * 1000 < Date.now()) {
-        store.dispatch(getNewToken());
-        store.dispatch({ type: SET_AUTHENTICATED });
-        axios.defaults.headers.common["Authorization"] = token;
-        store.dispatch(getUserData());
-    }
-    const FBIdToken = `Bearer ${idToken}`;
-    localStorage.setItem("FBIdToken", FBIdToken);
-
-    axios.defaults.headers.common["Authorization"] = FBIdToken;
-    store.dispatch(getUserData());
-}
-
 const useStyles = makeStyles((theme) => ({
     container: {
-        marginTop: "64px",
+        marginTop: "65px",
         marginLeft: "8.0vw",
-        marginRight: "20vw",
+        marginRight: "300px",
 
         [theme.breakpoints.up("lg")]: {},
         [theme.breakpoints.up("xl")]: {},
@@ -96,26 +80,31 @@ const useStyles = makeStyles((theme) => ({
 const stripePromise = loadStripe(
     "pk_test_51Hr3CTBp908J0ZFHC8eQsjRQ5jKJBLDuDCGR2lm78hOHmTZxgrJEAfxMff0oDMJ14oyyvADBVr5ivdx2ZdMWkbmb00lR0Vm7tB"
 );
-
+axios.interceptors.request.use((config) => {
+    console.log("interceptor");
+    const token = localStorage.FBIdToken;
+    if (token) {
+        let idToken = token.split("Bearer ")[1];
+        store.dispatch(getNewToken());
+    }
+    return config;
+});
 const App = () => {
     React.useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
-            console.log(user.metadata.lastSignInTime);
             const userId = user.uid;
 
-            store.dispatch(getUserData());
-            store.dispatch(getRecentMessages(user.uid));
             firebase
                 .auth()
                 .currentUser.getIdToken()
                 .then((idToken) => {
                     const FBIdToken = `Bearer ${idToken}`;
-
                     localStorage.setItem("FBIdToken", FBIdToken);
                     store.dispatch({ type: SET_AUTHENTICATED });
                     axios.defaults.headers.common["Authorization"] = token;
                     store.dispatch(getUserData());
                     store.dispatch(getStore(userId));
+                    store.dispatch(getRecentMessages(user.uid));
                 })
                 .catch((err) => {
                     console.error(err.error);
@@ -169,6 +158,7 @@ const App = () => {
                                 component={Settings}
                             />
                             <Route exact path="/profile" component={Profile} />
+                            <Route exact path="/cart" component={Cart} />
                             <AuthRoute
                                 exact
                                 path="/checkout"

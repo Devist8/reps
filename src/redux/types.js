@@ -57,6 +57,8 @@ export const SET_STORE = "SET_STORE";
 export const UPDATE_STORE_INFO = "UPDATE_STORE_INFO";
 export const ADD_STORE_ITEM = "ADD_STORE_ITEM";
 export const DELETE_STORE_ITEM = "DELETE_STORE_ITEM";
+export const ADD_TO_CART = "ADD_TO_CART";
+export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 
 //Messages
 export const SET_RECENT_MESSAGES = "SET_RECENT_MESSAGES";
