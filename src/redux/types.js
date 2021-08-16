@@ -1,12 +1,3 @@
-//User reducer types
-export const SET_AUTHENTICATED = "SET_AUTHENTICATED";
-export const SET_UNAUTHENTICATED = "SET_UNAUTHENTICATED";
-export const SET_USER = "SET_USER";
-export const LOADING_USER = "LOADING_USER";
-export const UPDATE_USER_DATA = "UPDATE_USER_DATA";
-export const SET_USERS = "SET_USERS";
-export const CLEAR_USER = "CLEAR_USER";
-
 // UI reducer types
 export const SET_ERRORS = "SET_ERRORS";
 export const LOADING_UI = "LOADING_UI";
@@ -25,6 +16,7 @@ export const SET_API_CALL = "SET_API_CALL";
 export const CLEAR_API_CALL = "CLEAR_API_CALL";
 export const CLEAR_DATA = "CLEAR_DATA";
 
+/// TO BE DELETED
 //Workouts collection
 export const SET_EXERCISES = "SET_EXERCISES";
 export const SET_WORKOUTS = "SET_WORKOUTS";
@@ -63,3 +55,12 @@ export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 //Messages
 export const SET_RECENT_MESSAGES = "SET_RECENT_MESSAGES";
 export const CLEAR_RECENT_MESSAGES = "CLEAR_RECENT_MESSAGES";
+
+//User reducer types
+export const SET_AUTHENTICATED = "SET_AUTHENTICATED";
+export const SET_UNAUTHENTICATED = "SET_UNAUTHENTICATED";
+export const SET_USER = "SET_USER";
+export const LOADING_USER = "LOADING_USER";
+export const UPDATE_USER_DATA = "UPDATE_USER_DATA";
+export const SET_USERS = "SET_USERS";
+export const CLEAR_USER = "CLEAR_USER";

@@ -1,4 +1,0 @@
-export const SET_PROGRAMS = "SET_PROGRAMS";
-export const ADD_PROGRAM = "ADD_PROGRAM";
-export const UPDATE_NEW_PROGRAM = "UPDATE_NEW_PROGRAM";
-export const CLEAR_NEW_PROGRAM = "CLEAR_NEW_PROGRAM";

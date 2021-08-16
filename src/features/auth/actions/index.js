@@ -1,3 +1,18 @@
+import axios from "axios";
+import firebase from "firebase";
+
+import {
+    SET_AUTHENTICATED,
+    SET_UNAUTHENTICATED,
+    CLEAR_USER,
+    LOADING_UI,
+    CLEAR_ERRORS,
+    SET_ERRORS,
+    CLEAR_DATA,
+    SET_PROGRESS,
+    UPDATE_USER_DATA,
+} from "../reducers/types";
+
 export const loginUser = (userData, history) => (dispatch) => {
     dispatch({ type: LOADING_UI });
     console.log("loggin in");
@@ -23,7 +38,6 @@ export const loginUser = (userData, history) => (dispatch) => {
 };
 
 export const oAuthSignUp = (newUserData, userId) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
     console.log(userId);
     axios
         .post(`/user/${userId}`, newUserData)
@@ -38,8 +52,6 @@ export const oAuthSignUp = (newUserData, userId) => (dispatch) => {
                 payload: err,
             });
         });
-
-    dispatch({ type: CLEAR_API_CALL });
 };
 
 export const signupUser = (newUserData, history) => (dispatch) => {
@@ -104,6 +116,58 @@ export const getNewToken = () => (dispatch) => {
             newToken = idToken;
             authHeader(newToken);
         });
+};
+
+export const updateUserData = (data, file) => (dispatch) => {
+    if (file) {
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child("profileImages");
+        fileRef.put(file).then(() => {
+            console.log("file uploaded");
+        });
+
+        const fileUpload = fileRef.put(file);
+
+        fileUpload.on(
+            "state_changed",
+            (snapshot) => {
+                dispatch({
+                    type: SET_PROGRESS,
+                    payload:
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+                });
+            },
+            (error) => {
+                console.log(error);
+            },
+            () => {
+                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    console.log(downloadURL);
+                    data.imageURL = downloadURL;
+
+                    axios
+                        .post("/user", data)
+                        .then(() => {
+                            dispatch({ type: UPDATE_USER_DATA, payload: data });
+                            dispatch({ type: "CLEAR_PROGRESS" });
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
+                });
+            }
+        );
+    } else {
+        axios
+            .post("/user", data)
+            .then(() => {
+                dispatch({ type: UPDATE_USER_DATA, payload: data });
+                dispatch({ type: "CLEAR_PROGRESS" });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
 };
 
 const authHeader = (token) => {

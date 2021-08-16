@@ -1,5 +1,5 @@
 import React, { Component, useEffect } from "react";
-import config from "../util/config";
+import config from "../../../util/config";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
 
@@ -14,7 +14,7 @@ import Button from "@material-ui/core/Button";
 
 //Redux stuff
 import { connect, useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/actions/userActions";
+import { loginUser } from "../actions";
 
 const useStyles = makeStyles((theme) => ({
     root: {

@@ -10,7 +10,7 @@ import {
 import theme from "../util/theme";
 
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import store from "../redux/store";
 
 const themeObject = responsiveFontSizes(createTheme(theme));
 export const AppProvider = (props) => {

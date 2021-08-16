@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import AuthRoute from "../util/AuthRoute";
 
 //Routes
-import { Home } from "../features/misc";
+import { Home } from "./Home";
 import { Login, Signup } from "../features/auth";
 
 export const PublicRoutes = () => {

@@ -8,7 +8,7 @@ import { Grid, TextField, Button } from "@material-ui/core";
 
 //Redux
 import { useDispatch } from "react-redux";
-import { addToSchedule } from "../redux/actions/dataActions";
+import { addToSchedule } from "../actions";
 
 dayjs.extend(LocalizedFormat);
 

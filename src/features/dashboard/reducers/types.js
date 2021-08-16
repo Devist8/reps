@@ -1,0 +1,11 @@
+export const SET_FILE = "SET_FILE";
+export const CLEAR_FILE = "CLEAR_FILE";
+export const SET_API_CALL = "SET_API_CALL";
+export const CLEAR_API_CALL = "CLEAR_API_CALL";
+export const CLEAR_PROGRESS = "CLEAR_PROGRESS";
+export const SET_PROGRESS = "SET_PROGRESS";
+export const SET_ERRORS = "SET_ERRORS";
+export const CLEAR_ERRORS = "CLEAR_ERRORS";
+export const SET_SCHEDULE = "SET_SCHEDULE";
+export const ADD_TO_SCHEDULE = "ADD_TO_SCHEDULE";
+export const UPDATE_SCHEDULE = "UPDATE_SCHEDULE";

@@ -4,7 +4,7 @@ import axios from "axios";
 import { useHistory } from "react-router";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
-import { allergies, fitnessGoals } from "../util/static-data";
+import { allergies, fitnessGoals } from "../../../util/static-data";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -26,17 +26,10 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 
-//Components
-import { EditButton } from "../components/EditButton";
-
 //Redux
 import { useDispatch, useSelector } from "react-redux";
-import {
-    signupUser,
-    oAuthSignUp,
-    updateUserData,
-} from "../redux/actions/userActions";
-import { SET_AUTHENTICATED, CLEAR_FILE, SET_FILE } from "../redux/types";
+import { signupUser, oAuthSignUp, updateUserData } from "../actions";
+import { SET_AUTHENTICATED, CLEAR_FILE, SET_FILE } from "../reducers/types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
