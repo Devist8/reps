@@ -68,13 +68,11 @@ export const Scheduler = (props) => {
             dayjs(Date.now() - 86400000).format("L")
         ).valueOf();
         const today = new Date();
-        console.log(dateInMilliseconds);
         item.type === "program"
             ? (scheduleObject.dateRange = [dateInMilliseconds])
             : (scheduleObject.date = dateInMilliseconds);
 
         scheduleObject.status = "pending";
-        console.log(scheduleObject);
         popperToggle();
         dispatch(addToSchedule(scheduleObject));
     };

@@ -1,6 +1,6 @@
 import {
     SET_MEALS,
-    UPPDATE_NEW_MEAL,
+    UPDATE_NEW_MEAL,
     CLEAR_NEW_MEAL,
     ADD_NEW_MEAL,
     ADD_MEAL,

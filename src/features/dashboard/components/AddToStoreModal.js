@@ -1,8 +1,5 @@
 import React from "react";
-import {
-    storeSections,
-    storeCategories,
-} from "../../../../../util/static-data";
+import { storeSections, storeCategories } from "../../../util/static-data";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
@@ -17,7 +14,7 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 
 //Components
-import { BubbleArray } from "../../../../../components/BubbleArray";
+import { BubbleArray } from "./BubbleArray";
 
 //React-redux
 import { useDispatch, useSelector } from "react-redux";

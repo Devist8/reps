@@ -1,7 +1,7 @@
 import React from "react";
 
 //Firebase
-import { db, auth } from "../../util/config";
+import { db, auth } from "../../../../../util/config";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";

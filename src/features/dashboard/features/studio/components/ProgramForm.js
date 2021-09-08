@@ -12,14 +12,12 @@ import {
     Badge,
     IconButton,
     TextField,
-    Select,
-    Input,
     LinearProgress,
     Modal,
 } from "@material-ui/core";
 
 //Components
-import { WorkoutList } from "";
+import { WorkoutList } from "../../../components/ProgramModal";
 import { Difficulty } from "../../../components/Difficulty";
 import { BubbleArray } from "../../../components/BubbleArray";
 import { WorkoutSelectionModal } from "../components/WorkoutSelectionModal";
@@ -112,7 +110,7 @@ export const ProgramForm = (props) => {
         );
         data.name = "exerciseCount";
         data.value = newProgram.exerciseCount + workout.exerciseCount;
-        console.log(data);
+
         dispatch(
             updateNewProgram({
                 name: "exerciseCount",
@@ -122,34 +120,25 @@ export const ProgramForm = (props) => {
         data.name = "program";
 
         dispatch(updateNewProgram(data));
-        console.log(data);
+
         const newMuscles = workout.muscles.filter(
             (muscle) => !newProgram.muscles.includes(muscle)
         );
         data.name = "muscles";
         data.value = [...newProgram.muscles, ...newMuscles];
-        console.log(data);
         dispatch(updateNewProgram(data));
         const newEquipment = workout.equipment.filter(
             (item) => !newProgram.equipment.includes(item)
         );
         data.name = "equipment";
         data.value = [...newProgram.equipment, ...newEquipment];
-        console.log(data);
         dispatch(updateNewProgram(data));
     };
 
     const addWeek = () => {
-        const lastWeek = Object.keys(newProgram.workouts)[
-            Object.keys(newProgram.workouts).length - 1
-        ];
-        const prefix = lastWeek.split(" ")[0];
-        const number = parseInt(lastWeek.split(" ")[1]);
-
-        const newWeek = `${prefix} ${number + 1}`;
         const data = {
             name: "workouts",
-            value: { ...newProgram.workouts, [newWeek]: [] },
+            value: newProgram.workouts.push([]),
         };
         dispatch(updateNewProgram(data));
     };

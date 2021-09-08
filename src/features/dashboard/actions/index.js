@@ -2,16 +2,10 @@ import axios from "axios";
 
 import { generateDateRange, scheduleExercises } from "../../../util/functions";
 
-import {
-    SET_API_CALL,
-    CLEAR_API_CALL,
-    SET_SCHEDULE,
-    ADD_TO_SCHEDULE,
-} from "../reducers/types";
+import { SET_SCHEDULE, ADD_TO_SCHEDULE } from "../reducers/types";
 
 export const updateScheduledExerciseStatus =
     (scheduledItem, exercise, status) => (dispatch) => {
-        dispatch({ type: SET_API_CALL });
         if (exercise.week) {
             scheduledItem.workouts[exercise.week][
                 exercise.workoutIndex
@@ -27,15 +21,15 @@ export const updateScheduledExerciseStatus =
             .catch((err) => {
                 console.error(err);
             });
-        dispatch({ type: CLEAR_API_CALL });
     };
 
 export const addToSchedule = (itemToSchedule) => (dispatch) => {
     const type = itemToSchedule.type;
-
+    const exercises = [];
     if (type === "workout") {
         itemToSchedule.exercises.map((exercise, index) => {
-            return (exercise.date = itemToSchedule.date);
+            exercise.date = itemToSchedule.date;
+            exercises.push(exercise);
         });
     }
     if (type === "program") {
@@ -44,20 +38,26 @@ export const addToSchedule = (itemToSchedule) => (dispatch) => {
 
         Object.values(itemToSchedule.workouts).map((week) => {
             week.sort();
-            return week.map((workout) => {
-                workout.date = itemToSchedule.dateRange[dateIndex];
-                scheduleExercises(workout);
-                return (dateIndex = dateIndex + 1);
+            return week.map((workout, i) => {
+                workout.date = itemToSchedule.dateRange[i];
+                console.log(workout);
+                const workouts = scheduleExercises(workout);
+                workouts.exercises.forEach((exercise) => {
+                    exercise.workout = workout.title;
+                    exercise.program = itemToSchedule.title;
+                    exercises.push(exercise);
+                });
             });
         });
     }
-
-    axios
-        .post("/schedule", itemToSchedule)
-        .then((res) => {
-            dispatch({ type: ADD_TO_SCHEDULE, payload: itemToSchedule });
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+    exercises.forEach((exercise) => {
+        axios
+            .post("/schedule", exercise)
+            .then((res) => {
+                dispatch({ type: ADD_TO_SCHEDULE, payload: itemToSchedule });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    });
 };

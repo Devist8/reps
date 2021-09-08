@@ -6,7 +6,7 @@ import { Grid, Button, Typography } from "@material-ui/core";
 
 //Components
 import { MealForm } from "../components/MealForm";
-import { Carousel } from "../../../../../components/Carousel";
+import { Carousel } from "../../../components/Carousel";
 
 //Redux
 import { useSelector } from "react-redux";

@@ -68,6 +68,7 @@ export const Exercise = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();
+    const card = React.useRef();
     const userInfo = useSelector((state) => state.user.info);
 
     const scheduleData = useSelector((state) => state.data.schedule);
@@ -114,7 +115,7 @@ export const Exercise = (props) => {
             ...exercise,
         };
         if (scheduleItem.reps) {
-            setAnchor(e.currentTarget);
+            setAnchor(card.current);
             setPopperOpen(true);
         } else {
             setErrors({ reps: "Set reps " });
@@ -280,6 +281,7 @@ export const Exercise = (props) => {
                         }
                     >
                         <CardActions
+                            ref={card}
                             style={
                                 ({
                                     display: "flex",

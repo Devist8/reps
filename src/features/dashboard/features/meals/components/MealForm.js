@@ -26,7 +26,7 @@ import AddIcon from "@material-ui/icons/Add";
 
 //Components
 import { Ratings } from "./Ratings";
-import { BubbleArray } from "../../../../../components/BubbleArray";
+import { BubbleArray } from "../../../components/BubbleArray";
 
 //Redux
 import { useSelector, useDispatch } from "react-redux";

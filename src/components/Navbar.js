@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Button, Badge } from "@material-ui/core";
 
 //Componrnts
-import { UserButton } from "./UserButton";
+import { UserButton } from "../features/dashboard/components/UserButton";
 
 //Redux
 import { useSelector } from "react-redux";

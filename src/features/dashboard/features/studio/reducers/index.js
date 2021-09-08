@@ -16,6 +16,18 @@ import {
 
 const initialState = {
     workouts: [],
+    exercises: [],
+    programs: [],
+    newExercise: {
+        title: "",
+        difficulty: 1,
+        activity: "",
+        motion: "",
+        muscles: [],
+        equipment: [],
+        videoURL: "",
+        type: "exercise",
+    },
     newWorkout: {
         title: "",
         difficulty: 1,
@@ -26,6 +38,18 @@ const initialState = {
         muscles: [],
         exerciseCount: 0,
         type: "workout",
+    },
+    newProgram: {
+        title: "",
+        difficulty: 1,
+        workoutCount: 0,
+        type: "program",
+        description: "",
+        workouts: { "Week 1": [] },
+        imageURL: "",
+        muscles: [],
+        equipment: [],
+        exerciseCount: 0,
     },
 };
 

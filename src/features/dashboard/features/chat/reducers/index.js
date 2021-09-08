@@ -1,3 +1,5 @@
+import { SET_RECENT_MESSAGES, CLEAR_DATA } from "./types";
+
 const initialState = {
     recentMessages: [],
 };

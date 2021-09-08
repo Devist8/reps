@@ -86,6 +86,7 @@ export const WorkoutHeader = (props) => {
     const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.user.info);
     const card = React.useRef();
+
     const [anchor, setAnchor] = React.useState(null);
     const [open, setOpen] = React.useState(false);
     const [modal, setModal] = React.useState(false);
@@ -333,7 +334,7 @@ export const WorkoutHeader = (props) => {
                                         </MenuItem>
                                         <MenuItem
                                             onClick={(e) => {
-                                                setAnchor(e.currentTarget);
+                                                setAnchor(card.current);
                                                 setOpen(true);
                                                 setMenuAnchor(null);
                                             }}

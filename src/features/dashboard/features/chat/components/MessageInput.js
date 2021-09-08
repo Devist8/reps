@@ -1,7 +1,7 @@
 import React from "react";
 
 //Firebase
-import { db, auth } from "../../util/config";
+import { db, auth } from "../../../../../util/config";
 import firebase from "firebase";
 
 //MUI

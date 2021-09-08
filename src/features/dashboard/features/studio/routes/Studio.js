@@ -27,7 +27,7 @@ import { WorkoutForm } from "../components";
 import { ProgramForm } from "../components";
 import { Workout } from "../../../components/Workout";
 import { Exercise } from "../../../components/Exercise";
-import { Carousel } from "../../../../../components/Carousel";
+import { Carousel } from "../../../components/Carousel";
 
 //Redux
 import { useSelector, useDispatch } from "react-redux";

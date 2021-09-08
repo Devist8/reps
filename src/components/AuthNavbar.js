@@ -11,14 +11,14 @@ import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 
-import { ReactComponent as HomeIcon } from "../../icons/home_icon.svg";
-import { ReactComponent as WorkoutsIcon } from "../../icons/workouts_icon.svg";
-import { ReactComponent as MealsIcon } from "../../icons/meals_icon.svg";
-import { ReactComponent as StoreIcon } from "../../icons/store_icon.svg";
+import { ReactComponent as HomeIcon } from "../assets/home_icon.svg";
+import { ReactComponent as WorkoutsIcon } from "../assets/workouts_icon.svg";
+import { ReactComponent as MealsIcon } from "../assets/meals_icon.svg";
+import { ReactComponent as StoreIcon } from "../assets/store_icon.svg";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../../redux/actions/userActions";
+import { logoutUser } from "../features/auth/actions";
 
 const GlobalCss = withStyles({
     "@global": {

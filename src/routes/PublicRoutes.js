@@ -1,17 +1,23 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Routes, Route } from "react-router-dom";
 import AuthRoute from "../util/AuthRoute";
 
 //Routes
 import { Home } from "./Home";
 import { Login, Signup } from "../features/auth";
 
-export const PublicRoutes = () => {
+/*export const PublicRoutes = () => {
     return (
-        <Router>
+        <Routes>
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Signup} />
-        </Router>
+        </Routes>
     );
-};
+};*/
+
+export const PublicRoutes = [
+    { path: "/", element: <Home /> },
+    { path: "/login", element: <Login /> },
+    { path: "/signup", element: <Signup /> },
+];

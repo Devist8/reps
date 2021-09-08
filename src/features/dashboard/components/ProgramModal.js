@@ -18,8 +18,8 @@ import {
 } from "@material-ui/core";
 
 //Components
-import { Difficulty } from "../Difficulty";
-import { Workout } from "../Workouts/Workout";
+import { Difficulty } from "./Difficulty";
+import { Workout } from "./Workout";
 
 const useStyles = makeStyles((theme) => ({
     root: {

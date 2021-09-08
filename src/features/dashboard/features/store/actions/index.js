@@ -2,13 +2,11 @@ import {
     ADD_STORE_ITEM,
     SET_STORE,
     UPDATE_STORE_INFO,
-    SET_API_CALL,
-    CLEAR_API_CALL,
     SET_PROGRESS,
     UPDATE_NEW_PROGRAM,
     ADD_TO_CART,
     REMOVE_FROM_CART,
-} from "./types";
+} from "../reducers/types";
 
 import axios from "axios";
 import firebase from "firebase";
@@ -17,7 +15,6 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 export const getStore = (id) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
     const cart = cookies.get("cart");
     axios
         .get(`/store/${id}`)
@@ -30,11 +27,9 @@ export const getStore = (id) => (dispatch) => {
             });
         })
         .catch((err) => console.error(err));
-    dispatch({ type: CLEAR_API_CALL });
 };
 
 export const addToStore = (storeId, item) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
     axios
         .post(`/store/${storeId}`, item)
         .then((res) => {
@@ -44,8 +39,6 @@ export const addToStore = (storeId, item) => (dispatch) => {
 };
 
 export const updateStoreSections = (newSection, file) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
-
     const storeId = newSection.store;
 
     delete newSection.preview;
@@ -92,8 +85,6 @@ export const updateStoreSections = (newSection, file) => (dispatch) => {
             })
             .catch((err) => console.error(err));
     }
-
-    dispatch({ type: CLEAR_API_CALL });
 };
 
 export const deleteStore = (storeId) => (dispatch) => {

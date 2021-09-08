@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
 export const ProgramCard = (props) => {
     const { program } = props;
     const userInfo = useSelector((state) => state.user.info);
+    const card = React.useRef();
     const [modalOpen, setModalOpen] = React.useState(false);
     const dispatch = useDispatch();
     const [storeModal, setStoreModal] = React.useState(false);
@@ -80,7 +81,7 @@ export const ProgramCard = (props) => {
     };
 
     const scheduleClick = (e) => {
-        setAnchor(e.currentTarget);
+        setAnchor(card.current);
         setPopperOpen(!popperOpen);
     };
 
@@ -132,58 +133,64 @@ export const ProgramCard = (props) => {
                         padding: 0,
                     }}
                 >
-                    <Grid item xs={12}>
-                        <SpeedDial
-                            ariaLabel="ProgramSpeedDial"
-                            icon={<SpeedDialIcon />}
-                            open={speedDial}
-                            onOpen={() => setSpeedDial(true)}
-                            onClose={() => setSpeedDial(false)}
-                            direction="left"
-                            classes={{
-                                root: classes.speedDialRoot,
-                                fab: classes.speedDialBtn,
-                            }}
-                            style={{ marginRight: "0.5vw" }}
-                        >
-                            <SpeedDialAction
-                                key={"schedule2"}
-                                icon={<ScheduleIcon />}
-                                onClick={scheduleClick}
-                                tooltipPlacement={"top"}
-                                tooltipTitle="schedule"
-                            />
-
-                            <SpeedDialAction
-                                key={"Send to user"}
-                                icon={<ShareIcon />}
-                                onClick={scheduleClick}
-                                tooltipPlacement={"top"}
-                                tooltipTitle="Send to user"
-                                style={{ width: "2vw", height: "2vw" }}
-                            />
-                            {userInfo.type === "trainer" && (
+                    <ClickAwayListener
+                        onClickAway={() => popperOpen && setPopperOpen(false)}
+                    >
+                        <Grid item xs={12}>
+                            <SpeedDial
+                                ariaLabel="ProgramSpeedDial"
+                                ref={card}
+                                icon={<SpeedDialIcon />}
+                                open={speedDial}
+                                onOpen={() => setSpeedDial(true)}
+                                onClose={() => setSpeedDial(false)}
+                                direction="left"
+                                classes={{
+                                    root: classes.speedDialRoot,
+                                    fab: classes.speedDialBtn,
+                                }}
+                                style={{ marginRight: "0.5vw" }}
+                            >
                                 <SpeedDialAction
-                                    key={"Delete"}
-                                    icon={<DeleteIcon />}
-                                    onClick={() => handleDelete(program.id)}
+                                    key={"schedule2"}
+                                    icon={<ScheduleIcon />}
+                                    onClick={scheduleClick}
                                     tooltipPlacement={"top"}
-                                    tooltipTitle="Delete"
+                                    tooltipTitle="schedule"
                                 />
-                            )}
-                        </SpeedDial>
-                        <Popper
-                            open={popperOpen}
-                            anchorEl={anchor}
-                            style={{ zIndex: "1000" }}
-                        >
-                            <Scheduler
-                                id={program.id}
-                                item={program}
-                                popperToggle={closePopper}
-                            />
-                        </Popper>
-                    </Grid>
+
+                                <SpeedDialAction
+                                    key={"Send to user"}
+                                    icon={<ShareIcon />}
+                                    onClick={scheduleClick}
+                                    tooltipPlacement={"top"}
+                                    tooltipTitle="Send to user"
+                                    style={{ width: "2vw", height: "2vw" }}
+                                />
+                                {userInfo.type === "trainer" && (
+                                    <SpeedDialAction
+                                        key={"Delete"}
+                                        icon={<DeleteIcon />}
+                                        onClick={() => handleDelete(program.id)}
+                                        tooltipPlacement={"top"}
+                                        tooltipTitle="Delete"
+                                    />
+                                )}
+                            </SpeedDial>
+
+                            <Popper
+                                open={popperOpen}
+                                anchorEl={anchor}
+                                style={{ zIndex: "1000" }}
+                            >
+                                <Scheduler
+                                    id={program.id}
+                                    item={program}
+                                    popperToggle={closePopper}
+                                />
+                            </Popper>
+                        </Grid>
+                    </ClickAwayListener>
                 </CardActions>
             </Card>
             <Grid

@@ -4,3 +4,4 @@ export const ADD_STORE_ITEM = "ADD_STORE_ITEM";
 export const DELETE_STORE_ITEM = "DELETE_STORE_ITEM";
 export const ADD_TO_CART = "ADD_TO_CART";
 export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
+export const SET_PROGRESS = "SET_PROGRESS";

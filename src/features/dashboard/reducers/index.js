@@ -1,4 +1,4 @@
-import { SET_FILE, CEAR_FILE } from "./types";
+import { SET_SCHEDULE, ADD_TO_SCHEDULE } from "./types";
 
 const initialState = {
     file: null,
@@ -6,16 +6,15 @@ const initialState = {
 
 export default function (state = initialState, action) {
     switch (action.type) {
-        case SET_FILE:
-            console.log(action.payload);
+        case SET_SCHEDULE:
             return {
                 ...state,
-                file: action.payload,
+                schedule: action.payload,
             };
-        case CLEAR_FILE:
+        case ADD_TO_SCHEDULE:
             return {
                 ...state,
-                file: null,
+                schedule: [...state.schedule, action.payload],
             };
         default:
             return state;

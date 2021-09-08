@@ -141,242 +141,14 @@ export const getUserData = () => (dispatch) => {
     });
 };
 
-export const uploadNewWorkoutImage = (formData) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
-    axios
-        .post("/user/image", formData)
-        .then((res) => {
-            const data = {
-                name: "imageURL",
-                value: res.data.imageURL,
-            };
-            dispatch(updateNewWorkout(data));
-        })
-        .catch((err) => console.error(err));
-
-    dispatch({ type: CLEAR_API_CALL });
-};
-
-export const uploadNewProgramImage = (formData) => (dispatch) => {
-    axios
-        .post("user/image", formData)
-        .then((res) => {
-            const data = {
-                name: "imageURL",
-                value: res.data.imageURL,
-            };
-            dispatch(updateNewProgram(data));
-        })
-        .catch((err) => console.error(err));
-};
-
-export const submitExercise = (exercise, file) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
-    if (file) {
-        const storageRef = firebase.storage().ref();
-        const fileRef = storageRef.child(file.name);
-
-        const fileUpload = fileRef.put(file);
-
-        fileUpload.on(
-            "state_changed",
-            (snapshot) => {
-                dispatch({
-                    type: SET_PROGRESS,
-                    payload:
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-                });
-            },
-            (error) => {
-                console.error(error);
-            },
-            () => {
-                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                    const data = {
-                        name: "videoURL",
-                        value: downloadURL,
-                    };
-                    exercise.videoURL = downloadURL;
-                    dispatch({ type: UPDATE_NEW_EXERCISE, payload: data });
-                    axios
-                        .post("/workouts/exercise", exercise)
-                        .then((res) => {
-                            dispatch({ type: ADD_EXERCISE, payload: exercise });
-                            dispatch({ type: CLEAR_PROGRESS });
-                            dispatch({ type: CLEAR_NEW_EXERCISE });
-                        })
-                        .catch((err) => console.error(err));
-                });
-            }
-        );
-    } else {
-        alert("Please select a file.");
-    }
-    dispatch({ type: CLEAR_API_CALL });
-};
-
-export const submitWorkout = (workout, file) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
-    if (file) {
-        const storageRef = firebase.storage().ref();
-        const fileRef = storageRef.child(file.name);
-
-        const fileUpload = fileRef.put(file);
-
-        fileUpload.on(
-            "state_changed",
-            (snapshot) => {
-                dispatch({
-                    type: SET_PROGRESS,
-                    payload:
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-                });
-            },
-            (error) => {
-                console.error(error);
-            },
-            () => {
-                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                    const data = {
-                        name: "videoURL",
-                        value: downloadURL,
-                    };
-                    workout.imageURL = downloadURL;
-                    dispatch({ type: UPDATE_NEW_WORKOUT, payload: data });
-
-                    axios
-                        .post("/workouts/workout", workout)
-                        .then(() => {
-                            dispatch({ type: ADD_WORKOUT, payload: workout });
-                            dispatch({ type: CLEAR_API_CALL });
-                            dispatch({ type: CLEAR_NEW_WORKOUT });
-                            dispatch({ type: CLEAR_PROGRESS });
-                        })
-                        .catch((err) => {
-                            dispatch({ type: SET_ERRORS, payload: err });
-                            dispatch({ type: CLEAR_API_CALL });
-                        });
-                });
-            }
-        );
-    } else {
-        dispatch({ type: CLEAR_API_CALL });
-        alert("Please select a file.");
-    }
-};
-
-export const submitProgram = (program, file) => (dispatch) => {
-    dispatch({ type: "SET_API_CALL" });
-    if (file) {
-        const storageRef = firebase.storage().ref();
-        const fileRef = storageRef.child(file.name);
-
-        const fileUpload = fileRef.put(file);
-
-        fileUpload.on(
-            "state_changed",
-            (snapshot) => {
-                dispatch({
-                    type: SET_PROGRESS,
-                    payload:
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-                });
-            },
-            (error) => {
-                console.error(error);
-            },
-            () => {
-                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                    const data = {
-                        name: "videoURL",
-                        value: downloadURL,
-                    };
-                    program.imageURL = downloadURL;
-                    dispatch({ type: UPDATE_NEW_PROGRAM, payload: data });
-                    axios
-                        .post("/workouts/program", program)
-                        .then(() => {
-                            dispatch({ type: ADD_PROGRAM, payload: program });
-                            dispatch({ type: CLEAR_API_CALL });
-                            dispatch({ type: CLEAR_NEW_PROGRAM });
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            dispatch({ type: CLEAR_API_CALL });
-                        });
-                });
-            }
-        );
-    } else {
-        alert("Please select a file.");
-    }
-};
-
-export const submitMeal = (meal, file) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
-    if (file) {
-        const storageRef = firebase.storage().ref();
-        const fileRef = storageRef.child(file.name);
-        const fileUpload = fileRef.put(file);
-
-        fileUpload.on(
-            "state_changed",
-            (snapshot) => {
-                dispatch({
-                    type: SET_PROGRESS,
-                    payload:
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-                });
-            },
-            (error) => {
-                console.error(error);
-            },
-            () => {
-                fileUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                    const data = {
-                        name: "videoURL",
-                        value: downloadURL,
-                    };
-                    meal.imageURL = downloadURL;
-                    dispatch({ type: UPDATE_NEW_MEAL, payload: data });
-
-                    axios
-                        .post("/meals", meal)
-                        .then(() => {
-                            dispatch({ type: ADD_MEAL, payload: meal });
-                            dispatch({ type: CLEAR_API_CALL });
-                            dispatch({ type: CLEAR_NEW_MEAL });
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            dispatch({ type: CLEAR_API_CALL });
-                        });
-                });
-            }
-        );
-    } else {
-        alert("Please select a file.");
-    }
-};
-
-export const addToCollection = (docId, userId) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
-    axios
-        .post(`/user/${userId}/workouts/${docId}`)
-        .then(() => {})
-        .catch((err) => {
-            console.error(err);
-        });
-    dispatch({ type: CLEAR_API_CALL });
-};
-
 export const addToSchedule = (itemToSchedule) => (dispatch) => {
     dispatch({ type: SET_API_CALL });
     const type = itemToSchedule.type;
-
+    const exercises = [];
     if (type === "workout") {
         itemToSchedule.exercises.map((exercise, index) => {
-            return (exercise.date = itemToSchedule.date);
+            exercise.date = itemToSchedule.date;
+            exercises.push(exercise);
         });
     }
     if (type === "program") {
@@ -387,40 +159,31 @@ export const addToSchedule = (itemToSchedule) => (dispatch) => {
             week.sort();
             return week.map((workout) => {
                 workout.date = itemToSchedule.dateRange[dateIndex];
-                scheduleExercises(workout);
-                return (dateIndex = dateIndex + 1);
+                const workouts = scheduleExercises(workout);
+                workouts.exercises.forEach((exercise) => {
+                    exercises.push(exercise);
+                });
             });
         });
     }
-
-    axios
-        .post("/schedule", itemToSchedule)
-        .then((res) => {
-            dispatch({ type: ADD_TO_SCHEDULE, payload: itemToSchedule });
-            dispatch({ type: CLEAR_API_CALL });
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+    console.log(exercises);
+    exercises.forEach((exercise) => {
+        axios
+            .post("/schedule", exercise)
+            .then((res) => {
+                dispatch({ type: ADD_TO_SCHEDULE, payload: itemToSchedule });
+                dispatch({ type: CLEAR_API_CALL });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    });
 };
 
 export const getScheduled = () => (dispatch) => {
     axios.get("/schedule").then((res) => {
         //const thisMorning = dayjs(dayjs(Date.now()).format("L")).valueOf();
     });
-};
-
-export const deleteWorkout = (docId) => (dispatch) => {
-    dispatch({ type: SET_API_CALL });
-    axios
-        .delete(`/workouts/${docId}`)
-        .then((res) => {
-            dispatch({ type: DELETE_WORKOUT, payload: docId });
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-    dispatch({ type: CLEAR_API_CALL });
 };
 
 export const updateScheduledExerciseStatus =
@@ -443,6 +206,26 @@ export const updateScheduledExerciseStatus =
             });
         dispatch({ type: CLEAR_API_CALL });
     };
+
+export const markExerciseComplete = (scheduledItem, exercise) => (dispatch) => {
+    dispatch({ type: SET_API_CALL });
+    if (exercise.week) {
+        scheduledItem.workouts[exercise.week][exercise.workoutIndex].exercises[
+            exercise.exerciseIndex
+        ].status = "complete";
+    }
+    axios
+        .post("/schedule/update", scheduledItem)
+        .then((res) => {
+            axios.get(`/schedule`).then((res) => {
+                dispatch({ type: SET_SCHEDULE, payload: res.data });
+            });
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+    dispatch({ type: CLEAR_API_CALL });
+};
 
 //Store Actions
 export const createStore = (userId) => (dispatch) => {

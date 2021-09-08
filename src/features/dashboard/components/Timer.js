@@ -10,6 +10,7 @@ import {
     Button,
     TextField,
     IconButton,
+    Divider,
 } from "@material-ui/core";
 
 //Redux
@@ -18,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.primaryDark.main,
-        maxWidth: "30vw",
+        maxWidth: "450px",
         padding: "40px 10px",
         justifyContent: "center",
         textAlign: "center",
@@ -32,29 +33,63 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.secondary.main,
         borderColor: theme.palette.secondary.main,
     },
+    selected: {
+        color: "#4CCAFF",
+    },
 }));
 
+let reps = 5;
+let timerId;
 export const Timer = (props) => {
     const { exercise } = props;
     const dispatch = useDispatch();
     const classes = useStyles();
+    const exercises = useSelector((state) => state.data.exercises);
     const [seconds, setSeconds] = useState(0);
-    const [time, setTime] = useState(null);
-    let timer = 0;
+    const [currentRep, setCurrentRep] = useState(0);
+    const [completedReps, setCompletedReps] = useState(
+        Array(reps).fill("00 : 00 : 00")
+    );
+    const [status, setStatus] = useState("");
 
     const count = () => {
-        let timerSeconds = seconds + 1;
-        console.log(timerSeconds);
         setSeconds((prevState) => prevState + 1);
     };
 
     const startTimer = () => {
-        timer = setInterval(count, 1000);
+        timerId = setInterval(count, 1000);
     };
 
     let h = Math.floor(seconds / 3600);
     let m = Math.floor((seconds % 3600) / 60);
     let s = Math.ceil((seconds % 3600) % 60);
+    let formattedTime = `${h < 10 ? `0${h}` : h} : ${m < 10 ? `0${m}` : m} : ${
+        s < 10 ? `0${s}` : s
+    }`;
+
+    const completeRep = () => {
+        let clone = completedReps;
+        clone[currentRep] = formattedTime;
+        setStatus("stop");
+        setCompletedReps(clone);
+        setCurrentRep(currentRep + 1);
+    };
+
+    const resetTimer = () => {
+        setSeconds(0);
+        setCompletedReps(Array(reps).fill("00 : 00 : 00"));
+        setStatus("");
+        setCurrentRep(0);
+    };
+
+    React.useEffect(() => {
+        if (status === "start") {
+            startTimer();
+        }
+        if (status === "stop") {
+            clearInterval(timerId);
+        }
+    }, [status]);
 
     return (
         <Grid
@@ -75,45 +110,80 @@ export const Timer = (props) => {
                     }}
                 >
                     <ReactPlayer
-                        url={exercise && exercise.videoURL}
+                        url={
+                            exercise
+                                ? exercise.videoURL
+                                : exercises[3] && exercises[3].videoURL
+                        }
                         width="20vw"
                         height="18vh"
                         loop="true"
                         controls
                     />
                 </Grid>
-                <Typography>
-                    {`${h < 10 ? `0${h}` : h} : ${m < 10 ? `0${m}` : m} : ${
-                        s < 10 ? `0${s}` : s
-                    }`}
-                </Typography>
+                <Typography>{formattedTime}</Typography>
             </Grid>
             <Grid item xs={12} style={{ display: "flex", flexWrap: "wrap" }}>
                 <Grid item xs={12}>
-                    <Typography variant="overline">Set a time limit</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        name="time"
-                        value={time}
-                        onChange={(e) => setTime(e.target.value)}
-                        style={{ width: "4vw" }}
-                    />
+                    <Button
+                        variant="outlined"
+                        className={classes.button}
+                        style={{ maxWidth: "none" }}
+                        onClick={() => completeRep()}
+                    >
+                        Mark rep complete
+                    </Button>
                 </Grid>
             </Grid>
             <Grid item xs={12} className={classes.buttons}>
-                <Button variant="outlined" className={classes.button}>
-                    Set timer
+                <Button
+                    variant="outlined"
+                    onClick={() => setStatus("start")}
+                    className={classes.button}
+                    disabled={status === "start"}
+                >
+                    Start
                 </Button>
                 <Button
                     variant="outlined"
-                    onClick={startTimer}
                     className={classes.button}
+                    onClick={resetTimer}
                 >
-                    Start stopwatch
+                    Stop
                 </Button>
+            </Grid>
+            <Divider style={{ width: "100%", margin: "5vh 0 2vh 0" }} />
+            <Grid container>
+                {completedReps.map((rep, i) => {
+                    return (
+                        <Grid container>
+                            <Grid item xs={2} style={{ textAlign: "start" }}>
+                                <Typography
+                                    className={
+                                        i === currentRep && classes.selected
+                                    }
+                                >{`Rep ${i + 1}`}</Typography>
+                            </Grid>
+                            <Grid item xs={10} style={{ textAlign: "end" }}>
+                                <Typography
+                                    className={
+                                        i === currentRep && classes.selected
+                                    }
+                                >
+                                    {i === currentRep ? formattedTime : rep}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    );
+                })}
+            </Grid>
+            <Grid
+                item
+                xs={12}
+                style={{ display: "flex", justifyContent: "center" }}
+            >
                 <Button variant="outlined" className={classes.button}>
-                    Mark Complete
+                    Submit
                 </Button>
             </Grid>
         </Grid>

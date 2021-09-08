@@ -6,6 +6,11 @@ import createSagaMiddleware from "redux-saga";
 import userReducer from "./reducers/userReducer";
 import uiReducer from "./reducers/uiReducer";
 import dataReducer from "./reducers/dataReducer";
+import studioReducer from "../features/dashboard/features/studio/reducers";
+import mealsReducer from "../features/dashboard/features/meals/reducers";
+import storeReducer from "../features/dashboard/features/store/reducers";
+import chatReducer from "../features/dashboard/features/chat/reducers";
+import dashboardReducer from "../features/dashboard/reducers";
 
 const initialState = {};
 const sagaMiddleware = createSagaMiddleware();
@@ -15,6 +20,10 @@ const reducers = combineReducers({
     user: userReducer,
     data: dataReducer,
     ui: uiReducer,
+    studio: studioReducer,
+    meals: mealsReducer,
+    store: storeReducer,
+    chat: chatReducer,
 });
 
 const store = createStore(

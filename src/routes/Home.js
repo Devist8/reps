@@ -9,6 +9,9 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 
+//Components
+import { Timer } from "../features/dashboard/components/Timer";
+
 //Redux
 import { useSelector, useDispatch } from "react-redux";
 import { getDemoData } from "../redux/actions/dataActions";
@@ -37,6 +40,7 @@ export const Home = () => {
                     marginTop: "5vh",
                 }}
             >
+                <Timer />
                 {user ? (
                     !demoLoaded ? (
                         <Button

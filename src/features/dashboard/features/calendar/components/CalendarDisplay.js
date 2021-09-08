@@ -5,13 +5,67 @@ import dayjs from "dayjs";
 import { useLocation } from "react-router-dom";
 
 //MUI
+import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Box } from "@material-ui/core";
 
 //Components
-import { Exercise } from "../Exercises/Exercise";
+import { Exercise } from "../../../components/Exercise";
+import { DateHeader } from "./DateHeader";
 
 //Redux
 import { useSelector } from "react-redux";
+import { Workout } from "../../../components/Workout";
+
+const useStyles = makeStyles((theme) => ({
+    root: {},
+    calendarContainer: {
+        margin: "auto",
+        marginTop: "10vh",
+        width: "90%",
+        justifyContent: "center",
+    },
+    chatContainer: {
+        marginTop: "10vh",
+    },
+    calendar: { width: "90%", marginLeft: "5%" },
+    drawerPaper: {
+        width: "300px",
+        backgroundColor: "#e3f6ff",
+    },
+    bottomNavigation: {
+        backgroundColor: "#e3f6ff",
+    },
+    mealsDrawerPaper: {
+        width: "300px",
+        backgroundColor: "#e6ffe9",
+    },
+    selectedTile: {
+        backgroundColor: theme.palette.primary.main,
+        borderRadius: "30px",
+        padding: 0,
+    },
+    mealsSelectedTile: {
+        backgroundColor: theme.palette.meals.dark,
+        borderRadius: "30px",
+        padding: 0,
+    },
+    tile: {
+        padding: 0,
+    },
+    rightDrawer: {
+        borderLeft: "none",
+    },
+    dateDisplayContainer: {
+        marginTop: "1rem",
+        marginLeft: "0.8vw",
+        width: "100%",
+    },
+    buttons: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-end",
+    },
+}));
 
 export const CalendarDisplay = (props) => {
     const classes = useStyles();
@@ -20,34 +74,22 @@ export const CalendarDisplay = (props) => {
         dayjs(new Date()).format("l"),
     ]);
     const schedule = useSelector((state) => state.data.schedule);
+    const workouts = useSelector((state) => state.data.workouts);
     const [scheduledExercises, setScheduledExercises] = React.useState([]);
-
+    const [scheduledWorkouts, setScheduledWorkouts] = React.useState([]);
+    console.log(schedule);
     React.useEffect(() => {
-        const exercises = [];
-        schedule.map((item) => {
-            if (item.type === "program") {
-                Object.values(item.workouts).map((week) => {
-                    return week.map((workout) => {
-                        return workout.exercises.map((exercise) => {
-                            exercise.status !== "canceled" &&
-                                exercises.push(exercise);
-                        });
-                    });
-                });
-            }
-
-            if (item.type === "workout") {
-                item.exercises.map((exercise) => {
-                    return exercises.push(exercise);
-                });
-            }
-
-            if (item.type === "exercise") {
-                exercises.push(item);
-            }
-
-            return setScheduledExercises(exercises);
+        setScheduledExercises(schedule);
+        const workoutIds = [];
+        const workoutData = [];
+        schedule.forEach((exercise) => {
+            !workoutIds.includes(exercise.workoutId) &&
+                workoutIds.push(exercise.workoutId);
         });
+        workouts.forEach((workout) => {
+            workoutIds.includes(workout.id) && workoutData.push(workout);
+        });
+        setScheduledWorkouts(workoutData);
     }, [schedule]);
 
     const handleDateClick = (value) => {
@@ -129,6 +171,25 @@ export const CalendarDisplay = (props) => {
                                                 exercise={exercise}
                                                 small
                                                 key={exercise.id}
+                                            />
+                                        </Box>
+                                    );
+                                }
+                            })}
+                            {scheduledWorkouts.map((workout) => {
+                                workout.exercises = scheduledExercises.filter(
+                                    (exercise) =>
+                                        exercise.workoutId === workout.id
+                                );
+                                if (
+                                    dayjs(dayjs(date).format("L")).valueOf() ===
+                                    workout.exercises[0].date
+                                ) {
+                                    return (
+                                        <Box>
+                                            <Workout
+                                                workout={workout}
+                                                key={workout.id}
                                             />
                                         </Box>
                                     );

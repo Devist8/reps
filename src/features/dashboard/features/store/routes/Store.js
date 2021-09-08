@@ -30,8 +30,6 @@ import {
     StoreItemDisplay,
 } from "..";
 
-import { Carousel } from "../../../../../components/Carousel";
-
 // React-redux
 import { useSelector, useDispatch } from "react-redux";
 

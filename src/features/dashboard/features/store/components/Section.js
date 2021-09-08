@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Button, Typography } from "@material-ui/core";
 
 //Components
-import { Carousel } from "../../../../../components/Carousel";
+import { Carousel } from "../../../components/Carousel";
 import { SectionHeader } from "./SectionHeader";
 
 //Redux
