@@ -103,3 +103,83 @@ export const addToCart = (item) => (dispatch) => {
         ? cookies.set("cart", [...cart, item], "/")
         : cookies.set("cart", [item], "/");
 };
+
+export const removeFromCart = (item) => (dispatch) => {
+    console.log(item);
+    dispatch({ type: REMOVE_FROM_CART, payload: item.itemId });
+
+    let cart = cookies.get("cart");
+    cart &&
+        cookies.set(
+            "cart",
+            cart.filter((x) => x.itemId !== item.itemId)
+        );
+
+    console.log(cart);
+};
+
+export const createPaymentIntent =
+    (items, customerId, email, storeId) => (dispatch) => {
+        let newCustomerId;
+
+        if (!customerId) {
+            axios
+                .post("/stripe/customer", { email: email })
+                .then((customer) => {
+                    newCustomerId = customer.data.customerId;
+                    return axios.post("/user", { stripeId: newCustomerId });
+                })
+                .then((res) => {
+                    return axios.post("/stripe/paymentIntent", {
+                        items: items,
+                        storeId: storeId,
+                    });
+                })
+                .then((res) => {
+                    console.log(res);
+                    let clientIntent = res.data.clientSecret;
+                    console.log(clientIntent);
+                    dispatch({
+                        type: "UPDATE_USER_DATA",
+                        payload: { stripeIntent: clientIntent },
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } else {
+            console.log("creating payment intent");
+            axios
+                .post("/stripe/paymentIntent", {
+                    items: items,
+                    storeId: storeId,
+                })
+                .then((res) => {
+                    console.log(res);
+                    let clientIntent = res.data.clientSecret;
+                    console.log(clientIntent);
+                    dispatch({
+                        type: "UPDATE_USER_DATA",
+                        payload: { stripeIntent: clientIntent },
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    };
+
+export const getPaymentMethods = (customerId) => (dispatch) => {
+    console.log("getting payment methods");
+    axios
+        .get(`/stripe/paymentMethods/${customerId}`)
+        .then((res) => {
+            console.log(res.data);
+            let paymentMethods = res.data.paymentMethods;
+            dispatch({
+                type: "UPDATE_USER_DATA",
+                payload: { paymentMethods: paymentMethods },
+            });
+        })
+        .catch((err) => console.error(err));
+};

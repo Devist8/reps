@@ -169,7 +169,7 @@ export const addToSchedule = (itemToSchedule) => (dispatch) => {
     console.log(exercises);
     exercises.forEach((exercise) => {
         axios
-            .post("/schedule", exercise)
+            .post("/schedule", itemToSchedule)
             .then((res) => {
                 dispatch({ type: ADD_TO_SCHEDULE, payload: itemToSchedule });
                 dispatch({ type: CLEAR_API_CALL });

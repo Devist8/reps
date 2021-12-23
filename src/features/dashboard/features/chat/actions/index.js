@@ -1,9 +1,9 @@
-import { SET_RECENT_MESSAGES } from "../types";
+import { SET_RECENT_MESSAGES } from "../reducers/types";
 import axios from "axios";
 
 import firebase from "firebase";
 
-import { db, auth } from "../../util/config";
+import { db, auth } from "../../../../../util/config";
 
 export const getRecentMessages = (id) => (dispatch) => {
     const messageFilter = (contacts, messages) => {

@@ -17,13 +17,13 @@ const sagaMiddleware = createSagaMiddleware();
 const middleware = [thunk, sagaMiddleware];
 
 const reducers = combineReducers({
-    user: userReducer,
-    data: dataReducer,
-    ui: uiReducer,
-    studio: studioReducer,
+    chat: chatReducer,
+    data: dashboardReducer,
     meals: mealsReducer,
     store: storeReducer,
-    chat: chatReducer,
+    studio: studioReducer,
+    user: userReducer,
+    ui: uiReducer,
 });
 
 const store = createStore(

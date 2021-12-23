@@ -109,13 +109,16 @@ export const getFBToken = async () => (dispatch) => {
 
 export const getNewToken = () => (dispatch) => {
     let newToken;
-    firebase
-        .auth()
-        .currentUser.getIdToken()
-        .then((idToken) => {
-            newToken = idToken;
-            authHeader(newToken);
-        });
+    firebase.auth().onAuthStateChanged((user) => {
+        firebase
+            .auth()
+            .currentUser.getIdToken()
+            .then((idToken) => {
+                newToken = idToken;
+                authHeader(newToken);
+            })
+            .catch((err) => console.error(err));
+    });
 };
 
 export const updateUserData = (data, file) => (dispatch) => {

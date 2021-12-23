@@ -12,6 +12,8 @@ import {
     ADD_EXERCISE,
     UPDATE_NEW_EXERCISE,
     CLEAR_NEW_EXERCISE,
+    SET_FILE,
+    CLEAR_FILE,
 } from "./types";
 
 const initialState = {
@@ -25,6 +27,7 @@ const initialState = {
         motion: "",
         muscles: [],
         equipment: [],
+        id: "",
         videoURL: "",
         type: "exercise",
     },
@@ -36,6 +39,7 @@ const initialState = {
         description: [],
         equipment: [],
         muscles: [],
+        id: "",
         exerciseCount: 0,
         type: "workout",
     },
@@ -45,12 +49,16 @@ const initialState = {
         workoutCount: 0,
         type: "program",
         description: "",
-        workouts: { "Week 1": [] },
+        workouts: [[]],
         imageURL: "",
         muscles: [],
         equipment: [],
+        id: "",
         exerciseCount: 0,
     },
+    exerciseFile: null,
+    workoutFile: null,
+    programFile: null,
 };
 
 export default function (state = initialState, action) {
@@ -166,6 +174,16 @@ export default function (state = initialState, action) {
                     type: "exercise",
                 },
             };
+        case SET_FILE:
+            return {
+                ...state,
+                [action.payload.type === "program"
+                    ? "programFile"
+                    : action.payload.type === "workout"
+                    ? "workoutFile"
+                    : "exerciseFile"]: action.payload.file,
+            };
+
         default:
             return state;
     }

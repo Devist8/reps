@@ -21,10 +21,13 @@ import { updateNewWorkout, submitWorkout } from "../actions";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: "white",
         padding: "0",
         display: "flex",
         flexDirection: "row",
+        width: "80%",
+        marginTop: "5vh",
+        boxShadow: "0px 3px 5px 0px rgba(0,0,0,0.25)",
     },
 
     displayContainer: {
@@ -32,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
     },
     formFields: {
         boxShadow: "-3px 0px 5px 0px rgba(0,0,0,0.14)",
+    },
+    workoutContainer: {
+        backgroundColor: theme.palette.secondary.light,
     },
     submit: {
         display: "flex",
@@ -50,8 +56,8 @@ export const WorkoutForm = (props) => {
     const [errors, setErrors] = React.useState({});
     const progress = useSelector((state) => state.ui.progress);
     const file = useSelector((state) => state.data.file);
-    const exercises = useSelector((state) => state.data.exercises);
-    const newWorkout = useSelector((state) => state.data.newWorkout);
+    const exercises = useSelector((state) => state.studio.exercises);
+    const newWorkout = useSelector((state) => state.studio.newWorkout);
     const handleChange = (e) => {
         const data = {
             name: e.target.name,
@@ -65,7 +71,6 @@ export const WorkoutForm = (props) => {
             name: "exercises",
             value: newWorkout.exercises.concat(exercise),
         };
-        console.log(exercise);
         if (exercise.reps) {
             dispatch(updateNewWorkout(data));
             data.name = "exerciseCount";
@@ -102,6 +107,7 @@ export const WorkoutForm = (props) => {
                 <Grid
                     item
                     xs={6}
+                    className={classes.workoutContainer}
                     style={{
                         display: "flex",
                         justifyContent: "center",
@@ -109,7 +115,14 @@ export const WorkoutForm = (props) => {
                         flexWrap: "wrap",
                     }}
                 >
-                    <Grid item xs={10}>
+                    <Grid
+                        item
+                        xs={10}
+                        style={{
+                            boxShadow: "0px 3px 5px 0px rgba(0,0,0,0.25)",
+                            maxWidth: "450px",
+                        }}
+                    >
                         <Workout
                             workout={newWorkout}
                             edit

@@ -16,8 +16,10 @@ const useStyles = makeStyles((theme) => ({}));
 export const WorkoutSelectionModal = (props) => {
     const { selectedWorkouts, selectedWeek, addWorkout } = props;
     const classes = useStyles();
-    const workouts = useSelector((state) => state.data.workouts);
-
+    const workouts = useSelector((state) => state.studio.workouts);
+    console.log("selectedWorkouts");
+    console.log(selectedWorkouts);
+    console.log(selectedWeek);
     return (
         <Grid
             container
@@ -67,7 +69,7 @@ export const WorkoutSelectionModal = (props) => {
                             width: "100%",
                         }}
                     >
-                        {selectedWorkouts.length > 0 ? (
+                        {selectedWorkouts ? (
                             selectedWorkouts.map((selectedWorkout, index) => {
                                 return <Workout workout={selectedWorkout} />;
                             })

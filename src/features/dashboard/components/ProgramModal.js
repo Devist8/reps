@@ -80,7 +80,9 @@ export const WorkoutList = (props) => {
             ? setOpen(e.target.selectedWeek)
             : setOpen("");
     };
-
+    //The key is the week
+    //The value is the list of workouts for that week
+    //Sort the keys by week then reproduce the object in order
     const orderedWorkouts = Object.keys(workouts)
         .sort()
         .reduce((obj, key) => {

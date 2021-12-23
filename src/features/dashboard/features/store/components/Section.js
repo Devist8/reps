@@ -20,7 +20,7 @@ export const Section = (props) => {
     const { section, edit, index } = props;
     const dispatch = useDispatch();
     const file = useSelector((state) => state.data.file);
-    const storeId = useSelector((state) => state.data.store.info.storeId);
+    const storeId = useSelector((state) => state.store.info.storeId);
     const [currentSection, setCurrentSection] = React.useState(
         section ? { ...section } : { items: [], preview: null, align: "" }
     );
@@ -56,7 +56,7 @@ export const Section = (props) => {
                                     {error}
                                 </Typography>
                             );
-                        })}{" "}
+                        })}
                 </Grid>
             }
             <Grid item xs={12}>

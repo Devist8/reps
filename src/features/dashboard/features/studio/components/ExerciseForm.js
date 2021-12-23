@@ -27,14 +27,19 @@ import { BubbleArray } from "../../../components/BubbleArray";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
-import { updateNewExercise, submitExercise } from "../actions";
+import { updateNewExercise, submitExercise, getWorkoutId } from "../actions";
 import { CLEAR_FILE, SET_FILE } from "../../../reducers/types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: theme.palette.secondary.light,
+        width: "80%",
+        marginTop: "5vh",
+        backgroundColor: "white",
+        boxShadow: "0px 3px 5px 0px rgba(0,0,0,0.25)",
     },
-    video: {},
+    video: {
+        boxShadow: "0px 3px 5px 0px rgba(0,0,0,0.25)",
+    },
     videoIcon: {
         backgroundColor: "white",
     },
@@ -42,9 +47,10 @@ const useStyles = makeStyles((theme) => ({
         textAlign: "center",
         boxShadow: "-3px 0px 5px 0px rgba(0,0,0,0.14)",
     },
-    form: {
-        boxShadow: "0px 3px 5px 0px rgba(0,0,0,0.25)",
+    header: {
+        height: "8vh",
     },
+    form: {},
     fieldContainer: {
         justifyContent: "center",
         alignContent: "center",
@@ -55,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
     },
     formField: {
         width: "50%",
+    },
+    videoContainer: {
+        backgroundColor: theme.palette.primary.main,
     },
     submit: {
         display: "flex",
@@ -71,7 +80,7 @@ export const ExerciseForm = (props) => {
     const file = useSelector((state) => state.data.file);
     const progress = useSelector((state) => state.ui.progress);
     const classes = useStyles();
-    const newExercise = useSelector((state) => state.data.newExercise);
+    const newExercise = useSelector((state) => state.studio.newExercise);
     const [preview, setPreview] = React.useState(null);
 
     const handleChange = (e) => {
@@ -132,10 +141,34 @@ export const ExerciseForm = (props) => {
 
     return (
         <Grid container className={classes.root}>
+            <Grid container className={classes.header}>
+                <Grid item xs={4}></Grid>
+                <Grid
+                    item
+                    xs={8}
+                    style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Typography
+                        variant="h6"
+                        style={{
+                            textAlign: "center",
+                            fontWeight: 700,
+                            marginRight: "1vw",
+                            width: "18vw",
+                        }}
+                    >{`Id: ${newExercise.id}`}</Typography>
+                </Grid>
+            </Grid>
             <Grid container className={classes.form}>
                 <Grid
                     item
                     xs={5}
+                    className={classes.videoContainer}
                     style={{
                         display: "flex",
                         justifyContent: "center",

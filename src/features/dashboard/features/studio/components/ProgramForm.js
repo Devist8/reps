@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 
 //Components
-import { WorkoutList } from "../../../components/ProgramModal";
+import { WorkoutList } from "../../../components/WorkoutList";
 import { Difficulty } from "../../../components/Difficulty";
 import { BubbleArray } from "../../../components/BubbleArray";
 import { WorkoutSelectionModal } from "../components/WorkoutSelectionModal";
@@ -28,6 +28,11 @@ import { updateNewProgram, submitProgram } from "../actions";
 import { CLEAR_FILE, SET_FILE } from "../../../reducers/types";
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        width: "80%",
+        marginTop: "5vh",
+        boxShadow: "0px 3px 5px 0px rgba(0,0,0,0.25)",
+    },
     boxShadow: {
         width: "100%",
         minHeight: "563px",
@@ -65,12 +70,12 @@ export const ProgramForm = (props) => {
     const {} = props;
     const classes = useStyles();
     const dispatch = useDispatch();
-    const file = useSelector((state) => state.data.file);
-    const newProgram = useSelector((state) => state.data.newProgram);
+    const file = useSelector((state) => state.studio.programFile);
+    const newProgram = useSelector((state) => state.studio.newProgram);
     const progress = useSelector((state) => state.ui.progress);
     const [open, setOpen] = React.useState(false);
     const [preview, setPreview] = React.useState(null);
-    const [selectedWeek, setSelectedWeek] = React.useState("");
+    const [selectedWeek, setSelectedWeek] = React.useState(null);
 
     const handleChange = (e) => {
         const data = {
@@ -82,23 +87,24 @@ export const ProgramForm = (props) => {
 
     const openModal = (week) => {
         setOpen(!open);
-        selectedWeek === week ? setSelectedWeek("") : setSelectedWeek(week);
+        selectedWeek === week ? setSelectedWeek(null) : setSelectedWeek(week);
     };
 
     const addWorkout = (workout, week) => {
-        const updatedWeek = {
-            ...newProgram.workouts,
-            [week]: [...newProgram.workouts[week], workout],
-        };
+        const updatedWeek = [...newProgram.workouts[week - 1], workout];
+        console.log(updatedWeek);
+        const updatedWorkouts = [...newProgram.workouts];
+        //console.log(updatedWorkouts);
+        updatedWorkouts[week - 1] = updatedWeek;
         workout.program = newProgram.title && newProgram.title;
         workout.week = week;
         workout.exercises.map((exercise) => (exercise.week = week));
         const data = {
             name: "workouts",
-            value: updatedWeek,
+            value: updatedWorkouts,
         };
-        newProgram.workouts[week].concat(workout);
         dispatch(updateNewProgram(data));
+
         data.name = "workoutCount";
         data.value = newProgram.workoutCount + 1;
 
@@ -138,7 +144,7 @@ export const ProgramForm = (props) => {
     const addWeek = () => {
         const data = {
             name: "workouts",
-            value: newProgram.workouts.push([]),
+            value: [...newProgram.workouts, []],
         };
         dispatch(updateNewProgram(data));
     };
@@ -151,13 +157,16 @@ export const ProgramForm = (props) => {
         if (file) {
             reader.onload = () => {
                 if (reader.readyState === 2) {
-                    dispatch({ type: SET_FILE, payload: file });
+                    dispatch({
+                        type: SET_FILE,
+                        payload: { file: file, type: "program" },
+                    });
                     setPreview(URL.createObjectURL(file));
                 }
             };
             reader.readAsDataURL(e.target.files[0]);
         } else {
-            dispatch({ type: CLEAR_FILE, payload: file });
+            dispatch({ type: CLEAR_FILE, payload: { type: "program" } });
         }
     };
 
@@ -420,7 +429,7 @@ export const ProgramForm = (props) => {
                     }}
                 >
                     <WorkoutSelectionModal
-                        selectedWorkouts={newProgram.workouts[selectedWeek]}
+                        selectedWorkouts={newProgram.workouts[selectedWeek - 1]}
                         selectedWeek={selectedWeek}
                         addWorkout={addWorkout}
                     />

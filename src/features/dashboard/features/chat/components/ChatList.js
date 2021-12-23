@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({}));
 
 export const ChatList = (props) => {
     const { setContacts } = props;
-    const recentMessages = useSelector((state) => state.data.recentMessages);
+    const recentMessages = useSelector((state) => state.chat.recentMessages);
     const classes = useStyles();
 
     return (

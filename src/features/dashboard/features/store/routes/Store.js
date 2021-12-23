@@ -62,12 +62,12 @@ export const Store = (props) => {
     const [searchResults, setSearchResults] = React.useState([]);
     const [category, setCategory] = React.useState("");
     const [categoryResults, setCategoryResults] = React.useState([]);
-    const cartItems = useSelector((state) => state.data.store.cart);
+    const cartItems = useSelector((state) => state.store.cart);
     const user = useSelector((store) => store.user.info);
-    const storeSections = useSelector((state) => state.data.store.sections);
-    const storeId = useSelector((state) => state.data.store.info.storeId);
-    const trainer = useSelector((store) => store.data.store.info.trainer);
-    const inventory = useSelector((store) => store.data.store.inventory);
+    const storeSections = useSelector((state) => state.store.sections);
+    const storeId = useSelector((state) => state.store.info.storeId);
+    const trainer = useSelector((store) => store.store.info.trainer);
+    const inventory = useSelector((store) => store.store.inventory);
 
     const handleNavClick = (e) => {
         return setCategoryResults(
@@ -313,13 +313,12 @@ export const Store = (props) => {
                                         />
                                     </Grid>
                                 )}
+                                {edit && (
+                                    <Grid item xs={12}>
+                                        <Section edit />
+                                    </Grid>
+                                )}
                             </Grid>
-
-                            {edit && (
-                                <Grid item xs={12}>
-                                    <Section edit />
-                                </Grid>
-                            )}
                         </Grid>
                     )}
                 </Grid>

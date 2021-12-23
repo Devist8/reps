@@ -6,15 +6,15 @@ import { useLocation } from "react-router-dom";
 
 //MUI
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Box } from "@material-ui/core";
+import { Grid, Box, Typography } from "@material-ui/core";
 
 //Components
 import { Exercise } from "../../../components/Exercise";
+import { Workout } from "../../../components/Workout";
 import { DateHeader } from "./DateHeader";
 
 //Redux
 import { useSelector } from "react-redux";
-import { Workout } from "../../../components/Workout";
 
 const useStyles = makeStyles((theme) => ({
     root: {},
@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.primary.main,
         borderRadius: "30px",
         padding: 0,
+    },
+    workoutTitle: {
+        color: theme.palette.primary.main,
     },
     mealsSelectedTile: {
         backgroundColor: theme.palette.meals.dark,
@@ -74,22 +77,38 @@ export const CalendarDisplay = (props) => {
         dayjs(new Date()).format("l"),
     ]);
     const schedule = useSelector((state) => state.data.schedule);
-    const workouts = useSelector((state) => state.data.workouts);
+    const workouts = useSelector((state) => state.studio.workouts);
     const [scheduledExercises, setScheduledExercises] = React.useState([]);
     const [scheduledWorkouts, setScheduledWorkouts] = React.useState([]);
-    console.log(schedule);
+
     React.useEffect(() => {
-        setScheduledExercises(schedule);
-        const workoutIds = [];
-        const workoutData = [];
-        schedule.forEach((exercise) => {
-            !workoutIds.includes(exercise.workoutId) &&
-                workoutIds.push(exercise.workoutId);
+        const exercises = [];
+        schedule.map((item) => {
+            if (item.type === "program") {
+                Object.values(item.workouts).map((week) => {
+                    return week.map((workout) => {
+                        return workout.exercises.map((exercise) => {
+                            exercise.workout = workout.title;
+                            exercise.status !== "canceled" &&
+                                exercises.push(exercise);
+                        });
+                    });
+                });
+            }
+
+            if (item.type === "workout") {
+                item.exercises.map((exercise) => {
+                    exercise.workout = item.title;
+                    return exercises.push(exercise);
+                });
+            }
+
+            if (item.type === "exercise") {
+                exercises.push(item);
+            }
+
+            return setScheduledExercises(exercises);
         });
-        workouts.forEach((workout) => {
-            workoutIds.includes(workout.id) && workoutData.push(workout);
-        });
-        setScheduledWorkouts(workoutData);
     }, [schedule]);
 
     const handleDateClick = (value) => {
@@ -161,35 +180,37 @@ export const CalendarDisplay = (props) => {
                                     dayjs(dayjs(date).format("L")).valueOf() ===
                                     exercise.date
                                 ) {
-                                    console.log(exercise);
                                     return (
                                         <Box
                                             key={exercise.id}
                                             style={{ margin: "1vh 0" }}
                                         >
+                                            {exercise.program ? (
+                                                <Typography
+                                                    variant="overline"
+                                                    className={
+                                                        classes.workoutTitle
+                                                    }
+                                                >
+                                                    {`Program: ${exercise.program}`}
+                                                </Typography>
+                                            ) : (
+                                                exercise.workout && (
+                                                    <Typography
+                                                        variant="overline"
+                                                        className={
+                                                            classes.workoutTitle
+                                                        }
+                                                    >
+                                                        {`Workout: ${exercise.workout}`}
+                                                    </Typography>
+                                                )
+                                            )}
+                                            {}
                                             <Exercise
                                                 exercise={exercise}
                                                 small
                                                 key={exercise.id}
-                                            />
-                                        </Box>
-                                    );
-                                }
-                            })}
-                            {scheduledWorkouts.map((workout) => {
-                                workout.exercises = scheduledExercises.filter(
-                                    (exercise) =>
-                                        exercise.workoutId === workout.id
-                                );
-                                if (
-                                    dayjs(dayjs(date).format("L")).valueOf() ===
-                                    workout.exercises[0].date
-                                ) {
-                                    return (
-                                        <Box>
-                                            <Workout
-                                                workout={workout}
-                                                key={workout.id}
                                             />
                                         </Box>
                                     );

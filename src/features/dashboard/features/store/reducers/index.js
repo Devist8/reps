@@ -18,43 +18,31 @@ export default function (state = initialState, action) {
         case SET_STORE:
             return {
                 ...state,
-                store: { ...action.payload },
+                ...action.payload,
             };
         case UPDATE_STORE_INFO:
             return {
                 ...state,
-                store: {
-                    ...state.store,
-                    info: { ...state.store.info, ...action.payload },
-                },
+                info: { ...state.info, ...action.payload },
             };
         case ADD_STORE_ITEM:
             return {
                 ...state,
-                store: {
-                    ...state.store,
-                    inventory: [...state.store.inventory, action.payload],
-                },
+                inventory: [...state.inventory, action.payload],
             };
         case ADD_TO_CART:
             return {
                 ...state,
-                store: {
-                    ...state.store,
-                    cart: [...state.store.cart, action.payload],
-                },
+                cart: [...state.cart, action.payload],
             };
         case REMOVE_FROM_CART:
+            console.log(state.cart);
             return {
                 ...state,
-                store: {
-                    ...state.store,
-                    cart: [
-                        ...state.store.cart.filter(
-                            (x) => x.id !== action.payload.id
-                        ),
-                    ],
-                },
+
+                cart: [
+                    ...state.cart.filter((x) => x.itemId !== action.payload),
+                ],
             };
         default:
             return state;

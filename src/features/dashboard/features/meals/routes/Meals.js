@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const Meals = (props) => {
     const {} = props;
-    const meals = useSelector((state) => state.data.meals);
+    const meals = useSelector((state) => state.meals.meals);
     const [creator, setCreator] = React.useState(false);
     const classes = useStyles();
 

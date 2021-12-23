@@ -51,8 +51,6 @@ export const WorkoutDisplay = (props) => {
                             marginRight: "0.2rem",
                         }}
                         onClick={(e) => {
-                            console.log(selectedWeek);
-                            console.log(workout);
                             addWorkout(workout, selectedWeek);
                         }}
                     >

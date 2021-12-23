@@ -22,6 +22,21 @@ import {
     CLEAR_NEW_EXERCISE,
 } from "../reducers/types";
 
+export const getWorkoutId = () => async (dispatch) => {
+    console.log("fetching id");
+    axios
+        .get("/workouts/id")
+        .then((res) => {
+            console.log(res);
+            let data = {
+                name: "id",
+                value: res.data.id,
+            };
+            dispatch(updateNewExercise(data));
+        })
+        .catch((err) => console.error(err));
+};
+
 export const updateNewProgram = (data) => (dispatch) => {
     dispatch({ type: UPDATE_NEW_PROGRAM, payload: data });
 };

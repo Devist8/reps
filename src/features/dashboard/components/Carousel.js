@@ -116,6 +116,7 @@ export const Carousel = (props) => {
                 return (
                     <Box
                         key={`${type}-invisible`}
+                        className={classes.invisibleMeal}
                         style={{
                             width: "20vw",
                             height: "20vh",
@@ -153,7 +154,6 @@ export const Carousel = (props) => {
                     item
                     xs={12}
                     style={{
-                        display: "flex",
                         flexWrap: "noWrap",
                         justifyContent: "center",
                     }}
@@ -168,7 +168,7 @@ export const Carousel = (props) => {
                                           display: "flex",
                                           alignContent: "center",
                                           alignItems: "center",
-                                          justifyContent: "center",
+                                          justifyContent: "space-around",
                                       }
                                     : {
                                           minHeight: "40vh",
@@ -176,36 +176,54 @@ export const Carousel = (props) => {
                                           display: "flex",
                                           flexWrap: "nowrap",
                                       }
-                                : { minHeight: 0 })
+                                : {
+                                      minHeight: 0,
+                                      justifyContent: "space-between",
+                                  })
                         }
                     >
-                        {show.map((element) => {
+                        {show.map((element, index) => {
                             if (array[element]) {
                                 return displaySwitch(type, array[element]);
-                            } else if (edit) {
-                                return (
-                                    <Box
-                                        style={{
-                                            width: "18vw",
-                                            height: "18vh",
-                                            backgroundColor: "lightgray",
-                                            borderRadius: "15px",
-                                            display: "flex",
-                                        }}
-                                    >
-                                        <IconButton
-                                            onClick={() => setStoreModal(true)}
+                            } else {
+                                if (edit) {
+                                    return (
+                                        <Box
+                                            key={`${index}-display`}
                                             style={{
+                                                width: "18vw",
+                                                height: "18vh",
+                                                backgroundColor: "lightgray",
+                                                borderRadius: "15px",
                                                 display: "flex",
-                                                margin: "auto",
                                             }}
                                         >
-                                            <AddCircleIcon />
-                                        </IconButton>
-                                    </Box>
-                                );
-                            } else {
-                                return invisibleSwitch(type);
+                                            <IconButton
+                                                onClick={() =>
+                                                    setStoreModal(true)
+                                                }
+                                                style={{
+                                                    display: "flex",
+                                                    margin: "auto",
+                                                }}
+                                            >
+                                                <AddCircleIcon />
+                                            </IconButton>
+                                        </Box>
+                                    );
+                                } else {
+                                    return (
+                                        <Box
+                                            key={`${index}-invisible`}
+                                            className={classes.invisibleMeal}
+                                            style={{
+                                                width: "20vw",
+                                                height: "20vh",
+                                                display: "invisible",
+                                            }}
+                                        />
+                                    );
+                                }
                             }
                         })}
                     </GridList>

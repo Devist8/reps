@@ -8,9 +8,11 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import Modal from "@material-ui/core/Modal";
 
 //Components
 import { Timer } from "../features/dashboard/components/Timer";
+import { Countdown } from "../features/dashboard/components/Countdown";
 
 //Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -18,59 +20,52 @@ import { getDemoData } from "../redux/actions/dataActions";
 
 export const Home = () => {
     const dispatch = useDispatch();
-    const exercises = useSelector((state) => state.data.exercises);
-    const workouts = useSelector((state) => state.data.workouts);
-    const schedule = useSelector((state) => state.data.schedule);
+    const exercises = useSelector((state) => state.studio.exercises);
+    const workouts = useSelector((state) => state.studio.workouts);
+    const schedule = useSelector((state) => state.studio.schedule);
     const today = dayjs(dayjs(Date.now()).format("L")).valueOf();
     const user = useSelector((state) => state.user.authenticated);
     const [demoLoaded, setDemoLoaded] = React.useState(false);
     const [scheduledWorkouts, setScheduledWorkouts] = React.useState([]);
     const [completedWorkouts, setCompletedWorkouts] = React.useState([]);
+    const [modalOpen, setModalOpen] = React.useState(true);
 
+    const toggleOpen = () => {
+        setModalOpen(!modalOpen);
+    };
     return (
         <Grid container style={{ display: "flex" }}>
-            <Grid
-                item
-                xs={12}
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    alignContent: "center",
-                    marginTop: "5vh",
-                }}
-            >
-                <Timer />
-                {user ? (
-                    !demoLoaded ? (
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                                dispatch(getDemoData());
-                                setDemoLoaded(true);
-                            }}
-                        >
-                            Get Demo Data
-                        </Button>
-                    ) : (
-                        <Typography>
-                            Demo data has been loaded. Please vist the workout
-                            studio indicated by the dumbbell in the navbar on
-                            the left.
-                        </Typography>
-                    )
-                ) : (
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        component={Link}
-                        to="/signup"
-                    >
-                        Sign Up
-                    </Button>
-                )}
-            </Grid>
+            <Button component={Link} to="/checkout">
+                Checkout
+            </Button>
         </Grid>
     );
 };
+
+/*<Modal
+open={modalOpen}
+style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}
+children={
+    <Grid
+        item
+        xs={12}
+        style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            alignContent: "center",
+            height: "100%",
+        }}
+    >
+        <Button component={Link} to="/checkout">
+            Checkout
+        </Button>
+        <Countdown
+            time={30}
+            workout={exercises}
+            open={modalOpen}
+            setOpen={setModalOpen}
+        />
+    </Grid>
+}
+/>*/

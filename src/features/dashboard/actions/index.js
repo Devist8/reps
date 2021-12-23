@@ -29,6 +29,7 @@ export const addToSchedule = (itemToSchedule) => (dispatch) => {
     if (type === "workout") {
         itemToSchedule.exercises.map((exercise, index) => {
             exercise.date = itemToSchedule.date;
+            exercise.workout = itemToSchedule.title;
             exercises.push(exercise);
         });
     }

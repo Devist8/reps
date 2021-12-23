@@ -8,6 +8,7 @@ import { Home } from "../features/dashboard/features/home/routes/Home";
 import { Studio } from "../features/dashboard/features/studio/index";
 import { Meals } from "../features/dashboard/features/meals/routes";
 //import { StoreRoutes } from "../features/dashboard/features/store";
+import { Checkout } from "../features/dashboard/features/store/routes";
 
 /*export const AuthRoutes = () => {
     return (
@@ -25,4 +26,5 @@ export const AuthRoutes = [
     { path: "/workouts", element: <Studio /> },
     { path: "/meals", element: <Meals /> },
     //{ path: "/store/*", element: <StoreRoutes /> },
+    //{ path: "/checkout", element: <Checkout /> },
 ];

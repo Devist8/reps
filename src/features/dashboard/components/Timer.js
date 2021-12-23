@@ -11,6 +11,7 @@ import {
     TextField,
     IconButton,
     Divider,
+    Modal,
 } from "@material-ui/core";
 
 //Redux
@@ -19,11 +20,30 @@ import { useDispatch, useSelector } from "react-redux";
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.primaryDark.main,
-        maxWidth: "450px",
+
         padding: "40px 10px",
         justifyContent: "center",
         textAlign: "center",
         borderRadius: "20px",
+        height: "95%",
+        width: "95%",
+        boxShadow: "inset 0px 0px 1000px #7DD9FF",
+    },
+    content: {
+        width: "80%",
+    },
+    time: {
+        color: "#fff",
+        fontSize: "5.5rem",
+    },
+    seconds: {
+        fontSize: "2.5rem",
+        marginBottom: "2.3vh",
+        color: theme.palette.primary.light,
+    },
+    reps: {
+        margin: "auto",
+        width: "50%",
     },
     buttons: { marginTop: "2vh" },
     button: {
@@ -38,13 +58,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-let reps = 5;
+let reps = 2;
 let timerId;
 export const Timer = (props) => {
-    const { exercise } = props;
+    const { exercise, countDown } = props;
     const dispatch = useDispatch();
     const classes = useStyles();
-    const exercises = useSelector((state) => state.data.exercises);
+    const exercises = useSelector((state) => state.studio.exercises);
     const [seconds, setSeconds] = useState(0);
     const [currentRep, setCurrentRep] = useState(0);
     const [completedReps, setCompletedReps] = useState(
@@ -53,24 +73,24 @@ export const Timer = (props) => {
     const [status, setStatus] = useState("");
 
     const count = () => {
-        setSeconds((prevState) => prevState + 1);
+        setSeconds((prevState) => prevState + 0.01);
     };
 
     const startTimer = () => {
-        timerId = setInterval(count, 1000);
+        timerId = setInterval(count, 10);
     };
 
-    let h = Math.floor(seconds / 3600);
-    let m = Math.floor((seconds % 3600) / 60);
-    let s = Math.ceil((seconds % 3600) % 60);
-    let formattedTime = `${h < 10 ? `0${h}` : h} : ${m < 10 ? `0${m}` : m} : ${
-        s < 10 ? `0${s}` : s
-    }`;
+    let m = ("0" + Math.floor(seconds / 60)).slice(-2);
+    let s = ("0" + parseInt(seconds % 60)).slice(-2);
+    let ms = ("0" + seconds * 100).slice(-2);
+    let formattedTime = `${m}:${s}.${ms}`;
+
+    let displayTime = new Date(seconds).toISOString().slice(11, -1);
 
     const completeRep = () => {
         let clone = completedReps;
-        clone[currentRep] = formattedTime;
-        setStatus("stop");
+        clone[currentRep] = displayTime;
+        setStatus("pause");
         setCompletedReps(clone);
         setCurrentRep(currentRep + 1);
     };
@@ -84,9 +104,19 @@ export const Timer = (props) => {
 
     React.useEffect(() => {
         if (status === "start") {
+            if (currentRep >= completedReps.length) {
+                let clone = completedReps;
+                clone[currentRep] = displayTime;
+                setCompletedReps(clone);
+            }
+
             startTimer();
         }
+        if (status === "pause") {
+            clearInterval(timerId);
+        }
         if (status === "stop") {
+            resetTimer();
             clearInterval(timerId);
         }
     }, [status]);
@@ -99,92 +129,126 @@ export const Timer = (props) => {
             alignContent="center"
             className={classes.root}
         >
-            <Grid item xs={12} className={classes.timeDisplay}>
+            <Grid item className={classes.content}>
+                <Grid item xs={12}>
+                    <Grid
+                        item
+                        xs={12}
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            marginBottom: "1vh",
+                        }}
+                    >
+                        <ReactPlayer
+                            url={
+                                exercise
+                                    ? exercise.videoURL
+                                    : exercises[3] && exercises[3].videoURL
+                            }
+                            width="20vw"
+                            height="18vh"
+                            loop="true"
+                            controls
+                        />
+                    </Grid>
+                    <Grid
+                        container
+                        alignItems="flex-end"
+                        justify="center"
+                        alignContent="center"
+                    >
+                        <Grid
+                            xs={10}
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                textAlign: "center",
+                                alignContent: "center",
+                                alignItems: "flex-end",
+                            }}
+                        >
+                            <Typography className={classes.time}>
+                                {formattedTime.split(".")[0]}
+                            </Typography>
+                            <Typography className={classes.seconds}>
+                                {formattedTime.split(".")[1]}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Grid>
                 <Grid
                     item
                     xs={12}
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        marginBottom: "1vh",
-                    }}
+                    style={{ display: "flex", flexWrap: "wrap" }}
                 >
-                    <ReactPlayer
-                        url={
-                            exercise
-                                ? exercise.videoURL
-                                : exercises[3] && exercises[3].videoURL
-                        }
-                        width="20vw"
-                        height="18vh"
-                        loop="true"
-                        controls
-                    />
+                    <Grid item xs={12}>
+                        <Button
+                            variant="outlined"
+                            className={classes.button}
+                            style={{ maxWidth: "none" }}
+                            onClick={() => completeRep()}
+                        >
+                            Mark rep complete
+                        </Button>
+                    </Grid>
                 </Grid>
-                <Typography>{formattedTime}</Typography>
-            </Grid>
-            <Grid item xs={12} style={{ display: "flex", flexWrap: "wrap" }}>
-                <Grid item xs={12}>
+                <Grid item xs={12} className={classes.buttons}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => setStatus("start")}
+                        className={classes.button}
+                        disabled={status === "start"}
+                    >
+                        Start
+                    </Button>
                     <Button
                         variant="outlined"
                         className={classes.button}
-                        style={{ maxWidth: "none" }}
-                        onClick={() => completeRep()}
+                        onClick={() => setStatus("stop")}
                     >
-                        Mark rep complete
+                        Stop
                     </Button>
                 </Grid>
-            </Grid>
-            <Grid item xs={12} className={classes.buttons}>
-                <Button
-                    variant="outlined"
-                    onClick={() => setStatus("start")}
-                    className={classes.button}
-                    disabled={status === "start"}
-                >
-                    Start
-                </Button>
-                <Button
-                    variant="outlined"
-                    className={classes.button}
-                    onClick={resetTimer}
-                >
-                    Stop
-                </Button>
-            </Grid>
-            <Divider style={{ width: "100%", margin: "5vh 0 2vh 0" }} />
-            <Grid container>
-                {completedReps.map((rep, i) => {
-                    return (
-                        <Grid container>
-                            <Grid item xs={2} style={{ textAlign: "start" }}>
-                                <Typography
-                                    className={
-                                        i === currentRep && classes.selected
-                                    }
-                                >{`Rep ${i + 1}`}</Typography>
-                            </Grid>
-                            <Grid item xs={10} style={{ textAlign: "end" }}>
-                                <Typography
-                                    className={
-                                        i === currentRep && classes.selected
-                                    }
+
+                <Grid container className={classes.reps}>
+                    <Divider style={{ width: "100%", margin: "5vh 0 2vh 0" }} />
+                    {completedReps.map((rep, i) => {
+                        return (
+                            <Grid container>
+                                <Grid
+                                    item
+                                    xs={2}
+                                    style={{ textAlign: "start" }}
                                 >
-                                    {i === currentRep ? formattedTime : rep}
-                                </Typography>
+                                    <Typography
+                                        className={
+                                            i === currentRep && classes.selected
+                                        }
+                                    >{`Rep ${i + 1}`}</Typography>
+                                </Grid>
+                                <Grid item xs={10} style={{ textAlign: "end" }}>
+                                    <Typography
+                                        className={
+                                            i === currentRep && classes.selected
+                                        }
+                                    >
+                                        {i === currentRep ? displayTime : rep}
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    );
-                })}
-            </Grid>
-            <Grid
-                item
-                xs={12}
-                style={{ display: "flex", justifyContent: "center" }}
-            >
-                <Button variant="outlined" className={classes.button}>
-                    Submit
-                </Button>
+                        );
+                    })}
+                </Grid>
+                <Grid
+                    item
+                    xs={12}
+                    style={{ display: "flex", justifyContent: "center" }}
+                >
+                    <Button variant="outlined" className={classes.button}>
+                        Submit
+                    </Button>
+                </Grid>
             </Grid>
         </Grid>
     );

@@ -1,5 +1,6 @@
 import React from "react";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 //functions
 import {
@@ -53,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: "1px 2px 4px 1px rgba(0,0,0,0.05)",
         zIndex: "1000",
         display: "flex",
+        margin: "5px",
         flexWrap: "noWrap",
     },
     collectionContainer: {
@@ -63,9 +65,9 @@ const useStyles = makeStyles((theme) => ({
 export const Studio = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const exercises = useSelector((state) => state.data.exercises);
-    const workouts = useSelector((state) => state.data.workouts);
-    const programs = useSelector((state) => state.data.programs);
+    const exercises = useSelector((state) => state.studio.exercises);
+    const workouts = useSelector((state) => state.studio.workouts);
+    const programs = useSelector((state) => state.studio.programs);
     const user = useSelector((state) => state.user.info);
     const [creator, setCreator] = React.useState("");
     const [exerciseSort, setExerciseSort] = React.useState(exercises);
@@ -155,25 +157,25 @@ export const Studio = () => {
                     <Grid item xs={10} style={{ marginLeft: "2rem" }}>
                         <Button
                             name="exercise"
-                            disabled={creator === "exercise"}
+                            component={Link}
+                            to={"/workouts/create/exercise"}
                             className={classes.button}
-                            onClick={(e) => changeCreator("exercise")}
                         >
                             Exercise
                         </Button>
                         <Button
                             name="workout"
-                            disabled={creator === "workout"}
+                            component={Link}
+                            to={"/workouts/create/workout"}
                             className={classes.button}
-                            onClick={(e) => changeCreator("workout")}
                         >
                             Workout
                         </Button>
                         <Button
                             name="program"
-                            disabled={creator === "program"}
+                            component={Link}
+                            to={"/workouts/create/program"}
                             className={classes.button}
-                            onClick={(e) => changeCreator("program")}
                         >
                             Program
                         </Button>
@@ -191,7 +193,15 @@ export const Studio = () => {
             )}
             <Grid container className={classes.root}>
                 {user.type === "trainer" && (
-                    <Grid container className={classes.creatorContainer}>
+                    <Grid
+                        container
+                        className={classes.creatorContainer}
+                        style={
+                            creator === ""
+                                ? { display: "none" }
+                                : { display: "contents" }
+                        }
+                    >
                         {user.type === "trainer" && (
                             <Grid
                                 item

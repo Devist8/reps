@@ -18,17 +18,25 @@ import { CalendarNavBar } from "./components/CalendarNavBar";
 import { AppProvider } from "./context";
 import { AppRoutes } from "./routes";
 
+//Stripe
+import { useStripe, CardElement, Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
 //Redux
 import store from "./redux/store";
 import { useDispatch } from "react-redux";
 import { getUserData } from "./redux/actions/dataActions";
 import { getStore } from "./redux/actions/storeActions";
 import { SET_AUTHENTICATED } from "./redux/types";
-import { getRecentMessages } from "./redux/actions/messageActions";
+import { getRecentMessages } from "./features/dashboard/features/chat/actions";
 
 //Routes
 import { Home as DashboardHome } from "./features/dashboard/features/home/routes/Home";
-import { Studio, Exercise } from "./features/dashboard/features/studio/index";
+import {
+    Studio,
+    Exercise,
+    Creator,
+} from "./features/dashboard/features/studio/index";
 import { Meals, Meal } from "./features/dashboard/features/meals/routes";
 import { Store, Checkout, Cart } from "./features/dashboard/features/store";
 import { Home } from "./routes/Home";
@@ -47,6 +55,11 @@ const useStyles = makeStyles((theme) => ({
 
 const token = localStorage.FBIdToken;
 
+const stripePromise = loadStripe(
+    "pk_test_51Hr3CTBp908J0ZFHC8eQsjRQ5jKJBLDuDCGR2lm78hOHmTZxgrJEAfxMff0oDMJ14oyyvADBVr5ivdx2ZdMWkbmb00lR0Vm7tB"
+);
+
+axios.defaults.baseURL = "http://localhost:5001/reps-699b0/us-east1/api";
 const App = () => {
     const classes = useStyles();
 
@@ -89,6 +102,7 @@ const App = () => {
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/signup" component={Signup} />
                         <Route exact path="/meals/:mealId" component={Meal} />
+
                         <Route
                             exact
                             path="/exercise/:exerciseId"
@@ -100,22 +114,26 @@ const App = () => {
                             component={DashboardHome}
                         />
                         <AuthRoute exact path="/workouts" component={Studio} />
+                        <Route
+                            exact
+                            path="/workouts/create/:creatorType"
+                            component={Creator}
+                        />
                         <AuthRoute exact path="/meals" component={Meals} />
                         <Route exact path="/account" componet={Account} />
                         <Route exact path="/settings" component={Settings} />
                         <Route exact path="/profile" component={Profile} />
                         <Route exact path="/cart" component={Cart} />
-                        <AuthRoute
-                            exact
-                            path="/checkout"
-                            component={Checkout}
-                        />
+
                         {
-                            /*<Elements
-                            stripe={stripePromise !== null && stripePromise}
-                        >*/
-                            <Route exact path="/store" component={Store} />
-                            /*</Elements>*/
+                            <Elements stripe={stripePromise}>
+                                <Route
+                                    exact
+                                    path="/checkout"
+                                    component={Checkout}
+                                />
+                                <Route exact path="/store" component={Store} />
+                            </Elements>
                         }
                     </Switch>
                 </div>
